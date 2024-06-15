@@ -9,7 +9,8 @@ public class welcomeController {
     ImageView myImageView;
 
     public void initialize() {
-        myImageView.setImage(new Image("images\\sekolahMingguLogo.png"));
+
+        myImageView.setImage(new Image(getClass().getResource("/images/sekolahMingguLogo.png").toString()));
     }
 
 
