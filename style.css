@@ -1,0 +1,54 @@
+.background{
+    -fx-background-color:linear-gradient(to bottom right, #276acf, #032d4d);
+    -fx-border-width:.4px 0px .4px .4px
+}
+
+.btn_masuk{
+    -fx-background-color:#ffffff;
+    -fx-background-radius: 30;
+    -fx-cursor:hand;
+    -fx-text-fill:#000;
+}
+
+.btn_masuk:hover{
+    -fx-background-color:linear-gradient(to bottom right, #FDB91F, #E73D25);
+    -fx-text-fill:#ffff;
+}
+
+.shadow{
+    -fx-effect: dropShadow(three-pass-box, rgba(0,0,0,0.1), 10.0, 0.0, 10.0,10.0);
+}
+
+.menu_btn{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+    -fx-font-family:"Arial";
+    -fx-font-size:14px;
+    -fx-text-fill:#fff;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.scroll_pane{
+    -fx-background-color:#2E2E44;
+}
+
+.scroll_pane_0{
+    -fx-background-color:transparent;
+}
+
+.menu_btn:hover{
+    -fx-background-color:#fff;
+    -fx-cursor:hand;
+    -fx-font-family:"Arial";
+    -fx-font-size:14px;
+    -fx-text-fill:#2E2E44;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.white_bg{
+    -fx-background-color:#ffffff;
+    -fx-background-radius: 8;
+}
+
+
+
