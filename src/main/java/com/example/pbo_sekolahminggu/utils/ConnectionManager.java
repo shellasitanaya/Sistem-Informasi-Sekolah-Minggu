@@ -12,13 +12,13 @@ public class ConnectionManager {
 
     }
 
-    public static void closeConnection(Connection con) {
+    public static void close(Connection connection) {
         try {
-            if (con != null) {
-                con.close();
+            if (connection != null) {
+                connection.close();
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -29,6 +29,20 @@ public class ConnectionManager {
             }
             if (ps != null) {
                 ps.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // cuma beda posisi parameter
+    public static void close(ResultSet resultSet, PreparedStatement preparedStatement) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

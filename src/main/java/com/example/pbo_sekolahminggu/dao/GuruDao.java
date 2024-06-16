@@ -32,8 +32,8 @@ public class GuruDao {
         return listGuru;
     }
 
-    // SAVE
-    public static void save(Connection con, Guru guru) {
+    // CREATE
+    public static void create (Connection con, Guru guru) {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES (?, ?, ?, ?)";
 
@@ -51,8 +51,8 @@ public class GuruDao {
         }
     }
 
-    // EDIT
-    public static void edit(Connection con, Guru guru) {
+    // UPDATE
+    public static void update(Connection con, Guru guru) {
         PreparedStatement statement = null;
         String query = "UPDATE tbl_guru SET nama = ?, nip = ?, no_telp = ?, alamat = ? WHERE id = ?";
 
