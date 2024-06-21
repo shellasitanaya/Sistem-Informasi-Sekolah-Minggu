@@ -87,18 +87,18 @@ public class GuruDao {
         }
     }
 
-    // CLEAR
-    public void clear(Connection con) throws SQLException {
-        PreparedStatement statement = null;
-        String query = "TRUNCATE TABLE tbl_guru";
-
-        try {
-            statement = con.prepareStatement(query);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Error clearing table: " + e.getMessage());
-        } finally {
-            ConnectionManager.close(statement);
-        }
-    }
+    // CLEAR -> cuma bersihin tampilan tabel
+//    public void clear(Connection con) throws SQLException {
+//        PreparedStatement statement = null;
+//        String query = "TRUNCATE TABLE tbl_guru";
+//
+//        try {
+//            statement = con.prepareStatement(query);
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new SQLException("Error clearing table: " + e.getMessage());
+//        } finally {
+//            ConnectionManager.close(statement);
+//        }
+//    }
 }

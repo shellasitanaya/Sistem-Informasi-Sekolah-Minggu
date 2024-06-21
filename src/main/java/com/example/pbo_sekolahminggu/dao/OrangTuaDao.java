@@ -13,7 +13,7 @@ public class OrangTuaDao {
     public static ArrayList<OrangTua> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_orangTua where status_aktif = 1";
+        String query = "select * from tbl_orang_tua where status_aktif = 1";
         ArrayList<OrangTua> listorangTua = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -35,9 +35,9 @@ public class OrangTuaDao {
     }
 
     // SAVE
-    public static void save(Connection con, OrangTua orangTua) {
+    public static void create(Connection con, OrangTua orangTua) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_orangTua(nama, alamat, no_telp) VALUES (?, ?, ?)";
+        String query = "INSERT INTO tbl_orang_tua(nama, alamat, no_telp) VALUES (?, ?, ?)";
 
         try {
             statement = con.prepareStatement(query);
@@ -53,9 +53,9 @@ public class OrangTuaDao {
     }
 
     // EDIT
-    public static void edit(Connection con, OrangTua orangTua) {
+    public static void update(Connection con, OrangTua orangTua) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_orangTua SET nama = ?, alamat = ?, no_telp = ? WHERE id = ?";
+        String query = "UPDATE tbl_orang_tua SET nama = ?, alamat = ?, no_telp = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
@@ -74,7 +74,7 @@ public class OrangTuaDao {
     // DELETE
     public static void delete(Connection con, OrangTua orangTua) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_orangTua SET status_aktif = 0 WHERE id = ?";
+        String query = "UPDATE tbl_orang_tua SET status_aktif = 0 WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);

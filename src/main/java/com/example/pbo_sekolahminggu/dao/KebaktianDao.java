@@ -33,8 +33,8 @@ public class KebaktianDao {
         return listkebaktian;
     }
 
-    // SAVE
-    public static void save(Connection con, Kebaktian kebaktian) {
+    // CREATE
+    public static void create (Connection con, Kebaktian kebaktian) {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (?, ?)";
 

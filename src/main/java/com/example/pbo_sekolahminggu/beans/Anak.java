@@ -3,7 +3,7 @@ package com.example.pbo_sekolahminggu.beans;
 public class Anak {
     private int ID_ANAK;
     private String NIS;
-    private String NamaAnak;
+    private String Nama;
     private String JenisKelamin;
     private String Alamat;
 
@@ -29,12 +29,12 @@ public class Anak {
         this.NIS = NIS;
     }
 
-    public String getNamaAnak() {
-        return NamaAnak;
+    public String getNama() {
+        return Nama;
     }
 
-    public void setNamaAnak(String namaAnak) {
-        NamaAnak = namaAnak;
+    public void setNama(String nama) {
+        Nama = nama;
     }
 
     public String getJenisKelamin() {

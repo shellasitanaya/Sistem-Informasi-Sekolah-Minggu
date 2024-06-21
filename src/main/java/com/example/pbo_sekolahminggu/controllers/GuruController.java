@@ -18,28 +18,28 @@ import java.util.ResourceBundle;
 public class GuruController implements Initializable {
     // text field
     @FXML
-    private TextField txtNama;
+    private TextField namaGuruField;
     @FXML
-    private TextField txtNIP;
+    private TextField nipGuruField;
     @FXML
-    private TextField txtTelp;
+    private TextField noTelpGuruField;
     @FXML
-    private TextField txtAlamat;
+    private TextField alamatGuruField;
 
     // table
     @FXML
-    private TableView<Guru> tblData;
+    private TableView<Guru> guruTbl;
     private ObservableList<Guru> data;
 
     // button
     @FXML
-    private Button btnClear;
+    private Button clearGuruBtn;
     @FXML
-    private Button btnCreate;
+    private Button updateGuruBtn;
     @FXML
-    private Button btnUpdate;
+    private Button deleteGuruBtn;
     @FXML
-    private Button btnDelete;
+    private Button createGuruBtn;
 
 
     ObservableList<Guru> listGuru = FXCollections.observableArrayList();
@@ -49,9 +49,9 @@ public class GuruController implements Initializable {
         // supaya data dan UI sinkron (auto update)
         listGuru = FXCollections.observableArrayList();
         // untuk pilih row
-        tblData.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        guruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         // kosongkan kolom dari tabel
-        tblData.getColumns().clear();
+        guruTbl.getColumns().clear();
 
         // inisialisasi kolom
         // Membuat kolom untuk ID_GURU
@@ -80,7 +80,7 @@ public class GuruController implements Initializable {
         alamatCol.setCellValueFactory(new PropertyValueFactory<>("alamat"));
 
         // Menambahkan kolom ke TableView
-        tblData.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
+        guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
 
         refreshData();
 
@@ -92,7 +92,7 @@ public class GuruController implements Initializable {
         try {
             connection = ConnectionManager.getConnection();
             data = FXCollections.observableArrayList(GuruDao.getAll(connection));
-            tblData.setItems(data);
+            guruTbl.setItems(data);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -100,6 +100,7 @@ public class GuruController implements Initializable {
         }
     }
 
+    // kasih alert
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -112,10 +113,10 @@ public class GuruController implements Initializable {
     // CREATE
     @FXML
     public void create() {
-        String nama= txtNama.getText();
-        String nip = txtNIP.getText();
-        String noTelp = txtTelp.getText();
-        String alamat = txtAlamat.getText();
+        String nama= namaGuruField.getText();
+        String nip = nipGuruField.getText();
+        String noTelp = noTelpGuruField.getText();
+        String alamat = alamatGuruField.getText();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty()|| alamat.isEmpty()) {
@@ -142,7 +143,7 @@ public class GuruController implements Initializable {
              */
             listGuru = FXCollections.observableArrayList(GuruDao.getAll(con));
             // tampilin update-an data di tableview
-            tblData.setItems(listGuru);
+            guruTbl.setItems(listGuru);
 
             /*
             opsi lain observable list:
@@ -169,10 +170,10 @@ public class GuruController implements Initializable {
     @FXML
     public void update() {
         // mendapatkan nilai dari input fields
-        String nama= txtNama.getText();
-        String nip = txtNIP.getText();
-        String noTelp = txtTelp.getText();
-        String alamat = txtAlamat.getText();
+        String nama= namaGuruField.getText();
+        String nip = nipGuruField.getText();
+        String noTelp = noTelpGuruField.getText();
+        String alamat = alamatGuruField.getText();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty() || alamat.isEmpty()) {
@@ -194,7 +195,7 @@ public class GuruController implements Initializable {
             GuruDao.update(con, guru); // update
 
             listGuru = FXCollections.observableArrayList(GuruDao.getAll(con));
-            tblData.setItems(listGuru);
+            guruTbl.setItems(listGuru);
 
             // Menampilkan pesan sukses
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -213,8 +214,8 @@ public class GuruController implements Initializable {
     // DELETE
     @FXML
     public void delete() {
-        if (tblData.getSelectionModel().getSelectedItems().size() != 0) {
-            Guru selected = tblData.getSelectionModel().getSelectedItem();
+        if (guruTbl.getSelectionModel().getSelectedItems().size() != 0) {
+            Guru selected = guruTbl.getSelectionModel().getSelectedItem();
             Connection connection = null;
             try {
                 connection = ConnectionManager.getConnection();
@@ -236,10 +237,13 @@ public class GuruController implements Initializable {
         }
     }
 
-    // CLEAR -> hapus semua data dari tabel
+    // CLEAR -> text fieldnya saja saja)
     @FXML
     public void clear() {
-        listGuru.clear(); // menghapus semua item dari ObservableList
-        tblData.setItems(listGuru); // memperbarui tampilan tabel
+        namaGuruField.setText("");
+        nipGuruField.setText("");
+        noTelpGuruField.setText("");
+        alamatGuruField.setText("");
+
     }
 }
