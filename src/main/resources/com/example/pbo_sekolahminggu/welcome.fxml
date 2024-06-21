@@ -9,24 +9,29 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="500.0" prefWidth="400.0" styleClass="background" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.welcomeController">
-    <children>
-        <Button fx:id="myButton" layoutX="121.0" layoutY="406.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="158.0" stylesheets="@../../../../../style.css" text="MASUK">
-            <font>
-                <Font name="System Bold" size="20.0" />
-            </font>
-            <styleClass>
-                <String fx:value="btn_masuk" />
-                <String fx:value="shadow" />
-            </styleClass></Button>
-        <Label layoutX="130.0" layoutY="354.0" prefHeight="38.0" prefWidth="138.0" text="WELCOME!" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="26.0" />
-            </font>
-        </Label>
-        <ImageView fx:id="myImageView" fitHeight="279.0" fitWidth="279.0" layoutX="63.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../../../images/sekolahMingguLogo.png" />
-            </image>
-        </ImageView>
-    </children>
+   <children>
+      <Button fx:id="masukBtn" layoutX="121.0" layoutY="406.0" mnemonicParsing="false" onAction="#SwitchToDashboard" prefHeight="46.0" prefWidth="158.0" stylesheets="@../../../../../style.css" text="MASUK">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+         <styleClass>
+            <String fx:value="btn_masuk" />
+            <String fx:value="shadow" />
+         </styleClass></Button>
+      <Label layoutX="75.0" layoutY="348.0" prefHeight="38.0" prefWidth="250.0" text="SELAMAT DATANG!" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="myImageView" fitHeight="279.0" fitWidth="279.0" layoutX="60.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
+         <image>
+            <Image url="@../../../images/sekolahMingguLogo.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="77.0" layoutY="37.0" text="SISTEM INFORMASI" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font>
+      </Label>
+   </children>
 </AnchorPane>
