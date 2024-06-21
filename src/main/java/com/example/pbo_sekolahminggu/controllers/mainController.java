@@ -68,6 +68,16 @@ public class mainController {
         loadFXML("/com/example/pbo_sekolahminggu/guru.fxml");
     }
 
+    @FXML
+    private void loadMenu3() {
+        loadFXML("/com/example/pbo_sekolahminggu/anak.fxml");
+    }
+
+    @FXML
+    private void loadMenu4() {
+        loadFXML("/com/example/pbo_sekolahminggu/kelas.fxml");
+    }
+
     private void loadFXML(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
