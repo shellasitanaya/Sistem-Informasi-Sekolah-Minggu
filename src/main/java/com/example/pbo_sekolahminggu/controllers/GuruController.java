@@ -12,13 +12,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javafx.scene.layout.AnchorPane;
+
+
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class GuruController implements Initializable {
-    // text field
     @FXML
     private TextField namaGuruField;
     @FXML
@@ -47,7 +49,9 @@ public class GuruController implements Initializable {
     private Button createGuruBtn;
 
 
+
     ObservableList<Guru> listGuru = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -87,7 +91,24 @@ public class GuruController implements Initializable {
         // Menambahkan kolom ke TableView
         guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
 
+
         refreshData();
+
+        //Inisialisasi data
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listGuru = FXCollections.
+                    observableList(GuruDao.getAll(con));
+            for (Guru guru: listGuru) {
+                System.out.println(guru);
+            }
+            guruTbl.setItems(listGuru);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
 
         // nampilin selected items
         guruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -280,6 +301,7 @@ public class GuruController implements Initializable {
         nipGuruField.clear();
         namaGuruField.clear();
         selectedGuru = null;
+
     }
 
     public void Search() {
