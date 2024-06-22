@@ -110,10 +110,9 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="alamatAnakField" layoutX="133.0" layoutY="455.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <Label layoutX="26.0" layoutY="459.0" text="Alamat" />
+<!--      <TextField fx:id="alamatAnakField" layoutX="133.0" layoutY="455.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />-->
+<!--      <Label layoutX="26.0" layoutY="459.0" text="Alamat" />-->
       <RadioButton fx:id="lakiAnakBtn" layoutX="133.0" layoutY="414.0" mnemonicParsing="false" styleClass="white_bg" stylesheets="@../../../../../style.css" text="Male" />
       <RadioButton fx:id="perempuanAnakBtn" layoutX="241.0" layoutY="414.0" mnemonicParsing="false" text="Female" />
-      <Label layoutX="478.0" layoutY="369.0" text="hapus aja label ini" />
    </children>
 </AnchorPane>
