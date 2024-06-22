@@ -13,7 +13,7 @@ public class TahunAjaranDao {
     public static ArrayList<TahunAjaran> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_tahunAjaran where status_aktif = 1";
+        String query = "select * from tbl_tahun_ajaran where status_aktif = 1 ORDER BY tahun_ajaran DESC";
         ArrayList<TahunAjaran> listtahunAjaran = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -21,7 +21,7 @@ public class TahunAjaranDao {
             while (rs.next()) {
                 TahunAjaran tahunAjaran = new TahunAjaran();
                 tahunAjaran.setID_TAHUN_AJARAN(rs.getInt("id"));
-                tahunAjaran.setTahunAjaran(rs.getString("nama"));
+                tahunAjaran.setTahunAjaran(rs.getString("tahun_ajaran"));
                 listtahunAjaran.add(tahunAjaran);
             }
         } catch (SQLException e) {

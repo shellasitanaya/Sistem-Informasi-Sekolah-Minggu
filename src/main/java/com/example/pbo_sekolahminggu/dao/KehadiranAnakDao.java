@@ -10,13 +10,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class KehadiranAnakDao {
-    public static ArrayList<KehadiranAnak> getAll(Connection con) {
+
+//    public static int getId_kelas_per_tahun(Connection con)
+    public static ArrayList<KehadiranAnak> getAll(Connection con, KehadiranAnak ka) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_kehadiranAnak where status_aktif = 1";
+        String query = "SELECT ka.id, a.nama, a.nis, CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', '')) AS kelas, kbk.jenis_kebaktian, kbk.tanggal, ka.presensi\n" +
+                "FROM tbl_kehadiran_anak ka\n" +
+                "JOIN tbl_histori_kelas_anak hka ON hka.id = ka.id_histori_kelas_anak\n" +
+                "JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                "JOIN tbl_kelas_per_tahun kpt ON hka.id_kelas_per_tahun = kpt.id\n" +
+                "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
+                "JOIN tbl_kebaktian kbk ON kbk.id = ka.id_kebaktian\n" +
+                "WHERE hka.id_kelas_per_tahun = ? AND ka.id_kebaktian = ? AND ka.status_aktif = 1";
         ArrayList<KehadiranAnak> listkehadiranAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
+//            ps.setInt(1, ka.getId_kelas_per_tahun());
+            ps.setInt(2, ka.getId_kebaktian());
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranAnak kehadiranAnak = new KehadiranAnak();
