@@ -15,7 +15,7 @@ public class AnakDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "select * from tbl_anak where status_aktif = 1";
-        ArrayList<Anak> listanak = new ArrayList<>();
+        ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
@@ -25,28 +25,26 @@ public class AnakDao {
                 anak.setNama(rs.getString("nama"));
                 anak.setNIS(rs.getString("nis"));
                 anak.setJenisKelamin(rs.getString("jenis_kelamin"));
-                anak.setAlamat(rs.getString("alamat"));
-                listanak.add(anak);
+                listAnak.add(anak);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionManager.close(ps, rs);
         }
-        return listanak;
+        return listAnak;
     }
 
     // SAVE
     public static void create(Connection con, Anak anak) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, alamat) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin) VALUES (?, ?, ?)";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
-            statement.setString(4, anak.getAlamat());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error saving anak: " + e.getMessage());
@@ -58,15 +56,14 @@ public class AnakDao {
     // EDIT
     public static void update(Connection con, Anak anak) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ?, alamat = ? WHERE id = ?";
+        String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
-            statement.setString(4, anak.getAlamat());
-            statement.setInt(5, anak.getID_ANAK());
+            statement.setInt(4, anak.getID_ANAK());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing anak: " + e.getMessage());

@@ -5,6 +5,8 @@ import com.example.pbo_sekolahminggu.dao.GuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -25,6 +27,8 @@ public class GuruController implements Initializable {
     private TextField noTelpGuruField;
     @FXML
     private TextField alamatGuruField;
+    @FXML
+    private TextField guruSearchField;
 
     // table
     @FXML
@@ -168,6 +172,7 @@ public class GuruController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Guru berhasil ditambahkan!");
             alert.show();
+            clear();
         } catch (SQLException e) {
             // menampilkan pesan error
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -220,7 +225,7 @@ public class GuruController implements Initializable {
             alert.setContentText("Data Guru berhasil diupdate!");
             alert.show();
 
-            clearForm();
+            clear();
 
         } catch (SQLException e) {
             // Menampilkan pesan error jika terjadi kesalahan
@@ -232,13 +237,6 @@ public class GuruController implements Initializable {
         }
     }
 
-    private void clearForm() {
-        noTelpGuruField.clear();
-        alamatGuruField.clear();
-        nipGuruField.clear();
-        namaGuruField.clear();
-        selectedGuru = null;
-    }
 
     private void updateGuruInList(Guru updatedGuru) {
         int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
@@ -261,6 +259,7 @@ public class GuruController implements Initializable {
                 alert.show();
 
                 refreshData();
+                clear();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
@@ -276,10 +275,45 @@ public class GuruController implements Initializable {
     // CLEAR -> text fieldnya saja saja)
     @FXML
     public void clear() {
-        namaGuruField.setText("");
-        nipGuruField.setText("");
-        noTelpGuruField.setText("");
-        alamatGuruField.setText("");
-
+        noTelpGuruField.clear();
+        alamatGuruField.clear();
+        nipGuruField.clear();
+        namaGuruField.clear();
+        selectedGuru = null;
     }
+
+    public void Search() {
+
+        FilteredList<Guru> filter = new FilteredList<>(listGuru, e -> true);
+
+        guruSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNIP().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNoTelp().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getAlamat().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<Guru> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(guruTbl.comparatorProperty());
+        guruTbl.setItems(sortList);
+    }
+
 }

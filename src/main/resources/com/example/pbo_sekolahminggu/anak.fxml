@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.AnakController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -44,7 +44,7 @@
       <Label layoutX="26.0" layoutY="326.0" text="Nama Anak" />
       <Label layoutX="26.0" layoutY="414.0" text="Jenis Kelamin" />
       <Label layoutX="26.0" layoutY="369.0" text="NIS" />
-      <Button fx:id="clearAnakBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
+      <Button fx:id="clearAnakBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -53,7 +53,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="updateAnakBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
+      <Button fx:id="updateAnakBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" onAction="#update" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -62,7 +62,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="deleteAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
+      <Button fx:id="deleteAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -71,7 +71,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="createAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
+      <Button fx:id="createAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#create" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />

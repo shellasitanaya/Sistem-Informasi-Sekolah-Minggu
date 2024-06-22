@@ -19,11 +19,14 @@ public class TahunAjaranController implements Initializable {
     // text field
     @FXML
     private TextField tahunAjaranField;
+    @FXML
+    private TextField tahunAjaranSearchField;
 
     // table
     @FXML
     private TableView<TahunAjaran> tahunAjaranTbl;
     private ObservableList<TahunAjaran> data;
+    private TahunAjaran selectedTahunAjaran = null;
 
     // button
     @FXML
@@ -43,7 +46,11 @@ public class TahunAjaranController implements Initializable {
         tahunAjaranTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tahunAjaranTbl.getColumns().clear();
 
-        // Initialize table columns
+        // inisialisasi table columns
+        TableColumn<TahunAjaran, Integer> idCol = new TableColumn<>("ID Tahun Ajaran");
+        idCol.setMinWidth(100);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_TAHUN_AJARAN"));
+
         TableColumn<TahunAjaran, String> tahunCol = new TableColumn<>("Tahun Ajaran");
         tahunCol.setMinWidth(150);
         tahunCol.setCellValueFactory(new PropertyValueFactory<>("tahunAjaran"));
@@ -51,6 +58,13 @@ public class TahunAjaranController implements Initializable {
         tahunAjaranTbl.getColumns().addAll(tahunCol);
 
         refreshData();
+
+        tahunAjaranTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedTahunAjaran = newSelection;
+                tahunAjaranField.setText(selectedTahunAjaran.getTahunAjaran());
+            }
+        });
     }
 
     private void refreshData() {
@@ -97,6 +111,7 @@ public class TahunAjaranController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Tahun Ajaran berhasil ditambahkan!");
             alert.show();
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat menambahkan data tahun ajaran: " + e.getMessage());
@@ -108,33 +123,48 @@ public class TahunAjaranController implements Initializable {
 
     @FXML
     public void update() {
-        String tahun = tahunAjaranField.getText();
+        TahunAjaran selected = tahunAjaranTbl.getSelectionModel().getSelectedItem();
 
-        if (tahun.isEmpty()) {
-            showErrorMessage("Harap isi tahun ajaran.");
+        if (selected == null) {
+            showErrorMessage("Pilih tahun ajaran yang ingin diupdate.");
             return;
         }
 
-        TahunAjaran tahunAjaran = new TahunAjaran();
-        tahunAjaran.setTahunAjaran(tahun);
+        String tahunAjaran = tahunAjaranField.getText();
+
+        if (tahunAjaran.isEmpty()) {
+            showErrorMessage("Harap isi tahun ajaran.");
+            return;
+        }
+        selected.setTahunAjaran(tahunAjaran);
 
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
-            TahunAjaranDao.update(con, tahunAjaran);
+            TahunAjaranDao.update(con, selected);
 
-            listTahunAjaran = FXCollections.observableArrayList(TahunAjaranDao.getAll(con));
-            tahunAjaranTbl.setItems(listTahunAjaran);
+            updateTahunAjaranInList(selected);
+
+            tahunAjaranTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Tahun Ajaran berhasil diupdate!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat mengupdate data tahun ajaran: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
+        }
+    }
+
+    private void updateTahunAjaranInList(TahunAjaran updatedTahunAjaran) {
+        int index = listTahunAjaran.indexOf(selectedTahunAjaran);
+        if (index != -1) {
+            listTahunAjaran.set(index, updatedTahunAjaran);
         }
     }
 
@@ -165,6 +195,7 @@ public class TahunAjaranController implements Initializable {
 
     @FXML
     public void clear() {
-        tahunAjaranField.setText("");
+        tahunAjaranField.clear();
+        selectedTahunAjaran = null;
     }
 }

@@ -51,7 +51,7 @@ public class KebaktianDao {
     }
 
     // EDIT
-    public static void edit(Connection con, Kebaktian kebaktian) {
+    public static void update(Connection con, Kebaktian kebaktian) {
         PreparedStatement statement = null;
         String query = "UPDATE tbl_kebaktian SET jenis_kebaktian = ?, tanggal = ? WHERE id = ?";
 

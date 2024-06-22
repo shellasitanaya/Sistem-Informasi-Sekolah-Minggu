@@ -27,6 +27,7 @@ public class KebaktianController implements Initializable {
     @FXML
     private TableView<Kebaktian> kebaktianTbl;
     private ObservableList<Kebaktian> data;
+    private Kebaktian selectedKebaktian = null;
 
     // button
     @FXML
@@ -46,7 +47,11 @@ public class KebaktianController implements Initializable {
         kebaktianTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         kebaktianTbl.getColumns().clear();
 
-        // Initialize table columns
+        // Inisialisasi table columns
+        TableColumn<Kebaktian, Integer> idCol = new TableColumn<>("ID Kebaktian");
+        idCol.setMinWidth(100);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_KEBAKTIAN"));
+
         TableColumn<Kebaktian, String> jenisCol = new TableColumn<>("Jenis Kebaktian");
         jenisCol.setMinWidth(150);
         jenisCol.setCellValueFactory(new PropertyValueFactory<>("jenisKebaktian"));
@@ -55,9 +60,17 @@ public class KebaktianController implements Initializable {
         tanggalCol.setMinWidth(150);
         tanggalCol.setCellValueFactory(new PropertyValueFactory<>("tanggal"));
 
-        kebaktianTbl.getColumns().addAll(jenisCol, tanggalCol);
+        kebaktianTbl.getColumns().addAll(idCol, jenisCol, tanggalCol);
 
         refreshData();
+
+        kebaktianTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedKebaktian = newSelection;
+                jenisKebaktianField.setText(selectedKebaktian.getJenisKebaktian());
+                tanggalKebaktianPicker.setValue(selectedKebaktian.getTanggal().toLocalDate());
+            }
+        });
     }
 
     private void refreshData() {
@@ -106,6 +119,8 @@ public class KebaktianController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Kebaktian berhasil ditambahkan!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat menambahkan data kebaktian: " + e.getMessage());
@@ -117,6 +132,12 @@ public class KebaktianController implements Initializable {
 
     @FXML
     public void update() {
+        Kebaktian selected = kebaktianTbl.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            return;
+        }
+
         String jenis = jenisKebaktianField.getText();
         Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
 
@@ -125,27 +146,37 @@ public class KebaktianController implements Initializable {
             return;
         }
 
-        Kebaktian kebaktian = new Kebaktian();
-        kebaktian.setJenisKebaktian(jenis);
-        kebaktian.setTanggal(tanggal);
+        selected.setJenisKebaktian(jenis);
+        selected.setTanggal(tanggal);
 
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
-            KebaktianDao.create(con, kebaktian);
+            KebaktianDao.update(con, selected);
 
-            listKebaktian = FXCollections.observableArrayList(KebaktianDao.getAll(con));
-            kebaktianTbl.setItems(listKebaktian);
+            updateKebaktianInList(selected);
+
+            kebaktianTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Kebaktian berhasil diupdate!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat mengupdate data kebaktian: " + e.getMessage());
             alert.show();
+
         } finally {
             ConnectionManager.close(con);
+        }
+    }
+
+    private void updateKebaktianInList(Kebaktian updatedKebaktian) {
+        int index = listKebaktian.indexOf(selectedKebaktian);
+        if (index != -1) {
+            listKebaktian.set(index, updatedKebaktian);
         }
     }
 
@@ -162,6 +193,7 @@ public class KebaktianController implements Initializable {
                 alert.show();
 
                 refreshData();
+                clear();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
@@ -176,7 +208,8 @@ public class KebaktianController implements Initializable {
 
     @FXML
     public void clear() {
-        jenisKebaktianField.setText("");
+        jenisKebaktianField.clear();
         tanggalKebaktianPicker.setValue(null);
+        selectedKebaktian = null;
     }
 }

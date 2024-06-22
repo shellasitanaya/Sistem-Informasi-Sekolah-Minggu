@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="tahunAjaranAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="tahunAjaranAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.TahunAjaranController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -36,7 +36,7 @@
       </Pane>
       <TextField fx:id="tahunAjaranField" layoutX="552.0" layoutY="104.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
       <Label layoutX="446.0" layoutY="108.0" text="Tahun Ajaran" />
-      <Button fx:id="clearTahunAjaranBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
+      <Button fx:id="clearTahunAjaranBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -45,7 +45,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="updateTahunAjaranBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
+      <Button fx:id="updateTahunAjaranBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" onAction="#update" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -54,7 +54,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="deleteTahunAjaranBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
+      <Button fx:id="deleteTahunAjaranBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -63,7 +63,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="createTahunAjaranBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
+      <Button fx:id="createTahunAjaranBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#create" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />

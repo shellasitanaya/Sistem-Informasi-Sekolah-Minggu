@@ -23,8 +23,7 @@ public class AnakController implements Initializable {
     private TextField namaAnakField;
     @FXML
     private TextField nisAnakField;
-    @FXML
-    private TextField alamatAnakField;
+
 
     // radio button jenis kelamin
     @FXML
@@ -32,11 +31,13 @@ public class AnakController implements Initializable {
 
     @FXML
     private RadioButton perempuanAnakBtn;
+    private ToggleGroup radioButtonGroup;
 
     // table
     @FXML
     private TableView<Anak> anakTbl;
     private ObservableList<Anak> data;
+    private Anak selectedAnak = null;
 
     // button
     @FXML
@@ -55,7 +56,7 @@ public class AnakController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // radio button cuma boleh pilih 1
-        ToggleGroup radioButtonGroup = new ToggleGroup();
+        radioButtonGroup = new ToggleGroup();
         lakiAnakBtn.setToggleGroup(radioButtonGroup);
         perempuanAnakBtn.setToggleGroup(radioButtonGroup);
 
@@ -64,25 +65,41 @@ public class AnakController implements Initializable {
         anakTbl.getColumns().clear();
 
         // Initialize table columns
+        TableColumn<Anak, Integer> idCol = new TableColumn<>("ID Anak");
+        idCol.setMinWidth(100);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_ANAK"));
+
         TableColumn<Anak, String> namaCol = new TableColumn<>("Nama Anak");
         namaCol.setMinWidth(150);
-        namaCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
+        namaCol.setCellValueFactory(new PropertyValueFactory<>("Nama"));
 
         TableColumn<Anak, String> nisCol = new TableColumn<>("NIS");
         nisCol.setMinWidth(100);
-        nisCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
-
-        TableColumn<Anak, String> alamatCol = new TableColumn<>("Alamat");
-        alamatCol.setMinWidth(150);
-        alamatCol.setCellValueFactory(new PropertyValueFactory<>("alamat"));
+        nisCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
 
         TableColumn<Anak, String> jenisKelaminCol = new TableColumn<>("Jenis Kelamin");
         jenisKelaminCol.setMinWidth(100);
-        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("jenisKelamin"));
+        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("JenisKelamin"));
 
-        anakTbl.getColumns().addAll(namaCol, nisCol, alamatCol, jenisKelaminCol);
+        anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol);
 
         refreshData();
+
+        // nampilin selected items
+        anakTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedAnak = newSelection;
+                nisAnakField.setText(selectedAnak.getNIS());
+                namaAnakField.setText(selectedAnak.getNama());
+                if ("Laki-laki".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
+                    lakiAnakBtn.setSelected(true);
+                } else if ("Perempuan".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
+                    perempuanAnakBtn.setSelected(true);
+                }
+            }
+        });
+
+
     }
 
     // mengambil ulang data dari database
@@ -111,10 +128,11 @@ public class AnakController implements Initializable {
     public void create() {
         String nama = namaAnakField.getText();
         String nis = nisAnakField.getText();
-        String alamat = alamatAnakField.getText();
-        String jenisKelamin = lakiAnakBtn.isSelected() ? "Laki-laki" : "Perempuan";
 
-        if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
+        RadioButton selectedGender = (RadioButton) radioButtonGroup.getSelectedToggle();
+        String jenisKelamin = selectedGender != null ? selectedGender.getText() : "";
+
+        if (nama.isEmpty() || nis.isEmpty()  || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
@@ -122,7 +140,6 @@ public class AnakController implements Initializable {
         Anak anak = new Anak();
         anak.setNama(nama);
         anak.setNIS(nis);
-        anak.setAlamat(alamat);
         anak.setJenisKelamin(jenisKelamin);
 
         Connection con = null;
@@ -147,39 +164,56 @@ public class AnakController implements Initializable {
 
     @FXML
     public void update() {
+        Anak selectedAnak = anakTbl.getSelectionModel().getSelectedItem();
+        if (selectedAnak == null) {
+            showErrorMessage("Pilih data anak yang ingin diupdate.");
+            return;
+        }
+
+
         String nama = namaAnakField.getText();
         String nis = nisAnakField.getText();
-        String alamat = alamatAnakField.getText();
         String jenisKelamin = lakiAnakBtn.isSelected() ? "Laki-laki" : "Perempuan";
 
-        if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
+        if (nama.isEmpty() || nis.isEmpty() || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
 
-        Anak anak = new Anak();
-        anak.setNama(nama);
-        anak.setNIS(nis);
-        anak.setAlamat(alamat);
-        anak.setJenisKelamin(jenisKelamin);
+        // update selected anak object
+        selectedAnak.setNama(nama);
+        selectedAnak.setNIS(nis);
+        selectedAnak.setJenisKelamin(jenisKelamin);
 
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
-            AnakDao.update(con, anak);
+            AnakDao.update(con, selectedAnak);
 
-            listAnak = FXCollections.observableArrayList(AnakDao.getAll(con));
-            anakTbl.setItems(listAnak);
+            // update observable list
+            updateAnakInList(selectedAnak);
+
+            // Refresh table view
+            anakTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Anak berhasil diupdate!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat mengupdate data anak: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
+        }
+    }
+
+    private void updateAnakInList(Anak updatedAnak) {
+        int index = listAnak.indexOf(updatedAnak); // cari index selected di listAnak
+        if (index != -1) { // cek kalo selected ada di list
+            listAnak.set(index, updatedAnak); // update list
         }
     }
 
@@ -196,6 +230,7 @@ public class AnakController implements Initializable {
                 alert.show();
 
                 refreshData();
+                clear();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
@@ -206,13 +241,13 @@ public class AnakController implements Initializable {
             alert.setContentText("Tidak ada data yang dipilih !");
             alert.show();
         }
+
     }
 
     @FXML
     public void clear() {
-        namaAnakField.setText("");
-        nisAnakField.setText("");
-        alamatAnakField.setText("");
+        namaAnakField.clear();
+        nisAnakField.clear();
         lakiAnakBtn.setSelected(false);
         perempuanAnakBtn.setSelected(false);
     }

@@ -23,11 +23,15 @@ public class OrangTuaController implements Initializable {
     private TextField alamatOrangTuaField;
     @FXML
     private TextField noTelpOrangTuaField;
+    @FXML
+    private TextField orangTuaSearchField;
+
 
     // table
     @FXML
     private TableView<OrangTua> orangTuaTbl;
     private ObservableList<OrangTua> data;
+    private OrangTua selectedOrangTua = null;
 
     // button
     @FXML
@@ -48,6 +52,10 @@ public class OrangTuaController implements Initializable {
         orangTuaTbl.getColumns().clear();
 
         // Initialize table columns
+        TableColumn<OrangTua, Integer> idCol = new TableColumn<>("ID Orang Tua");
+        idCol.setMinWidth(100);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_ORANG_TUA"));
+
         TableColumn<OrangTua, String> namaCol = new TableColumn<>("Nama Orang Tua");
         namaCol.setMinWidth(150);
         namaCol.setCellValueFactory(new PropertyValueFactory<>("namaOrangTua"));
@@ -60,9 +68,18 @@ public class OrangTuaController implements Initializable {
         noTelpCol.setMinWidth(150);
         noTelpCol.setCellValueFactory(new PropertyValueFactory<>("noTelpOrangTua"));
 
-        orangTuaTbl.getColumns().addAll(namaCol, alamatCol, noTelpCol);
+        orangTuaTbl.getColumns().addAll(idCol, namaCol, alamatCol, noTelpCol);
 
         refreshData();
+
+        orangTuaTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedOrangTua = newSelection;
+                namaOrangTuaField.setText(selectedOrangTua.getNamaOrangTua());
+                alamatOrangTuaField.setText(selectedOrangTua.getAlamatOrangTua());
+                noTelpOrangTuaField.setText(selectedOrangTua.getNoTelpOrangTua());
+            }
+        });
     }
 
     private void refreshData() {
@@ -113,6 +130,8 @@ public class OrangTuaController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Orang Tua berhasil ditambahkan!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat menambahkan data orang tua: " + e.getMessage());
@@ -124,6 +143,13 @@ public class OrangTuaController implements Initializable {
 
     @FXML
     public void update() {
+        OrangTua selected = orangTuaTbl.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            return;
+        }
+
         String nama = namaOrangTuaField.getText();
         String alamat = alamatOrangTuaField.getText();
         String noTelp = noTelpOrangTuaField.getText();
@@ -133,28 +159,36 @@ public class OrangTuaController implements Initializable {
             return;
         }
 
-        OrangTua orangTua = new OrangTua();
-        orangTua.setNamaOrangTua(nama);
-        orangTua.setAlamatOrangTua(alamat);
-        orangTua.setNoTelpOrangTua(noTelp);
+        selected.setNamaOrangTua(nama);
+        selected.setAlamatOrangTua(alamat);
+        selected.setNoTelpOrangTua(noTelp);
 
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
-            OrangTuaDao.update(con, orangTua);
-
-            listOrangTua = FXCollections.observableArrayList(OrangTuaDao.getAll(con));
-            orangTuaTbl.setItems(listOrangTua);
+            OrangTuaDao.update(con, selected);
+            updateOrangTuaInList(selected);
+            orangTuaTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Orang Tua berhasil diupdate!");
             alert.show();
+
+            clear();
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat mengupdate data orang tua: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
+        }
+    }
+
+    private void updateOrangTuaInList(OrangTua updatedOrangTua) {
+        int index = listOrangTua.indexOf(selectedOrangTua);
+        if (index != -1) {
+            listOrangTua.set(index, updatedOrangTua);
         }
     }
 
@@ -171,6 +205,7 @@ public class OrangTuaController implements Initializable {
                 alert.show();
 
                 refreshData();
+                clear();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
@@ -185,8 +220,9 @@ public class OrangTuaController implements Initializable {
 
     @FXML
     public void clear() {
-        namaOrangTuaField.setText("");
-        alamatOrangTuaField.setText("");
-        noTelpOrangTuaField.setText("");
+        namaOrangTuaField.clear();
+        alamatOrangTuaField.clear();
+        noTelpOrangTuaField.clear();
+        selectedOrangTua = null;
     }
 }
