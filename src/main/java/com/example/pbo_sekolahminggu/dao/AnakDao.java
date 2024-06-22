@@ -43,7 +43,7 @@ public class AnakDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setString(1, anak.getNamaAnak());
+            statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
             statement.setString(4, anak.getAlamat());
