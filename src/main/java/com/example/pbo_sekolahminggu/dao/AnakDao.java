@@ -14,7 +14,10 @@ public class AnakDao {
     public static ArrayList<Anak> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_anak where status_aktif = 1";
+        String query = "SELECT a.*, o.nama AS nama_orang_tua, o.alamat AS alamat_orang_tua\n" +
+                "FROM tbl_anak a\n" +
+                "JOIN tbl_orang_tua o ON a.id_ortu = o.id\n" +
+                "ORDER BY a.id";
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -25,6 +28,8 @@ public class AnakDao {
                 anak.setNama(rs.getString("nama"));
                 anak.setNIS(rs.getString("nis"));
                 anak.setJenisKelamin(rs.getString("jenis_kelamin"));
+                anak.setNamaOrangTua(rs.getString("nama_orang_tua"));
+                anak.setAlamatOrangTua(rs.getString("alamat_orang_tua"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {

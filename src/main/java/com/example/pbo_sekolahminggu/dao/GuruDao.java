@@ -10,7 +10,10 @@ public class GuruDao {
     public static ArrayList<Guru> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_guru where status_aktif = 1";
+        String query = "select * \n" +
+                "from tbl_guru \n" +
+                "where status_aktif = 1\n" +
+                "ORDER BY id";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

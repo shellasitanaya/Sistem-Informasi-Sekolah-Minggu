@@ -106,6 +106,6 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <DatePicker fx:id="tanggalKebaktianDp" layoutX="133.0" layoutY="365.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <DatePicker fx:id="tanggalKebaktianPicker" layoutX="133.0" layoutY="365.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
    </children>
 </AnchorPane>

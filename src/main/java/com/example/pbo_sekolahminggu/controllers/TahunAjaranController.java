@@ -55,7 +55,7 @@ public class TahunAjaranController implements Initializable {
         tahunCol.setMinWidth(150);
         tahunCol.setCellValueFactory(new PropertyValueFactory<>("tahunAjaran"));
 
-        tahunAjaranTbl.getColumns().addAll(tahunCol);
+        tahunAjaranTbl.getColumns().addAll(idCol, tahunCol);
 
         refreshData();
 

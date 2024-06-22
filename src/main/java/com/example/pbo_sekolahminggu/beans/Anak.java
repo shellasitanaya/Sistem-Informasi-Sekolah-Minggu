@@ -5,7 +5,8 @@ public class Anak {
     private String NIS;
     private String Nama;
     private String JenisKelamin;
-    private String Alamat;
+    private String namaOrangTua;
+    private String alamatOrangTua;
 
     // constructor
     public Anak(){
@@ -45,12 +46,20 @@ public class Anak {
         JenisKelamin = jenisKelamin;
     }
 
-    public String getAlamat() {
-        return Alamat;
+    public String getNamaOrangTua() {
+        return namaOrangTua;
     }
 
-    public void setAlamat(String alamat) {
-        Alamat = alamat;
+    public void setNamaOrangTua(String namaOrangTua) {
+        this.namaOrangTua = namaOrangTua;
+    }
+
+    public String getAlamatOrangTua() {
+        return alamatOrangTua;
+    }
+
+    public void setAlamatOrangTua(String alamatOrangTua) {
+        this.alamatOrangTua = alamatOrangTua;
     }
 }
 

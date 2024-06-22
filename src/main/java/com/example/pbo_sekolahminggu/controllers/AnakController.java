@@ -81,23 +81,37 @@ public class AnakController implements Initializable {
         jenisKelaminCol.setMinWidth(100);
         jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("JenisKelamin"));
 
-        anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol);
+        TableColumn<Anak, String> namaOrangTuaCol = new TableColumn<>("Nama Orang Tua");
+        namaOrangTuaCol.setMinWidth(150);
+        namaOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("namaOrangTua"));
+
+        TableColumn<Anak, String> alamatOrangTuaCol = new TableColumn<>("Alamat Orang Tua");
+        alamatOrangTuaCol.setMinWidth(200);
+        alamatOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("alamatOrangTua"));
+
+        anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol, namaOrangTuaCol, alamatOrangTuaCol);
 
         refreshData();
 
-        // nampilin selected items
         anakTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedAnak = newSelection;
-                nisAnakField.setText(selectedAnak.getNIS());
                 namaAnakField.setText(selectedAnak.getNama());
+                nisAnakField.setText(selectedAnak.getNIS());
+
+
                 if ("Laki-laki".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
                     lakiAnakBtn.setSelected(true);
                 } else if ("Perempuan".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
                     perempuanAnakBtn.setSelected(true);
                 }
+
             }
         });
+
+
+        // nampilin selected items
+
 
 
     }
@@ -130,8 +144,7 @@ public class AnakController implements Initializable {
         String nis = nisAnakField.getText();
 
         RadioButton selectedGender = (RadioButton) radioButtonGroup.getSelectedToggle();
-        String jenisKelamin = selectedGender != null ? selectedGender.getText() : "";
-
+        String jenisKelamin = selectedGender != null ? (selectedGender.getText().equalsIgnoreCase("Male") ? "male" : "female") : "";
         if (nama.isEmpty() || nis.isEmpty()  || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
             return;
@@ -150,9 +163,13 @@ public class AnakController implements Initializable {
             listAnak = FXCollections.observableArrayList(AnakDao.getAll(con));
             anakTbl.setItems(listAnak);
 
+
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Anak berhasil ditambahkan!");
             alert.show();
+
+            clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Terjadi kesalahan saat menambahkan data anak: " + e.getMessage());
@@ -173,7 +190,7 @@ public class AnakController implements Initializable {
 
         String nama = namaAnakField.getText();
         String nis = nisAnakField.getText();
-        String jenisKelamin = lakiAnakBtn.isSelected() ? "Laki-laki" : "Perempuan";
+        String jenisKelamin = lakiAnakBtn.isSelected() ? "male" : "female";
 
         if (nama.isEmpty() || nis.isEmpty() || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
@@ -248,6 +265,7 @@ public class AnakController implements Initializable {
     public void clear() {
         namaAnakField.clear();
         nisAnakField.clear();
+
         lakiAnakBtn.setSelected(false);
         perempuanAnakBtn.setSelected(false);
     }
