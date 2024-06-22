@@ -7,18 +7,19 @@ public class ConnectionManager {
         //localhost: server, 5432: port, prakPBO: namaDatabase, admin: password
         // url = jdbc (utk java):(pakai app apa)://(host name/address):(port number)/(database name)?user=(user name)&password=(password)
         String url = "jdbc:postgresql://localhost:5432/SekolahMinggu?user=postgres&password=admin257";
+
         Connection con = DriverManager.getConnection(url);
         return con;
 
     }
 
-    public static void closeConnection(Connection con) {
+    public static void close(Connection connection) {
         try {
-            if (con != null) {
-                con.close();
+            if (connection != null) {
+                connection.close();
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -29,6 +30,20 @@ public class ConnectionManager {
             }
             if (ps != null) {
                 ps.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // cuma beda posisi parameter
+    public static void close(ResultSet resultSet, PreparedStatement preparedStatement) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
