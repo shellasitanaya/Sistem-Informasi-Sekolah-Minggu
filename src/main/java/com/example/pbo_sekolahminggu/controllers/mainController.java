@@ -55,17 +55,57 @@ public class mainController {
     // This is where your menu content will be displayed
 
     public void initialize() {
-        loadMenu1();
+        loadMenuHome();
     }
 
     @FXML
-    private void loadMenu1() {
+    private void loadMenuHome() {
         loadFXML("/com/example/pbo_sekolahminggu/home.fxml");
     }
 
     @FXML
-    private void loadMenu2() {
+    private void loadMenuGuru() {
         loadFXML("/com/example/pbo_sekolahminggu/guru.fxml");
+    }
+
+    @FXML
+    private void loadMenuAnak() {
+        loadFXML("/com/example/pbo_sekolahminggu/anak.fxml");
+    }
+
+    @FXML
+    private void loadMenuKelas() {
+        loadFXML("/com/example/pbo_sekolahminggu/kelas.fxml");
+    }
+
+    @FXML
+    private void loadMenuKebaktian() {
+        loadFXML("/com/example/pbo_sekolahminggu/kebaktian.fxml");
+    }
+
+    @FXML
+    private void loadMenuTahunAjaran() {
+        loadFXML("/com/example/pbo_sekolahminggu/tahunAjaran.fxml");
+    }
+    @FXML
+    private void loadMenuKelasPerTahun() {
+        loadFXML("/com/example/pbo_sekolahminggu/kelasPerTahun.fxml");
+    }
+    @FXML
+    private void loadMenuKehadiranAnak() {
+        loadFXML("/com/example/pbo_sekolahminggu/kehadiranAnak.fxml");
+    }
+    @FXML
+    private void loadMenuKehadiranGuru() {
+        loadFXML("/com/example/pbo_sekolahminggu/kehadiranGuru.fxml");
+    }
+    @FXML
+    private void loadMenuHistorikelasAnak() {
+        loadFXML("/com/example/pbo_sekolahminggu/historiKelasAnak.fxml");
+    }
+    @FXML
+    private void loadMenuHistoriMengajar() {
+        loadFXML("/com/example/pbo_sekolahminggu/historiMengajar.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

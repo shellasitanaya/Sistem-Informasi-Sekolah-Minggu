@@ -21,7 +21,7 @@ public class TahunAjaranDao {
             while (rs.next()) {
                 TahunAjaran tahunAjaran = new TahunAjaran();
                 tahunAjaran.setID_TAHUN_AJARAN(rs.getInt("id"));
-                tahunAjaran.setTahunAjaran(rs.getString("nama"));
+                tahunAjaran.setTahunAjaran(rs.getString("tahun_ajaran"));
                 listtahunAjaran.add(tahunAjaran);
             }
         } catch (SQLException e) {
