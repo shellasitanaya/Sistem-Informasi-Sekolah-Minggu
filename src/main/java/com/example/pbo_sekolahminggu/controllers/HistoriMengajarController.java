@@ -123,7 +123,7 @@ public class HistoriMengajarController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching filtered classes: " + e.getMessage(), e);
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
         kelasHistoriMengajarCb.show();
     }

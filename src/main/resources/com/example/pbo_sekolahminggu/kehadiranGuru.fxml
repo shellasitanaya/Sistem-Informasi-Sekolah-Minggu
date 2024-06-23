@@ -21,13 +21,13 @@
    <children>
       <TableView fx:id="kehadiranGuruTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
-            <TableColumn prefWidth="81.0" text="ID Kehadiran" />
-            <TableColumn prefWidth="188.0" text="Nama" />
-            <TableColumn prefWidth="128.0" text="NIP" />
-            <TableColumn prefWidth="127.0" text="Kelas" />
-            <TableColumn prefWidth="88.0" text="Kebaktian" />
-            <TableColumn prefWidth="106.0" text="Tanggal" />
-            <TableColumn prefWidth="92.0" text="Presensi" />
+            <TableColumn fx:id="idKehadiranCol" prefWidth="81.0" text="ID Kehadiran" />
+            <TableColumn fx:id="namaCol" prefWidth="188.0" text="Nama" />
+            <TableColumn fx:id="nipCol" prefWidth="128.0" text="NIP" />
+            <TableColumn fx:id="kelasCol" prefWidth="127.0" text="Kelas" />
+            <TableColumn fx:id="kebaktianCol" prefWidth="88.0" text="Kebaktian" />
+            <TableColumn fx:id="tanggalCol" prefWidth="106.0" text="Tanggal" />
+            <TableColumn fx:id="presensiCol" prefWidth="92.0" text="Presensi" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../style.css">
