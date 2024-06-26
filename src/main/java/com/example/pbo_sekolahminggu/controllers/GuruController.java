@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -27,8 +26,6 @@ public class GuruController implements Initializable {
     private TextField noTelpGuruField;
     @FXML
     private TextField alamatGuruField;
-    @FXML
-    private TextField guruSearchField;
 
     // table
     @FXML
@@ -46,8 +43,11 @@ public class GuruController implements Initializable {
     @FXML
     private Button createGuruBtn;
 
+    @FXML
+    private TextField guruSearchField;
 
-    ObservableList<Guru> listGuru;
+    ObservableList<Guru> listGuru = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -87,6 +87,7 @@ public class GuruController implements Initializable {
         // Menambahkan kolom ke TableView
         guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
 
+
         //Inisialisasi data
         Connection con = null;
         try {
@@ -100,8 +101,9 @@ public class GuruController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
+
 
         // nampilin selected items
         guruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -114,7 +116,186 @@ public class GuruController implements Initializable {
             }
         });
 
+
     }
+
+    // mengambil ulang data dari database
+    private void refreshData() {
+        Connection connection = null;
+        try {
+            connection = ConnectionManager.getConnection();
+            data = FXCollections.observableArrayList(GuruDao.getAll(connection));
+            guruTbl.setItems(data);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(connection);
+        }
+    }
+
+    // kasih alert
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // CRUD ----------------------------------------------------
+    // CREATE
+    @FXML
+    public void create() {
+        String nama= namaGuruField.getText();
+        String nip = nipGuruField.getText();
+        String noTelp = noTelpGuruField.getText();
+        String alamat = alamatGuruField.getText();
+
+        // cek input
+        if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty()|| alamat.isEmpty()) {
+            showErrorMessage("Harap isi semua kolom.");
+            return;
+        }
+
+        // buat objek dengan inputan datanya
+        Guru guru = new Guru();
+        guru.setNamaGuru(nama);
+        guru.setNIP(nip);
+        guru.setNoTelp(noTelp);
+        guru.setAlamat(alamat);
+
+        // connect ke database
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            GuruDao.create(con, guru); // create
+
+            /*
+            mendapatkan dan memperbarui semua data guru dari database
+            buat atau inisialisasi ObservableList baru dengan data dari database
+             */
+            listGuru = FXCollections.observableArrayList(GuruDao.getAll(con));
+            // tampilin update-an data di tableview
+            guruTbl.setItems(listGuru);
+
+            /*
+            opsi lain observable list:
+            mempertahankan referensi ObservableList yang sudah ada tetapi ingin
+            mengganti isi dari ObservableList tersebut dengan data baru dari database
+            */
+            // -- listGuru.setAll(GuruDao.getAll(con));
+
+            // menampilkan pesan sukses
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Data Guru berhasil ditambahkan!");
+            alert.show();
+        } catch (SQLException e) {
+            // menampilkan pesan error
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Terjadi kesalahan saat menambahkan data guru: " + e.getMessage());
+            alert.show();
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+
+    // UPDATE
+    @FXML
+    public void update() {
+        Guru selected = guruTbl.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            return;
+        }
+
+        String nama = namaGuruField.getText();
+        String nip = nipGuruField.getText();
+        String noTelp = noTelpGuruField.getText();
+        String alamat = alamatGuruField.getText();
+
+        // cek input
+        if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty() || alamat.isEmpty()) {
+            showErrorMessage("Harap isi semua kolom.");
+            return;
+        }
+
+        // update selected Guru pake value baru
+        selected.setNamaGuru(nama);
+        selected.setNIP(nip);
+        selected.setNoTelp(noTelp);
+        selected.setAlamat(alamat);
+
+        // connect(update) ke database
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            GuruDao.update(con, selected); // update
+
+            // update observable list
+            updateGuruInList(selected);
+
+            guruTbl.refresh();
+            // Menampilkan pesan sukses
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Data Guru berhasil diupdate!");
+            alert.show();
+
+            clearForm();
+
+        } catch (SQLException e) {
+            // Menampilkan pesan error jika terjadi kesalahan
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Terjadi kesalahan saat mengupdate data guru: " + e.getMessage());
+            alert.show();
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+
+    private void clearForm() {
+        noTelpGuruField.clear();
+        alamatGuruField.clear();
+        nipGuruField.clear();
+        namaGuruField.clear();
+        selectedGuru = null;
+    }
+
+    private void updateGuruInList(Guru updatedGuru) {
+        int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
+        if (index != -1) { //cek kalo selected ada di list
+            listGuru.set(index, updatedGuru); // update list
+        }
+    }
+
+    // DELETE
+    @FXML
+    public void delete() {
+        if (guruTbl.getSelectionModel().getSelectedItems().size() != 0) {
+            Guru selected = guruTbl.getSelectionModel().getSelectedItem();
+            Connection connection = null;
+            try {
+                connection = ConnectionManager.getConnection();
+                GuruDao.delete(connection, selected);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Data berhasil dihapus !");
+                alert.show();
+
+                refreshData();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                ConnectionManager.close(connection);
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Tidak ada data yang dipilih !");
+            alert.show();
+        }
+    }
+
+
+
 
     // CLEAR -> text fieldnya saja saja)
     @FXML

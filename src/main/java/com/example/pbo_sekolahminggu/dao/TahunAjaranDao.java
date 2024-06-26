@@ -13,7 +13,7 @@ public class TahunAjaranDao {
     public static ArrayList<TahunAjaran> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_tahunAjaran where status_aktif = 1";
+        String query = "select * from tbl_tahun_ajaran where status_aktif = 1";
         ArrayList<TahunAjaran> listtahunAjaran = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -21,7 +21,7 @@ public class TahunAjaranDao {
             while (rs.next()) {
                 TahunAjaran tahunAjaran = new TahunAjaran();
                 tahunAjaran.setID_TAHUN_AJARAN(rs.getInt("id"));
-                tahunAjaran.setTahunAjaran(rs.getString("nama"));
+                tahunAjaran.setTahunAjaran(rs.getString("tahun_ajaran"));
                 listtahunAjaran.add(tahunAjaran);
             }
         } catch (SQLException e) {
@@ -32,10 +32,10 @@ public class TahunAjaranDao {
         return listtahunAjaran;
     }
 
-    // SAVE
-    public static void save(Connection con, TahunAjaran tahunAjaran) {
+    // CREATE
+    public static void create(Connection con, TahunAjaran tahunAjaran) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_tahunAjaran(tahun_ajaran) VALUES (?)";
+        String query = "INSERT INTO tbl_tahun_ajaran(tahun_ajaran) VALUES (?)";
 
         try {
             statement = con.prepareStatement(query);
@@ -48,10 +48,10 @@ public class TahunAjaranDao {
         }
     }
 
-    // EDIT
-    public static void edit(Connection con, TahunAjaran tahunAjaran) {
+    // UPDATE
+    public static void update(Connection con, TahunAjaran tahunAjaran) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_tahunAjaran SET tahun_ajaran = ? WHERE id = ?";
+        String query = "UPDATE tbl_tahun_Ajaran SET tahun_ajaran = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
@@ -59,7 +59,7 @@ public class TahunAjaranDao {
             statement.setInt(2, tahunAjaran.getID_TAHUN_AJARAN());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error editing tahunAjaran: " + e.getMessage());
+            throw new RuntimeException("Error editing tahun ajaran: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -68,14 +68,14 @@ public class TahunAjaranDao {
     // DELETE
     public static void delete(Connection con, TahunAjaran tahunAjaran) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_tahunAjaran SET status_aktif = 0 WHERE id = ?";
+        String query = "UPDATE tbl_tahun_ajaran SET status_aktif = 0 WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setInt(1, tahunAjaran.getID_TAHUN_AJARAN());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting tahunAjaran: " + e.getMessage());
+            throw new RuntimeException("Error deleting tahun ajaran: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }

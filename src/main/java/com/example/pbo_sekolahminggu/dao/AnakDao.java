@@ -22,7 +22,7 @@ public class AnakDao {
             while (rs.next()) {
                 Anak anak = new Anak();
                 anak.setID_ANAK(rs.getInt("id"));
-                anak.setNamaAnak(rs.getString("nama"));
+                anak.setNama(rs.getString("nama"));
                 anak.setNIS(rs.getString("nis"));
                 anak.setJenisKelamin(rs.getString("jenis_kelamin"));
                 anak.setAlamat(rs.getString("alamat"));
@@ -37,13 +37,13 @@ public class AnakDao {
     }
 
     // SAVE
-    public static void save(Connection con, Anak anak) {
+    public static void create(Connection con, Anak anak) {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, alamat) VALUES (?, ?, ?, ?)";
 
         try {
             statement = con.prepareStatement(query);
-            statement.setString(1, anak.getNamaAnak());
+            statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
             statement.setString(4, anak.getAlamat());
@@ -56,13 +56,13 @@ public class AnakDao {
     }
 
     // EDIT
-    public static void edit(Connection con, Anak anak) {
+    public static void update(Connection con, Anak anak) {
         PreparedStatement statement = null;
         String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ?, alamat = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
-            statement.setString(1, anak.getNamaAnak());
+            statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
             statement.setString(4, anak.getAlamat());

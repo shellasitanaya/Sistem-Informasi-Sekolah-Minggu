@@ -21,11 +21,11 @@
    <children>
       <TableView fx:id="historiMengajarTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
-            <TableColumn prefWidth="81.0" text="ID Histori" />
-            <TableColumn prefWidth="297.0" text="Nama" />
-            <TableColumn prefWidth="141.0" text="NIP" />
-            <TableColumn prefWidth="151.0" text="Kelas" />
-            <TableColumn prefWidth="140.0" text="Tahun Ajaran" />
+            <TableColumn fx:id="IDHistori" prefWidth="81.0" text="ID Histori" />
+            <TableColumn fx:id="Nama" prefWidth="297.0" text="Nama" />
+            <TableColumn fx:id="NIP" prefWidth="141.0" text="NIP" />
+            <TableColumn fx:id="Kelas" prefWidth="151.0" text="Kelas" />
+            <TableColumn fx:id="TahunAjaran" prefWidth="140.0" text="Tahun Ajaran" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../style.css">
@@ -73,6 +73,6 @@
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
       <ChoiceBox fx:id="tahunAjaranHistoriMengajarCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ChoiceBox fx:id="kelasHistoriMengajarCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ChoiceBox fx:id="kelasHistoriMengajarCb" layoutX="133.0" layoutY="376.0" onMouseClicked="#filterDataKelas" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
    </children>
 </AnchorPane>

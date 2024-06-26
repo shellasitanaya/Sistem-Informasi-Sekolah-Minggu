@@ -29,8 +29,7 @@
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../style.css">
          <children>
-            <TextField fx:id="guruSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#Search" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
-            <Button fx:id="findGurubtn" layoutX="198.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" styleClass="btn_find" stylesheets="@../../../../../style.css" text="Find" />
+            <TextField fx:id="guruSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />
@@ -45,7 +44,7 @@
       <Label layoutX="26.0" layoutY="414.0" text="Nomor Telepon" />
       <Label layoutX="26.0" layoutY="369.0" text="NIP" />
       <Label layoutX="26.0" layoutY="460.0" text="Alamat" />
-      <Button fx:id="clearGuruBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
+      <Button fx:id="clearGuruBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -54,7 +53,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="updateGuruBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
+      <Button fx:id="updateGuruBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" onAction="#update" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -63,7 +62,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="deleteGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
+      <Button fx:id="deleteGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -72,7 +71,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="createGuruBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
+      <Button fx:id="createGuruBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#create" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />

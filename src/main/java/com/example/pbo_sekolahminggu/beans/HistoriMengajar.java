@@ -2,6 +2,11 @@ package com.example.pbo_sekolahminggu.beans;
 
 public class HistoriMengajar {
     private int ID_HISTORI_MENGAJAR;
+    private int ID_GURU, ID_KELAS_PER_TAHUN;
+
+    //non-original-database attributes
+    private String namaGuru, nip, kelas, tahunAjaran;
+
 
     // constructor
     public HistoriMengajar(){
@@ -15,5 +20,53 @@ public class HistoriMengajar {
 
     public void setID_HISTORI_MENGAJAR(int ID_HISTORI_MENGAJAR) {
         this.ID_HISTORI_MENGAJAR = ID_HISTORI_MENGAJAR;
+    }
+
+    public int getID_GURU() {
+        return ID_GURU;
+    }
+
+    public void setID_GURU(int ID_GURU) {
+        this.ID_GURU = ID_GURU;
+    }
+
+    public int getID_KELAS_PER_TAHUN() {
+        return ID_KELAS_PER_TAHUN;
+    }
+
+    public void setID_KELAS_PER_TAHUN(int ID_KELAS_PER_TAHUN) {
+        this.ID_KELAS_PER_TAHUN = ID_KELAS_PER_TAHUN;
+    }
+
+    public String getNamaGuru() {
+        return namaGuru;
+    }
+
+    public void setNamaGuru(String namaGuru) {
+        this.namaGuru = namaGuru;
+    }
+
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    public String getKelas() {
+        return kelas;
+    }
+
+    public void setKelas(String kelas) {
+        this.kelas = kelas;
+    }
+
+    public String getTahunAjaran() {
+        return tahunAjaran;
+    }
+
+    public void setTahunAjaran(String tahunAjaran) {
+        this.tahunAjaran = tahunAjaran;
     }
 }
