@@ -2,7 +2,7 @@
 
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -72,7 +72,7 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <ChoiceBox fx:id="tahunAjaranHistoriMengajarCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ChoiceBox fx:id="kelasHistoriMengajarCb" layoutX="133.0" layoutY="376.0" onMouseClicked="#filterDataKelas" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="tahunAjaranHistoriMengajarCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kelasHistoriMengajarCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
    </children>
 </AnchorPane>
