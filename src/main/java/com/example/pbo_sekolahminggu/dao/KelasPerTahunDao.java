@@ -1,6 +1,7 @@
 package com.example.pbo_sekolahminggu.dao;
 
 import com.example.pbo_sekolahminggu.beans.KelasPerTahun;
+import com.example.pbo_sekolahminggu.beans.TahunAjaran;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -97,5 +98,43 @@ public class KelasPerTahunDao {
         } finally {
             ConnectionManager.close(statement);
         }
+    }
+
+
+    public static ArrayList<KelasPerTahun> getFilteredClasses(Connection con, TahunAjaran th) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "\n" +
+                "SELECT kpt.id,\n" +
+                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas), \n" +
+                "kpt.kelas_paralel,\n" +
+                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran tj WHERE tj.id = kpt.id_tahun_ajaran),\n" +
+                "kpt.ruang_kelas,\n" +
+                "kpt.id_kelas,\n" +
+                "kpt.id_tahun_ajaran\n" +
+                "FROM tbl_kelas_per_tahun kpt\n" +
+                "WHERE kpt.status_aktif = 1 AND kpt.id_tahun_ajaran = ?";
+        ArrayList<KelasPerTahun> listkelasPerTahun = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(query);
+            ps.setInt(1, th.getID_TAHUN_AJARAN());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                KelasPerTahun kelasPerTahun = new KelasPerTahun();
+                kelasPerTahun.setID_KELAS_PER_TAHUN(rs.getInt("id"));
+                kelasPerTahun.setRuangKelas(rs.getString("ruang_kelas"));
+                kelasPerTahun.setKelasParalel(rs.getString("kelas_paralel"));
+                kelasPerTahun.setNamaKelas(rs.getString("nama_kelas"));
+                kelasPerTahun.setTahunAjaran(rs.getString("tahun_ajaran"));
+                kelasPerTahun.setID_KELAS(rs.getInt("id_kelas"));
+                kelasPerTahun.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                listkelasPerTahun.add(kelasPerTahun);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return listkelasPerTahun;
     }
 }

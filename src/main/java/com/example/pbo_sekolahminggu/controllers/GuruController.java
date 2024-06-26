@@ -87,7 +87,21 @@ public class GuruController implements Initializable {
         // Menambahkan kolom ke TableView
         guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
 
-        refreshData();
+        //Inisialisasi data
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listGuru = FXCollections.
+                    observableList(GuruDao.getAll(con));
+            for (Guru guru: listGuru) {
+                System.out.println(guru);
+            }
+            guruTbl.setItems(listGuru);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
 
         // nampilin selected items
         guruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -275,14 +289,12 @@ public class GuruController implements Initializable {
 
     // CLEAR -> text fieldnya saja saja)
     @FXML
-    private void clear() {
-        noTelpGuruField.clear();
-        alamatGuruField.clear();
-        nipGuruField.clear();
-        namaGuruField.clear();
-        selectedGuru = null;
+    public void clear() {
+        namaGuruField.setText("");
+        nipGuruField.setText("");
+        noTelpGuruField.setText("");
+        alamatGuruField.setText("");
     }
-
     public void Search() {
 
         FilteredList<Guru> filter = new FilteredList<>(listGuru, e -> true);

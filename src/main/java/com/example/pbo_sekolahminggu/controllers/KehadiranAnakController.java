@@ -122,25 +122,25 @@ public class KehadiranAnakController implements Initializable {
 
             //populate kelas Choice box
             kelasCmbBox.setItems(dataKelas);
-            kelasCmbBox.setConverter(new StringConverter<KelasPerTahun>() {
-                @Override
-                public String toString(KelasPerTahun object) {
-                    return object.;
-                }
-
-                @Override
-                public TahunAjaran fromString(String string) {
-                    return ((ObservableList<TahunAjaran>)tahunAjaranCmbBox.getItems()).stream()
-                            .filter(selectedKelas -> string.equals(selectedKelas.getTahunAjaran()))
-                            .findAny()
-                            .orElse(null);
-                }
-            });
+//            kelasCmbBox.setConverter(new StringConverter<KelasPerTahun>() {
+//                @Override
+//                public String toString(KelasPerTahun object) {
+//                    return object.;
+//                }
+//
+//                @Override
+//                public TahunAjaran fromString(String string) {
+//                    return ((ObservableList<TahunAjaran>)tahunAjaranCmbBox.getItems()).stream()
+//                            .filter(selectedKelas -> string.equals(selectedKelas.getTahunAjaran()))
+//                            .findAny()
+//                            .orElse(null);
+//                }
+//            });
             tahunAjaranCmbBox.getSelectionModel().select(0);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
     }
 
@@ -154,7 +154,7 @@ public class KehadiranAnakController implements Initializable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
     }
 

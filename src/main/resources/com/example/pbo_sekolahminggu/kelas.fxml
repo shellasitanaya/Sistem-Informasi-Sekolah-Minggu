@@ -30,8 +30,7 @@
             <String fx:value="shadow" />
          </styleClass>
          <children>
-            <TextField fx:id="kelasSearchField" layoutX="13.0" layoutY="8.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
-            <Button fx:id="findKelasBtn" layoutX="198.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" styleClass="btn_find" stylesheets="@../../../../../style.css" text="Find" />
+            <TextField fx:id="kelasSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="229.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
          </children>
       </Pane>
       <TextField fx:id="namaKelasField" layoutX="570.0" layoutY="64.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />

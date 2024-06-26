@@ -7,7 +7,6 @@ public class ConnectionManager {
         //localhost: server, 5432: port, prakPBO: namaDatabase, admin: password
         // url = jdbc (utk java):(pakai app apa)://(host name/address):(port number)/(database name)?user=(user name)&password=(password)
         String url = "jdbc:postgresql://localhost:5432/SekolahMinggu?user=postgres&password=admin257";
-
         Connection con = DriverManager.getConnection(url);
         return con;
 
