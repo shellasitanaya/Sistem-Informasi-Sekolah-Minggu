@@ -19,13 +19,13 @@
       <TableView fx:id="hadirKehadiranGuruTbl" layoutX="79.0" layoutY="106.0" prefHeight="333.0" prefWidth="224.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
             <TableColumn fx:id="idOrangTua" prefWidth="127.0" text="Nama" />
-            <TableColumn fx:id="idOrangTua2" minWidth="4.0" prefWidth="95.0" text="NIS" />
+            <TableColumn fx:id="idOrangTua2" minWidth="4.0" prefWidth="95.0" text="NIP" />
          </columns>
       </TableView>
       <TableView fx:id="belumHadirKehadiranGuruTbl" layoutX="561.0" layoutY="106.0" prefHeight="333.0" prefWidth="224.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
             <TableColumn prefWidth="127.0" text="Nama" />
-            <TableColumn fx:id="idOrangTua21" minWidth="4.0" prefWidth="95.0" text="NIS" />
+            <TableColumn fx:id="idOrangTua21" minWidth="4.0" prefWidth="95.0" text="NIP" />
          </columns>
       </TableView>
       <Button fx:id="saveKehadiranGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SAVE">
@@ -56,7 +56,7 @@
             <Image url="@../../../images/exportIcon.png" />
          </image>
       </ImageView>
-      <Label layoutX="320.0" layoutY="57.0" text="ASSIGN DATA KEHADIRAN ANAK">
+      <Label layoutX="320.0" layoutY="57.0" text="ASSIGN DATA KEHADIRAN GURU">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

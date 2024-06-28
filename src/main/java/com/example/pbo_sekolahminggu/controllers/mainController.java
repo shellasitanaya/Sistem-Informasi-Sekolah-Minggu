@@ -79,10 +79,6 @@ public class mainController {
     }
 
     @FXML
-    private void loadMenuOrangTua() {
-        loadFXML("/com/example/pbo_sekolahminggu/orangTua.fxml");
-    }
-    @FXML
     private void loadMenuKebaktian() {
         loadFXML("/com/example/pbo_sekolahminggu/kebaktian.fxml");
     }
@@ -91,10 +87,25 @@ public class mainController {
     private void loadMenuTahunAjaran() {
         loadFXML("/com/example/pbo_sekolahminggu/tahunAjaran.fxml");
     }
-
     @FXML
     private void loadMenuKelasPerTahun() {
         loadFXML("/com/example/pbo_sekolahminggu/kelasPerTahun.fxml");
+    }
+    @FXML
+    private void loadMenuKehadiranAnak() {
+        loadFXML("/com/example/pbo_sekolahminggu/kehadiranAnak.fxml");
+    }
+    @FXML
+    private void loadMenuKehadiranGuru() {
+        loadFXML("/com/example/pbo_sekolahminggu/kehadiranGuru.fxml");
+    }
+    @FXML
+    private void loadMenuHistorikelasAnak() {
+        loadFXML("/com/example/pbo_sekolahminggu/historiKelasAnak.fxml");
+    }
+    @FXML
+    private void loadMenuHistoriMengajar() {
+        loadFXML("/com/example/pbo_sekolahminggu/historiMengajar.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

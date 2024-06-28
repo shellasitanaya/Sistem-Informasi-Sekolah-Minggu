@@ -22,10 +22,12 @@
       <TableView fx:id="anakTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
             <TableColumn fx:id="idAnak" prefWidth="56.0" text="ID Anak" />
-            <TableColumn fx:id="namaAnak" prefWidth="203.0" text="Nama Anak" />
-            <TableColumn fx:id="nisAnak" prefWidth="116.0" text="NIS" />
-            <TableColumn fx:id="jenisKelaminAnak" prefWidth="119.0" text="Jenis Kelamin" />
-            <TableColumn fx:id="namaOrangTua" prefWidth="316.0" text="Nama Orang Tua" />
+            <TableColumn fx:id="namaAnak" prefWidth="163.0" text="Nama Anak" />
+            <TableColumn fx:id="nisAnak" prefWidth="97.0" text="NIS" />
+            <TableColumn fx:id="jenisKelaminAnak" prefWidth="92.0" text="Jenis Kelamin" />
+            <TableColumn fx:id="namaOrangTua" prefWidth="130.0" text="Nama Orang Tua" />
+            <TableColumn fx:id="namaOrangTua1" prefWidth="120.0" text="Nomor Telepon" />
+            <TableColumn fx:id="namaOrangTua11" prefWidth="152.0" text="Alamat" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../style.css">
@@ -34,8 +36,7 @@
             <String fx:value="shadow" />
          </styleClass>
          <children>
-            <TextField fx:id="anakSearchField" layoutX="13.0" layoutY="8.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
-            <Button fx:id="findAnakBtn" layoutX="198.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" styleClass="btn_find" stylesheets="@../../../../../style.css" text="Find" />
+            <TextField fx:id="anakSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
          </children>
       </Pane>
       <TextField fx:id="namaAnakField" layoutX="133.0" layoutY="322.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
@@ -114,5 +115,6 @@
 <!--      <Label layoutX="26.0" layoutY="459.0" text="Alamat" />-->
       <RadioButton fx:id="lakiAnakBtn" layoutX="133.0" layoutY="414.0" mnemonicParsing="false" styleClass="white_bg" stylesheets="@../../../../../style.css" text="Male" />
       <RadioButton fx:id="perempuanAnakBtn" layoutX="241.0" layoutY="414.0" mnemonicParsing="false" text="Female" />
+
    </children>
 </AnchorPane>
