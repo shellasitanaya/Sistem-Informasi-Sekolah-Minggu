@@ -70,12 +70,15 @@ public class KelasPerTahunDao {
     // EDIT
     public static void edit(Connection con, KelasPerTahun kelasPerTahun) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_kelasPerTahun SET ruang_kelas = ?, kelas_paralel = ? WHERE id = ?";
+        String query = "UPDATE tbl_kelas_per_tahun SET ruang_kelas = ?, kelas_paralel = ?, id_kelas=?, id_tahun_ajaran=? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, kelasPerTahun.getRuangKelas());
             statement.setString(2, kelasPerTahun.getKelasParalel());
+            statement.setInt(3, kelasPerTahun.getID_KELAS());
+            statement.setInt(4, kelasPerTahun.getID_TAHUN_AJARAN());
+            statement.setInt(5, kelasPerTahun.getID_KELAS_PER_TAHUN());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kelasPerTahun: " + e.getMessage());
@@ -137,4 +140,35 @@ public class KelasPerTahunDao {
         }
         return listkelasPerTahun;
     }
+
+
+    public static int getIdByProperties(Connection con, KelasPerTahun kelasPerTahun) throws SQLException {
+        int id = -1; // Initialize with a default value, assuming -1 represents an invalid ID
+
+        // Prepare a SQL query to retrieve the ID based on the properties
+        String query = "SELECT * \n" +
+                "FROM tbl_kelas_per_tahun\n" +
+                "WHERE id_kelas=? AND id_tahun_ajaran=? AND ruang_kelas=? AND kelas_paralel=? AND status_aktif=1";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, kelasPerTahun.getID_KELAS());
+            ps.setInt(2, kelasPerTahun.getID_TAHUN_AJARAN());
+            ps.setString(3, kelasPerTahun.getRuangKelas());
+            ps.setString(4,kelasPerTahun.getKelasParalel());
+
+
+            // Execute the query
+            try (ResultSet rs = ps.executeQuery()) {
+                // Check if a record was found
+                if (rs.next()) {
+                    // Retrieve the ID from the result set
+                    id = rs.getInt("id");
+                }
+            }
+        }
+
+        return id;
+    }
+
+
 }

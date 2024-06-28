@@ -42,7 +42,7 @@
       <Label layoutX="26.0" layoutY="414.0" text="Ruang Kelas" />
       <Label layoutX="26.0" layoutY="369.0" text="Kelas Pararel" />
       <Label layoutX="26.0" layoutY="460.0" text="Tahun Ajaran" />
-      <Button fx:id="clearKelasPerTahun" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
+      <Button fx:id="clearKelasPerTahun" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -51,7 +51,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="updateKelasPerTahun" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
+      <Button fx:id="updateKelasPerTahun" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="UPDATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -60,7 +60,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="deleteKelasPerTahun" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
+      <Button fx:id="deleteKelasPerTahun" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="DELETE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -69,7 +69,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="createKelasPerTahun" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
+      <Button fx:id="createKelasPerTahun" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#addKelasPerTahun" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CREATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />

@@ -1,16 +1,20 @@
 package com.example.pbo_sekolahminggu.controllers;
 
 import com.example.pbo_sekolahminggu.beans.HistoriMengajar;
+import com.example.pbo_sekolahminggu.beans.Kelas;
 import com.example.pbo_sekolahminggu.beans.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import com.example.pbo_sekolahminggu.beans.TahunAjaran;
@@ -30,9 +34,9 @@ public class HistoriMengajarController implements Initializable {
     @FXML
     TableColumn<HistoriMengajar, String> IDHistori, Nama, NIP, Kelas, TahunAjaran;
     @FXML
-    ChoiceBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
+    ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
-    ChoiceBox<KelasPerTahun> kelasHistoriMengajarCb;
+    ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
@@ -40,10 +44,59 @@ public class HistoriMengajarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+
+        tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+            @Override
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    filterDataKelas();
+                }
+            }
+        });
+
         try {
             fillTahunAjaranCb();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    public void showFilter(){
+        try {
+            //selected nama kelas
+            KelasPerTahun selectedKelas = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
+            //selected tahun ajaran
+            TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+            // Get the ArrayList of Guru objects from the database
+            ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedTahunAjaran.getID_TAHUN_AJARAN(), selectedKelas.getID_KELAS_PER_TAHUN());
+
+            // Set cell value factory for each TableColumn
+            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));
+            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            NIP.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+
+            // Add columns to the TableView
+            historiMengajarTbl.getColumns().clear(); // Clear existing columns
+            historiMengajarTbl.getColumns().addAll(IDHistori, Nama, NIP, Kelas, TahunAjaran);
+
+            // Set the data to the TableView
+            historiMengajarTbl.getItems().clear(); // Clear existing data
+            historiMengajarTbl.getItems().addAll(listHistoryMengajar);
+
+            // Add listener for selection change
+            historiMengajarTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    // Handle the event when a row is clicked
+                    System.out.println("Row clicked: " + newSelection);
+                }
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -125,12 +178,11 @@ public class HistoriMengajarController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-        kelasHistoriMengajarCb.show();
+//        kelasHistoriMengajarCb.show();
     }
 
 
     public void populateKelasTable() {
-        System.out.println("ha");
         try {
             // Get the ArrayList of Guru objects from the database
             ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.getAll(ConnectionManager.getConnection());
@@ -155,6 +207,22 @@ public class HistoriMengajarController implements Initializable {
                 if (newSelection != null) {
                     // Handle the event when a row is clicked
                     System.out.println("Row clicked: " + newSelection);
+
+//                    //selected kelasPerTahun
+//                    KelasPerTahun selectedKelasPerTahun = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
+//                    //selected tahun ajaran
+//                    TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+                    HistoriMengajar selectedHistoriMengajar = historiMengajarTbl.getSelectionModel().getSelectedItem();
+                    KelasPerTahun newKelas = kelasHistoriMengajarCb.getItems().stream()
+                            .filter(kelas -> kelas.getID_KELAS_PER_TAHUN() == selectedHistoriMengajar.getID_KELAS_PER_TAHUN())
+                            .findFirst()
+                            .orElse(null);
+                    kelasHistoriMengajarCb.getSelectionModel().select(newKelas);
+                    TahunAjaran newTahunAjaran = tahunAjaranHistoriMengajarCb.getItems().stream()
+                            .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedHistoriMengajar.getID_TAHUN_AJARAN())
+                            .findFirst()
+                            .orElse(null);
+                    tahunAjaranHistoriMengajarCb.getSelectionModel().select(newTahunAjaran);
                 }
             });
         } catch (SQLException e) {

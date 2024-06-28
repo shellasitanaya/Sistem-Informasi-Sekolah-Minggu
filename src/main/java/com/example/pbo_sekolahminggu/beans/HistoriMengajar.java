@@ -6,6 +6,7 @@ public class HistoriMengajar {
 
     //non-original-database attributes
     private String namaGuru, nip, kelas, tahunAjaran;
+    private int ID_TAHUN_AJARAN;
 
 
     // constructor
@@ -68,5 +69,13 @@ public class HistoriMengajar {
 
     public void setTahunAjaran(String tahunAjaran) {
         this.tahunAjaran = tahunAjaran;
+    }
+
+    public int getID_TAHUN_AJARAN() {
+        return ID_TAHUN_AJARAN;
+    }
+
+    public void setID_TAHUN_AJARAN(int ID_TAHUN_AJARAN) {
+        this.ID_TAHUN_AJARAN = ID_TAHUN_AJARAN;
     }
 }
