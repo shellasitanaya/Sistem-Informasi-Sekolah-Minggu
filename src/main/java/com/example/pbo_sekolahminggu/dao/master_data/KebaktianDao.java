@@ -1,6 +1,8 @@
 package com.example.pbo_sekolahminggu.dao.master_data;
 
+
 import com.example.pbo_sekolahminggu.beans.master_data.Kebaktian;
+import com.example.pbo_sekolahminggu.beans.master_data.TahunAjaran;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -17,6 +19,35 @@ public class KebaktianDao {
         ArrayList<Kebaktian> listkebaktian = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Kebaktian kebaktian = new Kebaktian();
+                kebaktian.setID_KEBAKTIAN(rs.getInt("id"));
+                kebaktian.setJenisKebaktian(rs.getString("jenis_kebaktian"));
+                kebaktian.setTanggal(rs.getDate("tanggal"));;
+                listkebaktian.add(kebaktian);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return listkebaktian;
+    }
+
+    public static ArrayList<Kebaktian> getFilteredKebaktian(Connection con, TahunAjaran th) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "SELECT * FROM tbl_kebaktian \n" +
+                "WHERE \n" +
+                "    ((EXTRACT(YEAR FROM tanggal) = SUBSTR(?, 0, 5)::integer AND EXTRACT(MONTH FROM tanggal) > 6)\n" +
+                "    OR\n" +
+                "    (EXTRACT(YEAR FROM tanggal) = SUBSTR(?, 6, 8)::integer AND EXTRACT(MONTH FROM tanggal) <= 6)) AND status_aktif=1\n";
+        ArrayList<Kebaktian> listkebaktian = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(query);
+            ps.setString(1, th.getTahunAjaran()); //extract tahun semester ganjil
+            ps.setString(2, th.getTahunAjaran()); //extract tahun semester genap
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kebaktian kebaktian = new Kebaktian();

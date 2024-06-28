@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="kehadiranAnakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="kehadiranAnakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional_data.KehadiranAnakController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -32,6 +32,7 @@
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
          <children>
+
             <TextField fx:id="kehadiranAnakSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
          <styleClass>
@@ -41,7 +42,7 @@
       </Pane>
       <Label layoutX="26.0" layoutY="380.0" text="Kelas" />
       <Label layoutX="26.0" layoutY="423.0" text="Kebaktian" />
-      <Button fx:id="showKehadiranAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="SHOW">
+      <Button fx:id="showKehadiranAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#show" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="SHOW">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -50,7 +51,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="EDIT">
+      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="EDIT">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -76,7 +77,7 @@
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
       <ChoiceBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ChoiceBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ChoiceBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ChoiceBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" onMouseClicked="#filterDataKelas" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ChoiceBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" onMouseClicked="#filterDataKebaktian" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
    </children>
 </AnchorPane>

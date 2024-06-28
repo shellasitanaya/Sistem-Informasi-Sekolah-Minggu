@@ -12,13 +12,14 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="kelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane fx:id="kelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.master_data.KelasController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
    </styleClass>
    <children>
-      <TableView fx:id="kelasTbl" layoutX="26.0" layoutY="68.0" prefHeight="427.0" prefWidth="296.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
+      <TableView fx:id="kelasTbl" layoutX="26.0" layoutY="68.0" onMouseClicked="#handleRowClick" prefHeight="427.0" prefWidth="296.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
             <TableColumn fx:id="idKelas" prefWidth="56.0" text="ID Kelas" />
             <TableColumn fx:id="namaKelas" prefWidth="238.0" text="Nama Kelas" />
@@ -35,7 +36,8 @@
       </Pane>
       <TextField fx:id="namaKelasField" layoutX="570.0" layoutY="64.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <Label layoutX="463.0" layoutY="68.0" text="Nama Kelas" />
-      <Button fx:id="clearKelasBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CLEAR">
+
+      <Button fx:id="clearKelasBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -44,7 +46,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="updateKelasBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="UPDATE">
+      <Button fx:id="updateKelasBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" onAction="#update" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="UPDATE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -53,7 +55,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="deleteKelasBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="DELETE">
+      <Button fx:id="deleteKelasBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="DELETE">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -62,7 +64,9 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="createKelasBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CREATE">
+
+      <Button fx:id="createKelasBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#create" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CREATE">
+
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
