@@ -1,8 +1,26 @@
 package com.example.pbo_sekolahminggu.controllers.transactional_data;
 
-import com.example.pbo_sekolahminggu.beans.*;
-import com.example.pbo_sekolahminggu.dao.*;
+import com.example.pbo_sekolahminggu.beans.master_data.Kebaktian;
+import com.example.pbo_sekolahminggu.beans.master_data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional_data.KehadiranAnak;
+import com.example.pbo_sekolahminggu.beans.transactional_data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.controllers.assignKehadiranAnakController;
+import com.example.pbo_sekolahminggu.dao.master_data.GuruDao;
+import com.example.pbo_sekolahminggu.dao.master_data.KebaktianDao;
+import com.example.pbo_sekolahminggu.dao.master_data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,14 +30,25 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class KehadiranAnakController implements Initializable {
     @FXML
@@ -393,5 +422,166 @@ public class KehadiranAnakController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    // --------------------------------------------------
+    @FXML
+    public void export() {
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
+        FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
+        chooser.getExtensionFilters().add(pdfFilter);
+        chooser.getExtensionFilters().add(excelFilter);
+
+        chooser.setInitialDirectory(new File("C:\\Users"));
+        File file = chooser.showSaveDialog(kehadiranAnakTbl.getScene().getWindow());
+        FileChooser.ExtensionFilter selectedFilter = chooser.getSelectedExtensionFilter();
+
+        if (file != null) {
+            if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.xlsx")) {
+                exportToExcel(file);
+            } else if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.pdf")) {
+                exportToPdf(file);
+            }
+        }
+    }
+
+    private void exportToPdf(File file) {
+        System.out.println(file.getAbsolutePath());
+        PdfDocument pdfDoc = null;
+        try {
+            pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
+            Document doc = new Document(pdfDoc);
+
+            //  judul
+            Paragraph title = new Paragraph("Laporan Data Kehadiran Anak");
+            title.setTextAlignment(TextAlignment.CENTER);
+            title.setBold();
+            doc.add(title);
+
+            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
+            //Logo header
+            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+            logo.setWidth(UnitValue.createPercentValue(50));
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 2).add(logo);
+            logoCell.setBorder(Border.NO_BORDER);
+            table.addCell(logoCell);
+
+            com.itextpdf.layout.element.Cell emptyCell = new com.itextpdf.layout.element.Cell(1, 1);
+            emptyCell.setBorder(Border.NO_BORDER);
+            table.addCell(emptyCell);
+
+            //Header Table
+            for (int i = 0; i< kehadiranAnakTbl.getColumns().size(); i++) {
+                TableColumn col = (TableColumn) kehadiranAnakTbl.getColumns().get(i);
+                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                title = new Paragraph(col.getText());
+                title.setTextAlignment(TextAlignment.CENTER);
+                title.setBold();
+
+                headerCell.add(title);
+                table.addCell(headerCell);
+            }
+            table.addCell(emptyCell);
+
+            //Table Data
+            for (int i = 0; i< kehadiranAnakTbl.getItems().size(); i++) {
+                KehadiranAnak data = kehadiranAnakTbl.getItems().get(i);
+
+                // Data id
+                Paragraph idParagraph = new Paragraph(String.valueOf(data.getId_histori_kelas_anak()));
+                idParagraph.setTextAlignment(TextAlignment.CENTER);
+                com.itextpdf.layout.element.Cell idCell = new com.itextpdf.layout.element.Cell().add(idParagraph);
+                table.addCell(idCell);
+
+                // Data NIS
+                Paragraph nisParagraph = new Paragraph(data.getNIS());
+                com.itextpdf.layout.element.Cell nisCell = new com.itextpdf.layout.element.Cell().add(nisParagraph);
+                table.addCell(nisCell);
+
+                // Data Nama Anak
+                Paragraph namaParagraph = new Paragraph(data.getNama_anak());
+                com.itextpdf.layout.element.Cell namaCell = new com.itextpdf.layout.element.Cell().add(namaParagraph);
+                table.addCell(namaCell);
+
+                // Data Kelas
+                Paragraph kelasParagraph = new Paragraph(data.getKelas());
+                com.itextpdf.layout.element.Cell kelasCell = new com.itextpdf.layout.element.Cell().add(kelasParagraph);
+                table.addCell(kelasCell);
+
+
+                // 3rd empty cell
+                table.addCell(emptyCell);
+            }
+
+            doc.add(table);
+            doc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void exportToExcel(File file) {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("Guru Data");
+
+        FileOutputStream out = null;
+        Connection con = null;
+
+        try {
+            con = ConnectionManager.getConnection();
+            int rowid = 0;
+
+            // judul
+            XSSFRow titleRow = spreadsheet.createRow(rowid++);
+            XSSFCell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("Laporan Kehadiran Anak Berdasarkan Kelas Dengan Presensi Paling Banyak");
+
+            //Export Header
+            XSSFRow headerRow = spreadsheet.createRow(rowid++);
+            Object[] headerArr = kehadiranAnakTbl.getColumns().toArray();
+
+            int cellCounter = 0;
+            for (Object obj : headerArr) {
+                XSSFCell cell = headerRow.createCell(cellCounter++);
+                cell.setCellValue(((TableColumn) obj).getText());
+            }
+
+            //Export Data
+            Map<String, Object[]> data = GuruDao.getAllArrayObject(con);
+            Set<String> keyid = data.keySet();
+
+            for (String key : keyid) {
+                XSSFRow row = spreadsheet.createRow(rowid++);
+                Object[] objectArr = data.get(key);
+                int cellid = 0;
+
+                for (Object obj : objectArr) {
+                    XSSFCell cell = row.createCell(cellid++);
+                    cell.setCellValue(String.valueOf(obj));
+                }
+            }
+            out = new FileOutputStream(file);
+            workbook.write(out);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
 
 }

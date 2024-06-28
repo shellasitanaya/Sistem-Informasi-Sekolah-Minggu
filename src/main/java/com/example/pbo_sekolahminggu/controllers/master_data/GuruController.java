@@ -420,7 +420,7 @@ public class GuruController implements Initializable {
 
             //Table Data
             for (int i = 0; i< guruTbl.getItems().size(); i++) {
-                Guru data = (Guru) guruTbl.getItems().get(i);
+                Guru data = guruTbl.getItems().get(i);
 
                 //Data id
                 Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_GURU()));
@@ -428,7 +428,7 @@ public class GuruController implements Initializable {
                 Cell idCell = new Cell().add(idParagraph);
                 table.addCell(idCell);
 
-                //Data brand
+                //Data
                 Paragraph brandParagraph = new Paragraph(data.getNamaGuru());
                 Cell brandCell = new Cell().add(brandParagraph);
                 table.addCell(brandCell);

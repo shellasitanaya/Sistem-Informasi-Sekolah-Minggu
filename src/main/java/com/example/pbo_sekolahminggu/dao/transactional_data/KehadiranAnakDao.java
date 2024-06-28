@@ -1,7 +1,6 @@
 package com.example.pbo_sekolahminggu.dao.transactional_data;
 
 
-import com.example.pbo_sekolahminggu.beans.transactional_data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.master_data.Anak;
 import com.example.pbo_sekolahminggu.beans.master_data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.transactional_data.KehadiranAnak;
@@ -13,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class KehadiranAnakDao {
     private static KelasPerTahun selectedKelas;
@@ -137,6 +138,86 @@ public class KehadiranAnakDao {
         }
         return listAnak;
     }
+
+    // EXPORT
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query =
+                "WITH info_anak AS (\n" +
+                "    SELECT\n" +
+                "        hka.id AS id_histori_kelas_anak,\n" +
+                "        a.nis,\n" +
+                "        a.nama,\n" +
+                "        k.nama_kelas ||\n" +
+                "            CASE\n" +
+                "                WHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
+                "                ELSE ''\n" +
+                "            END AS kelas,\n" +
+                "        kpt.id_tahun_ajaran\n" +
+                "    FROM\n" +
+                "        tbl_histori_kelas_anak hka\n" +
+                "        JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                "        JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "        JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                "), banyak_kehadiran AS (\n" +
+                "    SELECT\n" +
+                "        ka.id_histori_kelas_anak,\n" +
+                "        COUNT(*) AS n_kehadiran\n" +
+                "    FROM\n" +
+                "        tbl_kehadiran_anak ka\n" +
+                "    WHERE\n" +
+                "        presensi = true\n" +
+                "    GROUP BY\n" +
+                "        ka.id_histori_kelas_anak\n" +
+                "), data_kehadiran_lengkap AS (\n" +
+                "    SELECT *\n" +
+                "    FROM\n" +
+                "        banyak_kehadiran bk\n" +
+                "        JOIN info_anak ia ON ia.id_histori_kelas_anak = bk.id_histori_kelas_anak\n" +
+                "), max_per_kelas AS (\n" +
+                "    SELECT\n" +
+                "        dkl.kelas,\n" +
+                "        MAX(dkl.n_kehadiran) AS max_kehadiran\n" +
+                "    FROM\n" +
+                "        data_kehadiran_lengkap dkl\n" +
+                "    GROUP BY\n" +
+                "        dkl.kelas\n" +
+                ")\n" +
+                "SELECT\n" +
+                "    ia.id_histori_kelas_anak,\n" +
+                "    ia.nis,\n" +
+                "    ia.nama,\n" +
+                "    ia.kelas,\n" +
+                "    dkl.max_kehadiran\n" +
+                "FROM\n" +
+                "    data_kehadiran_lengkap dkl\n" +
+                "    JOIN max_per_kelas mpk ON mpk.kelas = dkl.kelas AND mpk.max_kehadiran = dkl.n_kehadiran\n" +
+                "    JOIN info_anak ia ON ia.id_histori_kelas_anak = dkl.id_histori_kelas_anak\n";
+
+        Map<String, Object[]> listKehadiran = new TreeMap<>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            int i = 1;
+            while (rs.next()) {
+                Object[] object = new Object[5];
+                object[0] = rs.getInt("id_histori_kelas_anak");
+                object[1] = rs.getString("nis");
+                object[2] = rs.getString("nama");
+                object[3] = rs.getString("kelas");
+                object[4] = rs.getInt("max_kehadiran");
+                listKehadiran.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listKehadiran;
+    }
+
 
     // SAVE
     public static void save(Connection con, KehadiranAnak kehadiranAnak) {
