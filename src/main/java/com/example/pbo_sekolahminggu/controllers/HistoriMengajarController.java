@@ -9,14 +9,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import com.example.pbo_sekolahminggu.beans.TahunAjaran;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import com.example.pbo_sekolahminggu.dao.KelasPerTahunDao;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,12 +35,29 @@ public class HistoriMengajarController implements Initializable {
     @FXML
     TableColumn<HistoriMengajar, String> IDHistori, Nama, NIP, Kelas, TahunAjaran;
     @FXML
-    ChoiceBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
+    ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
-    ChoiceBox<KelasPerTahun> kelasHistoriMengajarCb;
+    ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
+    @FXML
+    private AnchorPane historiMengajarAncPane;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
+
+    @FXML
+    private void loadMenuAssignHistoriMengajar() {
+        loadFXML("/com/example/pbo_sekolahminggu/assignHistoriMengajar.fxml");
+    }
+    private void loadFXML(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            historiMengajarAncPane.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception appropriately (e.g., show error message)
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

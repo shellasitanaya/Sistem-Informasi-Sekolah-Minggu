@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
@@ -32,7 +33,6 @@ public class KelasPerTahunController implements Initializable {
 //    @FXML
 //    ChoiceBox<Kelas> namaKelasPerTahunCb;
 //    ChoiceBox<KelasP>
-
     ObservableList<TahunAjaran> namaKelasList = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> kelasPararelList = FXCollections.observableArrayList();
 

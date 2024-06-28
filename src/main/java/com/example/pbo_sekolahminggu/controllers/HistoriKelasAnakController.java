@@ -4,10 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -28,13 +25,13 @@ public class HistoriKelasAnakController implements Initializable {
     private TableView<?> historiKelasTbl;
 
     @FXML
-    private ChoiceBox<?> kelasHistoriKelasCb;
+    private ComboBox<?> kelasHistoriKelasCb;
 
     @FXML
     private Button showHistoriKelas;
 
     @FXML
-    private ChoiceBox<?> tahunAjaranHistoriKelasCb;
+    private ComboBox<?> tahunAjaranHistoriKelasCb;
 
 
     @Override
