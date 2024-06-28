@@ -310,7 +310,7 @@ public class KebaktianController implements Initializable {
             Document doc = new Document(pdfDoc);
 
             //  judul
-            Paragraph title = new Paragraph("Laporan BLABLA");
+            Paragraph title = new Paragraph("Laporan Kehadiran Tiap Minggu Di Kelas");
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
@@ -382,7 +382,7 @@ public class KebaktianController implements Initializable {
             // judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan BLABLA");
+            titleCell.setCellValue("Laporan Kehadiran Tiap Minggu Di Kelas");
 
             //Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);

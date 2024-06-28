@@ -51,7 +51,7 @@ public class KelasPerTahunDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con, int idTahunAjaran) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
@@ -70,18 +70,18 @@ public class KelasPerTahunDao {
                         "FROM kelas_dan_banyak_murid_per_tahun " +
                         "ORDER BY banyak_murid DESC";
 
-        Map<String, Object[]> listKelasPerTahun = new TreeMap<>();
+        Map<String, Object[]> listMengajar = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, idTahunAjaran);
             rs = ps.executeQuery();
             int i = 1;
-            while (rs.next()) {
+            while(rs.next()) {
                 Object[] object = new Object[3];
                 object[0] = rs.getString("nama_kelas");
                 object[1] = rs.getString("kelas_paralel");
                 object[2] = rs.getInt("banyak_murid");
-                listKelasPerTahun.put(String.valueOf(i), object);
+
+                listMengajar.put(String.valueOf(i), object);
                 i++;
             }
         } catch (SQLException e) {
@@ -89,8 +89,9 @@ public class KelasPerTahunDao {
         } finally {
             ConnectionManager.close(rs, ps);
         }
-        return listKelasPerTahun;
+        return listMengajar;
     }
+
 
     // SAVE
     public static void save(Connection con, KelasPerTahun kelasPerTahun) {

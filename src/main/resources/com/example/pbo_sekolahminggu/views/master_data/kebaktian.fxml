@@ -106,5 +106,21 @@
          </font>
       </Label>
       <DatePicker fx:id="tanggalKebaktianPicker" layoutX="133.0" layoutY="365.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <Button fx:id="exportHistoriMengajarBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export"  prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+         <graphic>
+            <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export"  pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/exportIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <styleClass>
+            <String fx:value="btn_export" />
+            <String fx:value="shadow2" />
+         </styleClass>
+      </Button>
    </children>
 </AnchorPane>
