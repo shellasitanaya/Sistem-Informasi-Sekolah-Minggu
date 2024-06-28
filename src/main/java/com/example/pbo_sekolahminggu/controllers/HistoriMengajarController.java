@@ -71,7 +71,7 @@ public class HistoriMengajarController implements Initializable {
             //selected tahun ajaran
             TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
             // Get the ArrayList of Guru objects from the database
-            ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedTahunAjaran.getID_TAHUN_AJARAN(), selectedKelas.getID_KELAS_PER_TAHUN());
+            ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getID_KELAS_PER_TAHUN());
 
             // Set cell value factory for each TableColumn
             IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));

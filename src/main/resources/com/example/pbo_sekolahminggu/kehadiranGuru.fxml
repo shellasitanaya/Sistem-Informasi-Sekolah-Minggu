@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="kehadiranGuruAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="kehadiranGuruAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.KehadiranGuruController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -41,7 +41,7 @@
       </Pane>
       <Label layoutX="26.0" layoutY="380.0" text="Kelas" />
       <Label layoutX="26.0" layoutY="423.0" text="Kebaktian" />
-      <Button fx:id="editKehadiranGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SHOW">
+      <Button fx:id="editKehadiranGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#showFilter" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SHOW">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -50,7 +50,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="EDIT">
+      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="EDIT">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -75,8 +75,8 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <ComboBox fx:id="kebaktianKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kelasKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
       <ComboBox fx:id="tahunAjaranKehadiranGuruCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kebaktianKehadiranGuruCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
    </children>
 </AnchorPane>

@@ -9,6 +9,12 @@ public class KehadiranGuru {
     //non-original-database attributes
     private String nama, nip, jenisKebaktian, kelas;
     private Date tanggal;
+    private int ID_KELAS_PER_TAHUN;
+    private int ID_TAHUN_AJARAN;
+    private String tahun_ajaran;
+    private String kebaktian;
+    private Date tgl_kebaktian;
+
 
 
     // constructor
@@ -89,5 +95,46 @@ public class KehadiranGuru {
 
     public void setKelas(String kelas) {
         this.kelas = kelas;
+    }
+
+    public int getID_KELAS_PER_TAHUN() {
+        return ID_KELAS_PER_TAHUN;
+    }
+
+    public void setID_KELAS_PER_TAHUN(int ID_KELAS_PER_TAHUN) {
+        this.ID_KELAS_PER_TAHUN = ID_KELAS_PER_TAHUN;
+    }
+
+
+    public int getID_TAHUN_AJARAN() {
+        return ID_TAHUN_AJARAN;
+    }
+
+    public void setID_TAHUN_AJARAN(int ID_TAHUN_AJARAN) {
+        this.ID_TAHUN_AJARAN = ID_TAHUN_AJARAN;
+    }
+
+    public String getTahun_ajaran() {
+        return tahun_ajaran;
+    }
+
+    public void setTahun_ajaran(String tahun_ajaran) {
+        this.tahun_ajaran = tahun_ajaran;
+    }
+
+    public String getKebaktian() {
+        return kebaktian;
+    }
+
+    public void setKebaktian(String kebaktian) {
+        this.kebaktian = kebaktian;
+    }
+
+    public Date getTgl_kebaktian() {
+        return tgl_kebaktian;
+    }
+
+    public void setTgl_kebaktian(Date tgl_kebaktian) {
+        this.tgl_kebaktian = tgl_kebaktian;
     }
 }

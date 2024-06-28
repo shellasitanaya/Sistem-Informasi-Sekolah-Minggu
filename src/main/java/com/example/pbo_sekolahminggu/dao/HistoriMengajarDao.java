@@ -61,7 +61,7 @@ public class HistoriMengajarDao {
     }
 
 
-    public static ArrayList<HistoriMengajar> get(Connection con, int tahunAjaranId, int kelasPerTahunId) {
+    public static ArrayList<HistoriMengajar> get(Connection con, int kelasPerTahunId) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -83,12 +83,11 @@ public class HistoriMengajarDao {
                 "LEFT JOIN tbl_kelas_per_tahun kpt ON thm.id_kelas_per_tahun = kpt.id\n" +
                 "LEFT JOIN tbl_kelas k ON kpt.id_kelas = k.id\n" +
                 "LEFT JOIN tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
-                "WHERE thm.status_aktif = 1 AND ta.id=? AND kpt.id=?";
+                "WHERE thm.status_aktif = 1 AND kpt.id=?";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, tahunAjaranId);
-            ps.setInt(2, kelasPerTahunId);
+            ps.setInt(1, kelasPerTahunId);
             rs = ps.executeQuery();
             while (rs.next()) {
                 HistoriMengajar historiMengajar = new HistoriMengajar();

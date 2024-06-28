@@ -117,7 +117,7 @@ public class KelasPerTahunController implements Initializable {
         //selected tahun ajaran
         TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
 
-        if (selectedKelas != null) {
+        if (selectedKelasPerTahun != null) {
             // Establish database connection
             try (Connection con = ConnectionManager.getConnection()) {
                 // Update the selected item with the edited data
