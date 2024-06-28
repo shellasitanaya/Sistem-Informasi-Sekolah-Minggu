@@ -1,13 +1,15 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.KehadiranGuru;
-import com.example.pbo_sekolahminggu.beans.KelasPerTahun;
+import com.example.pbo_sekolahminggu.beans.*;
 import com.example.pbo_sekolahminggu.dao.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -21,10 +23,26 @@ public class KehadiranGuruController implements Initializable {
     TableView<KehadiranGuru> kehadiranGuruTbl;
     @FXML
     TableColumn<KehadiranGuru, String> idKehadiranCol, namaCol, nipCol, kelasCol, kebaktianCol, tanggalCol, presensiCol;
+    @FXML
+    ComboBox<TahunAjaran> tahunAjaranKehadiranGuruCb;
+    @FXML
+    ComboBox<KelasPerTahun> kelasKehadiranGuruCb;
+    @FXML
+    ComboBox<Kebaktian> kebaktianKehadiranAnakCb;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+//        tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+//            @Override
+//            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+//                if (newValue != null) {
+//                    System.out.println("Selection changed to: " + newValue.toString());
+//
+//                    filterDataKelas();
+//                }
+//            }
+//        });
     }
 
     public void populateKelasTable() {

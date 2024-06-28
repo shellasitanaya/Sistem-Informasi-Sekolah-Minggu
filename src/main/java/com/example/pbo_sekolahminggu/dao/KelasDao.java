@@ -22,7 +22,7 @@ public class KelasDao {
             while (rs.next()) {
                 Kelas kelas = new Kelas();
                 kelas.setID_KELAS(rs.getInt("id"));
-                kelas.setNamaKelas(rs.getString("nama"));
+                kelas.setNamaKelas(rs.getString("nama_kelas"));
                 listkelas.add(kelas);
             }
         } catch (SQLException e) {
