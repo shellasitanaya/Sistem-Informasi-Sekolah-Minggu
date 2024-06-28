@@ -22,6 +22,7 @@ public class KehadiranGuruController implements Initializable {
     @FXML
     TableColumn<KehadiranGuru, String> idKehadiranCol, namaCol, nipCol, kelasCol, kebaktianCol, tanggalCol, presensiCol;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();

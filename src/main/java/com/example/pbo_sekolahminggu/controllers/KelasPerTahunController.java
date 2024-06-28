@@ -5,6 +5,7 @@ import com.example.pbo_sekolahminggu.beans.Kelas;
 import com.example.pbo_sekolahminggu.beans.KelasPerTahun;
 import com.example.pbo_sekolahminggu.beans.TahunAjaran;
 import com.example.pbo_sekolahminggu.dao.HistoriMengajarDao;
+import com.example.pbo_sekolahminggu.dao.KelasDao;
 import com.example.pbo_sekolahminggu.dao.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.dao.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -29,45 +30,49 @@ public class KelasPerTahunController implements Initializable {
     TableView<KelasPerTahun> kelasPerTahunTbl;
     @FXML
     TableColumn<KelasPerTahun, String> idKelasPerTahun, namaKelasPerTahun, namaPararelKelasPerTahun, tahunAjaranKelasPerTahun, namaRuangKelasPerTahun;
-//    @FXML
-//    ChoiceBox<Kelas> namaKelasPerTahunCb;
-//    ChoiceBox<KelasP>
+    @FXML
+    ChoiceBox<Kelas> namaKelasPerTahunCb;
 
-    ObservableList<TahunAjaran> namaKelasList = FXCollections.observableArrayList();
+    ObservableList<Kelas> namaKelasList = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> kelasPararelList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            fillKelasCb();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         populateKelasTable();
     }
 
-//    public void fillKelasCb() throws SQLException {
-//        try {
-//            // Populate tahunAjaranList from database
-//            namaKelasList.addAll(TahunAjaranDao.getAll(ConnectionManager.getConnection()));
-//
-//            // Set items and converter for ChoiceBox
-//            tahunAjaranHistoriMengajarCb.setItems(tahunAjaranList);
-//
-//            // Set up StringConverter
-//            tahunAjaranHistoriMengajarCb.setConverter(new StringConverter<TahunAjaran>() {
-//                @Override
-//                public String toString(TahunAjaran object) {
-//                    return object != null ? object.getTahunAjaran() : "";
-//                }
-//
-//                @Override
-//                public TahunAjaran fromString(String string) {
-//                    return tahunAjaranList.stream()
-//                            .filter(ta -> ta.getTahunAjaran().equals(string))
-//                            .findFirst()
-//                            .orElse(null); // Return null if not found (though you should ideally handle this case better)
-//                }
-//            });
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Error populating tahun ajaran list", e);
-//        }
-//    }
+    public void fillKelasCb() throws SQLException {
+        try {
+            // Populate tahunAjaranList from database
+            namaKelasList.addAll(KelasDao.getAll(ConnectionManager.getConnection()));
+
+            // Set items and converter for ChoiceBox
+            namaKelasPerTahunCb.setItems(namaKelasList);
+
+            // Set up StringConverter
+            namaKelasPerTahunCb.setConverter(new StringConverter<Kelas>() {
+                @Override
+                public String toString(Kelas object) {
+                    return object != null ? object.getNamaKelas() : "";
+                }
+
+                @Override
+                public Kelas fromString(String string) {
+                    return namaKelasList.stream()
+                            .filter(ta -> ta.getNamaKelas().equals(string))
+                            .findFirst()
+                            .orElse(null); // Return null if not found (though you should ideally handle this case better)
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException("Error populating tahun ajaran list", e);
+        }
+    }
 
     public void populateKelasTable() {
         System.out.println("ha");

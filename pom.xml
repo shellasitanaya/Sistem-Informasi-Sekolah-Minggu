@@ -11,7 +11,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.9.2</junit.version>  </properties>
+    <junit.version>5.9.2</junit.version>
+    <itext.version>8.0.2</itext.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -54,6 +56,17 @@
           <artifactId>javafx-base</artifactId>
           <version>21-ea+5</version>
       </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itext-core</artifactId>
+      <version>${itext.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>bouncy-castle-adapter</artifactId>
+      <version>${itext.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
