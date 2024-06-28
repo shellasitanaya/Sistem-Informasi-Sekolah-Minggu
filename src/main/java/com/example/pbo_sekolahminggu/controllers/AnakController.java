@@ -18,7 +18,12 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class AnakController implements Initializable {
+
     // text field
+    @FXML
+    private TextField nomorTeleponAnakField;
+    @FXML
+    private TextField namaOrangTuaAnakField;
     @FXML
     private TextField namaAnakField;
     @FXML
