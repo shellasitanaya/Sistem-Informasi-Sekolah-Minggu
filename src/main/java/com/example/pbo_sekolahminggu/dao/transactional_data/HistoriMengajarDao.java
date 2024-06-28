@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HistoriMengajarDao {
     // tampilin nama_guru dan kelasnya
@@ -240,4 +242,44 @@ public class HistoriMengajarDao {
             ConnectionManager.close(statement);
         }
     }
+
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "SELECT \n" +
+                "    g.id AS id_guru,\n" +
+                "    g.nama AS nama_guru,\n" +
+                "    COUNT(hm.id) AS jumlah_mengajar\n" +
+                "FROM \n" +
+                "    tbl_guru g\n" +
+                "    JOIN tbl_histori_mengajar hm ON g.id = hm.id_guru\n" +
+                "GROUP BY \n" +
+                "    g.id, g.nama\n" +
+                "ORDER BY \n" +
+                "    jumlah_mengajar DESC\n" +
+                "LIMIT 3;\n";
+        Map<String, Object[]> listMengajar = new TreeMap<String, Object[]>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            int i = 1;
+            while(rs.next()) {
+                Object[] object = new Object[3];
+                object[0] = rs.getInt("id_guru");
+                object[1] = rs.getString("nama_guru");
+                object[2] = rs.getInt("jumlah_mengajar");
+
+                listMengajar.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listMengajar;
+    }
+
+
+
 }

@@ -2,7 +2,6 @@ package com.example.pbo_sekolahminggu.controllers.transactional_data;
 
 import com.example.pbo_sekolahminggu.beans.master_data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional_data.KelasPerTahun;
-import com.example.pbo_sekolahminggu.dao.master_data.GuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -150,14 +149,15 @@ public class KelasPerTahunController implements Initializable {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            //  judul
-            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Anak Pada Tiap Tahun Ajaran");
+            // Judul
+            Paragraph title = new Paragraph("Laporan Data Kelas");
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
+            Table table = new Table(UnitValue.createPercentArray(new float[] {20, 40, 40})).useAllAvailableWidth();
+
+            // Logo header (Ubah sesuai kebutuhan)
             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
             logo.setWidth(UnitValue.createPercentValue(50));
             Cell logoCell = new Cell(1, 2).add(logo);
@@ -168,52 +168,37 @@ public class KelasPerTahunController implements Initializable {
             emptyCell.setBorder(Border.NO_BORDER);
             table.addCell(emptyCell);
 
-            //Header Table
-            for (int i = 0; i< kelasPerTahunTbl.getColumns().size(); i++) {
-                TableColumn col = (TableColumn) kelasPerTahunTbl.getColumns().get(i);
+            String[] headers = {"Nama Kelas", "Kelas Paralel", "Jumlah Murid"};
+            for (String header : headers) {
                 Cell headerCell = new Cell();
-                title = new Paragraph(col.getText());
-                title.setTextAlignment(TextAlignment.CENTER);
-                title.setBold();
-
-                headerCell.add(title);
+                Paragraph headerText = new Paragraph(header);
+                headerText.setTextAlignment(TextAlignment.CENTER);
+                headerText.setBold();
+                headerCell.add(headerText);
                 table.addCell(headerCell);
             }
-            table.addCell(emptyCell);
 
-            //Table Data
-            for (int i = 0; i< kelasPerTahunTbl.getItems().size(); i++) {
-                KelasPerTahun data = kelasPerTahunTbl.getItems().get(i);
+            // Data Table
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection());
+            Set<String> keySet = data.keySet();
+            for (String key : keySet) {
+                Object[] row = data.get(key);
+                System.out.println("Nama Kelas: " + row[0]);
+                System.out.println("Kelas Paralel: " + row[1]);
+                System.out.println("Jumlah Murid: " + row[2]);
 
-                //Data id
-                Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_KELAS_PER_TAHUN()));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                Cell idCell = new Cell().add(idParagraph);
-                table.addCell(idCell);
-
-                // Nama Kelas
-                Paragraph namaKelasParagraph = new Paragraph(data.getNamaKelas());
+                Paragraph namaKelasParagraph = new Paragraph(String.valueOf(row[0]));
+                namaKelasParagraph.setTextAlignment(TextAlignment.CENTER);
                 Cell namaKelasCell = new Cell().add(namaKelasParagraph);
                 table.addCell(namaKelasCell);
 
-                // Kelas Paralel
-                Paragraph kelasParalelParagraph = new Paragraph(data.getKelasParalel());
+                Paragraph kelasParalelParagraph = new Paragraph(String.valueOf(row[1]));
                 Cell kelasParalelCell = new Cell().add(kelasParalelParagraph);
                 table.addCell(kelasParalelCell);
 
-                // Tahun Ajaran
-                Paragraph tahunAjaranParagraph = new Paragraph(data.getTahunAjaran());
-                Cell tahunAjaranCell = new Cell().add(tahunAjaranParagraph);
-                table.addCell(tahunAjaranCell);
-
-                // Ruang Kelas
-                Paragraph ruangKelasParagraph = new Paragraph(data.getRuangKelas());
-                Cell ruangKelasCell = new Cell().add(ruangKelasParagraph);
-                table.addCell(ruangKelasCell);
-
-
-                //3rd empty cell
-                table.addCell(emptyCell);
+                Paragraph jumlahMuridParagraph = new Paragraph(String.valueOf(row[2]));
+                Cell jumlahMuridCell = new Cell().add(jumlahMuridParagraph);
+                table.addCell(jumlahMuridCell);
             }
 
             doc.add(table);
@@ -222,12 +207,14 @@ public class KelasPerTahunController implements Initializable {
             throw new RuntimeException(e);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private void exportToExcel(File file) {
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Guru Data");
+        XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas");
 
         FileOutputStream out = null;
         Connection con = null;
@@ -236,42 +223,48 @@ public class KelasPerTahunController implements Initializable {
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
-            // judul
+            // Judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Kelas dan Jumlah Anak Pada Tiap Tahun Ajaran");
+            titleCell.setCellValue("Laporan Data Kelas");
 
-            //Export Header
+            // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            Object[] headerArr = kelasPerTahunTbl.getColumns().toArray();
-
+            String[] headers = {"Nama Kelas", "Kelas Paralel", "Jumlah Murid"};
             int cellCounter = 0;
-            for (Object obj : headerArr) {
+            for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(((TableColumn) obj).getText());
+                cell.setCellValue(header);
+
+                spreadsheet.autoSizeColumn(cellCounter - 1);
             }
 
-            //Export Data
-            Map<String, Object[]> data = GuruDao.getAllArrayObject(con);
+            // Export Data
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
-                int cellid = 0;
 
-                for (Object obj : objectArr) {
-                    XSSFCell cell = row.createCell(cellid++);
-                    cell.setCellValue(String.valueOf(obj));
-                }
+                // Pastikan hanya mengambil Nama Kelas, Kelas Paralel, dan Jumlah Murid
+                XSSFCell cellNamaKelas = row.createCell(0);
+                cellNamaKelas.setCellValue(String.valueOf(objectArr[0]));
+
+                XSSFCell cellKelasParalel = row.createCell(1);
+                cellKelasParalel.setCellValue(String.valueOf(objectArr[1]));
+
+                XSSFCell cellJumlahMurid = row.createCell(2);
+                cellJumlahMurid.setCellValue(String.valueOf(objectArr[2]));
+
+                spreadsheet.autoSizeColumn(0);
+                spreadsheet.autoSizeColumn(1);
+                spreadsheet.autoSizeColumn(2);
             }
+
             out = new FileOutputStream(file);
             workbook.write(out);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionManager.close(con);

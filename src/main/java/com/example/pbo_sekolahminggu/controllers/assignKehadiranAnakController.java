@@ -67,10 +67,10 @@ public class assignKehadiranAnakController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Ensure con is not null before using it
-        if (con == null) {
-            logger.severe("Database connection is null!");
-            return;
-        }
+//        if (con == null) {
+//            logger.severe("Database connection is null!");
+//            return;
+//        }
 
         dataAnakHadir = FXCollections.observableArrayList();
         dataAnakTidakHadir = FXCollections.observableArrayList();
