@@ -5,6 +5,8 @@ import com.example.pbo_sekolahminggu.dao.KebaktianDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -20,6 +22,8 @@ public class KebaktianController implements Initializable {
     // text field
     @FXML
     private TextField jenisKebaktianField;
+    @FXML
+    private TextField kebaktianSearchField;
     @FXML
     private DatePicker tanggalKebaktianPicker;
 
@@ -78,7 +82,8 @@ public class KebaktianController implements Initializable {
         try {
             connection = ConnectionManager.getConnection();
             data = FXCollections.observableArrayList(KebaktianDao.getAll(connection));
-            kebaktianTbl.setItems(data);
+            listKebaktian.setAll(data);
+            kebaktianTbl.setItems(listKebaktian);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -211,5 +216,31 @@ public class KebaktianController implements Initializable {
         jenisKebaktianField.clear();
         tanggalKebaktianPicker.setValue(null);
         selectedKebaktian = null;
+    }
+
+    @FXML
+    public void Search() {
+        FilteredList<Kebaktian> filter = new FilteredList<>(listKebaktian, e -> true);
+
+        kebaktianSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+            filter.setPredicate(predicateKebaktianData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateKebaktianData.getJenisKebaktian().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<Kebaktian> sortedData = new SortedList<>(filter);
+        sortedData.comparatorProperty().bind(kebaktianTbl.comparatorProperty());
+        kebaktianTbl.setItems(sortedData);
     }
 }

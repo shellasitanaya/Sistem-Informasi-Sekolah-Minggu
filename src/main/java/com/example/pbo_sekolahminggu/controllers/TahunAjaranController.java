@@ -5,6 +5,8 @@ import com.example.pbo_sekolahminggu.dao.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -72,7 +74,8 @@ public class TahunAjaranController implements Initializable {
         try {
             connection = ConnectionManager.getConnection();
             data = FXCollections.observableArrayList(TahunAjaranDao.getAll(connection));
-            tahunAjaranTbl.setItems(data);
+            listTahunAjaran.setAll(data);
+            tahunAjaranTbl.setItems(listTahunAjaran);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -197,5 +200,29 @@ public class TahunAjaranController implements Initializable {
     public void clear() {
         tahunAjaranField.clear();
         selectedTahunAjaran = null;
+    }
+
+    @FXML
+    public void Search() {
+        FilteredList<TahunAjaran> filteredData = new FilteredList<>(listTahunAjaran, e -> true);
+
+        tahunAjaranSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+            filteredData.setPredicate(tahunAjaran -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (tahunAjaran.getTahunAjaran().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+
+        SortedList<TahunAjaran> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tahunAjaranTbl.comparatorProperty());
+        tahunAjaranTbl.setItems(sortedData);
     }
 }

@@ -7,6 +7,8 @@ import com.example.pbo_sekolahminggu.dao.GuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -23,12 +25,20 @@ public class AnakController implements Initializable {
     private TextField namaAnakField;
     @FXML
     private TextField nisAnakField;
+    @FXML
+    private TextField namaOrangTuaField;
+    @FXML
+    private TextField nomorTeleponField;
+    @FXML
+    private TextField alamatOrangTuaField;
+    @FXML
+    private TextField anakSearchField;
+
 
 
     // radio button jenis kelamin
     @FXML
     private RadioButton lakiAnakBtn;
-
     @FXML
     private RadioButton perempuanAnakBtn;
     private ToggleGroup radioButtonGroup;
@@ -85,11 +95,15 @@ public class AnakController implements Initializable {
         namaOrangTuaCol.setMinWidth(150);
         namaOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("namaOrangTua"));
 
+        TableColumn<Anak, String> noTelpOrangTuaCol = new TableColumn<>("No Telp Orang Tua");
+        noTelpOrangTuaCol.setMinWidth(150);
+        noTelpOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("noTelpOrangTua"));
+
         TableColumn<Anak, String> alamatOrangTuaCol = new TableColumn<>("Alamat Orang Tua");
         alamatOrangTuaCol.setMinWidth(200);
         alamatOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("alamatOrangTua"));
 
-        anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol, namaOrangTuaCol, alamatOrangTuaCol);
+        anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol, namaOrangTuaCol, noTelpOrangTuaCol, alamatOrangTuaCol);
 
         refreshData();
 
@@ -98,14 +112,14 @@ public class AnakController implements Initializable {
                 selectedAnak = newSelection;
                 namaAnakField.setText(selectedAnak.getNama());
                 nisAnakField.setText(selectedAnak.getNIS());
-
-
-                if ("Laki-laki".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
+                alamatOrangTuaField.setText(selectedAnak.getAlamatOrangTua());
+                namaOrangTuaField.setText(selectedAnak.getNamaOrangTua());
+                nomorTeleponField.setText(selectedAnak.getNoTelpOrangTua());
+                if ("male".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
                     lakiAnakBtn.setSelected(true);
-                } else if ("Perempuan".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
+                } else if ("female".equalsIgnoreCase(selectedAnak.getJenisKelamin())) {
                     perempuanAnakBtn.setSelected(true);
                 }
-
             }
         });
 
@@ -122,7 +136,8 @@ public class AnakController implements Initializable {
         try {
             connection = ConnectionManager.getConnection();
             data = FXCollections.observableArrayList(AnakDao.getAll(connection));
-            anakTbl.setItems(data);
+            listAnak.setAll(data);
+            anakTbl.setItems(listAnak);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -142,10 +157,14 @@ public class AnakController implements Initializable {
     public void create() {
         String nama = namaAnakField.getText();
         String nis = nisAnakField.getText();
+        String alamat = alamatOrangTuaField.getText();
+        String nama_orang_tua = namaOrangTuaField.getText();
+        String no_telp = nomorTeleponField.getText();
 
         RadioButton selectedGender = (RadioButton) radioButtonGroup.getSelectedToggle();
         String jenisKelamin = selectedGender != null ? (selectedGender.getText().equalsIgnoreCase("Male") ? "male" : "female") : "";
-        if (nama.isEmpty() || nis.isEmpty()  || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
+        if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || nama_orang_tua.isEmpty() || no_telp.isEmpty()
+                || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
@@ -154,6 +173,9 @@ public class AnakController implements Initializable {
         anak.setNama(nama);
         anak.setNIS(nis);
         anak.setJenisKelamin(jenisKelamin);
+        anak.setNoTelpOrangTua(no_telp);
+        anak.setNamaOrangTua(nama_orang_tua);
+        anak.setAlamatOrangTua(alamat);
 
         Connection con = null;
         try {
@@ -162,8 +184,6 @@ public class AnakController implements Initializable {
 
             listAnak = FXCollections.observableArrayList(AnakDao.getAll(con));
             anakTbl.setItems(listAnak);
-
-
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Anak berhasil ditambahkan!");
@@ -187,12 +207,15 @@ public class AnakController implements Initializable {
             return;
         }
 
-
         String nama = namaAnakField.getText();
         String nis = nisAnakField.getText();
         String jenisKelamin = lakiAnakBtn.isSelected() ? "male" : "female";
+        String alamat = alamatOrangTuaField.getText();
+        String nama_ortu = namaOrangTuaField.getText();
+        String no_telp = nomorTeleponField.getText();
 
-        if (nama.isEmpty() || nis.isEmpty() || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
+        if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || nama_ortu.isEmpty() || no_telp.isEmpty()
+                || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
@@ -201,6 +224,9 @@ public class AnakController implements Initializable {
         selectedAnak.setNama(nama);
         selectedAnak.setNIS(nis);
         selectedAnak.setJenisKelamin(jenisKelamin);
+        selectedAnak.setAlamatOrangTua(alamat);
+        selectedAnak.setNoTelpOrangTua(no_telp);
+        selectedAnak.setNamaOrangTua(nama_ortu);
 
         Connection con = null;
         try {
@@ -265,9 +291,48 @@ public class AnakController implements Initializable {
     public void clear() {
         namaAnakField.clear();
         nisAnakField.clear();
-
+        namaOrangTuaField.clear();
+        alamatOrangTuaField.clear();
+        nomorTeleponField.clear();
         lakiAnakBtn.setSelected(false);
         perempuanAnakBtn.setSelected(false);
     }
+
+    public void Search() {
+        FilteredList<Anak> filter = new FilteredList<>(listAnak, e -> true);
+
+        anakSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+            filter.setPredicate(predicateAnakData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateAnakData.getNama().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateAnakData.getNIS().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateAnakData.getJenisKelamin().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateAnakData.getNamaOrangTua().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateAnakData.getNoTelpOrangTua().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateAnakData.getAlamatOrangTua().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<Anak> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(anakTbl.comparatorProperty());
+        anakTbl.setItems(sortList);
+    }
+
 
 }

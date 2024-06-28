@@ -7,6 +7,7 @@ public class Anak {
     private String JenisKelamin;
     private String namaOrangTua;
     private String alamatOrangTua;
+    private String noTelpOrangTua;
 
     // constructor
     public Anak(){
@@ -60,6 +61,14 @@ public class Anak {
 
     public void setAlamatOrangTua(String alamatOrangTua) {
         this.alamatOrangTua = alamatOrangTua;
+    }
+
+    public String getNoTelpOrangTua() {
+        return noTelpOrangTua;
+    }
+
+    public void setNoTelpOrangTua(String noTelpOrangTua) {
+        this.noTelpOrangTua = noTelpOrangTua;
     }
 }
 

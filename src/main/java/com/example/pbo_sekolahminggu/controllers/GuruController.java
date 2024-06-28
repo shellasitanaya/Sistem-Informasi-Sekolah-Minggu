@@ -89,6 +89,7 @@ public class GuruController implements Initializable {
 
         refreshData();
 
+
         // nampilin selected items
         guruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -108,7 +109,8 @@ public class GuruController implements Initializable {
         try {
             connection = ConnectionManager.getConnection();
             data = FXCollections.observableArrayList(GuruDao.getAll(connection));
-            guruTbl.setItems(data);
+            listGuru.setAll(data);
+            guruTbl.setItems(listGuru);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -289,7 +291,7 @@ public class GuruController implements Initializable {
 
         guruSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
 
-            filter.setPredicate(predicateEmployeeData -> {
+            filter.setPredicate(predicateGuruData -> {
 
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
@@ -297,13 +299,13 @@ public class GuruController implements Initializable {
 
                 String searchKey = newValue.toLowerCase();
 
-                if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
+                if (predicateGuruData.getNamaGuru().toLowerCase().contains(searchKey)) {
                     return true;
-                } else if (predicateEmployeeData.getNIP().toLowerCase().contains(searchKey)) {
+                } else if (predicateGuruData.getNIP().toLowerCase().contains(searchKey)) {
                     return true;
-                } else if (predicateEmployeeData.getNoTelp().toLowerCase().contains(searchKey)) {
+                } else if (predicateGuruData.getNoTelp().toLowerCase().contains(searchKey)) {
                     return true;
-                } else if (predicateEmployeeData.getAlamat().toLowerCase().contains(searchKey)) {
+                } else if (predicateGuruData.getAlamat().toLowerCase().contains(searchKey)) {
                     return true;
                 } else {
                     return false;
