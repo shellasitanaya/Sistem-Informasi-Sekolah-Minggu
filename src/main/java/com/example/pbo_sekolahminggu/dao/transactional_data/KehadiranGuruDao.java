@@ -126,7 +126,17 @@ public class KehadiranGuruDao {
     public static Map<String, Object[]> getAllArrayObject(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = " ";
+        String query = "g.nama,\n" +
+                "    k.jenis_kebaktian AS kebaktian,\n" +
+                "    EXTRACT(YEAR FROM k.tanggal) AS tahun,\n" +
+                "    COUNT(*) AS jumlah_kehadiran\n" +
+                "FROM tbl_kehadiran_guru kg\n" +
+                "JOIN tbl_histori_mengajar h ON kg.id_histori_mengajar = h.id\n" +
+                "JOIN tbl_kebaktian k ON kg.id_kebaktian = k.id\n" +
+                "JOIN tbl_guru g ON h.id = h.id_guru\n" +
+                "--WHERE kg.presensi = true\n" +
+                "GROUP BY k.jenis_kebaktian, EXTRACT(YEAR FROM k.tanggal), g.nama\n" +
+                "ORDER BY tahun, k.jenis_kebaktian;\n";
         Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);

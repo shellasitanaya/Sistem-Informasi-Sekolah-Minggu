@@ -158,16 +158,21 @@ public class KebaktianDao {
                 "ORDER BY \n" +
                 "    CASE WHEN kelas = 'Total' THEN 1 ELSE 0 END,\n" +
                 "    kelas DESC;\n";
-        Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
+        Map<String, Object[]> listKebaktian = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
             int i = 1;
-            while(rs.next()) {
-                Object[] object = new Object[2];
-                object[0] = rs.getInt("id");
-                object[1] = rs.getString("nama");
-                listBrand.put(String.valueOf(i), object);
+            while (rs.next()) {
+                Object[] object = new Object[6];
+                object[0] = rs.getString("jenis_kebaktian");
+                object[1] = rs.getDate("tanggal");
+                object[2] = rs.getString("kelas");
+                object[3] = rs.getInt("LakiLaki");
+                object[4] = rs.getInt("Perempuan");
+                object[5] = rs.getInt("Total");
+
+                listKebaktian.put(String.valueOf(i), object);
                 i++;
             }
         } catch (SQLException e) {
@@ -175,6 +180,6 @@ public class KebaktianDao {
         } finally {
             ConnectionManager.close(rs, ps);
         }
-        return listBrand;
+        return listKebaktian;
     }
 }

@@ -8,7 +8,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -309,54 +308,45 @@ public class KebaktianController implements Initializable {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            //  judul
+            // Judul
             Paragraph title = new Paragraph("Laporan Kehadiran Tiap Minggu Di Kelas");
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
+            // Membuat tabel dengan kolom yang sesuai
+            Table table = new Table(UnitValue.createPercentArray(new float[]{20, 20, 20, 10, 10, 20})).useAllAvailableWidth();
+
+            // Logo header
             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
             logo.setWidth(UnitValue.createPercentValue(50));
-            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 2).add(logo);
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 6).add(logo);
             logoCell.setBorder(Border.NO_BORDER);
             table.addCell(logoCell);
 
-            com.itextpdf.layout.element.Cell emptyCell = new com.itextpdf.layout.element.Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
-
-            //Header Table
-            for (int i = 0; i< kebaktianTbl.getColumns().size(); i++) {
-                TableColumn col = (TableColumn) kebaktianTbl.getColumns().get(i);
+            // Header Tabel
+            String[] headers = {"Jenis Kebaktian", "Tanggal", "Kelas", "Laki-laki", "Perempuan", "Total"};
+            for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
-                title = new Paragraph(col.getText());
-                title.setTextAlignment(TextAlignment.CENTER);
-                title.setBold();
-
-                headerCell.add(title);
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
-            table.addCell(emptyCell);
 
-            //Table Data
-            for (int i = 0; i< kebaktianTbl.getItems().size(); i++) {
-                Kebaktian data = kebaktianTbl.getItems().get(i);
+            // Mengambil data dari DAO
+            Connection con = ConnectionManager.getConnection();
+            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
 
-                //Data id
-                Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_KEBAKTIAN()));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                com.itextpdf.layout.element.Cell idCell = new com.itextpdf.layout.element.Cell().add(idParagraph);
-                table.addCell(idCell);
-
-                //Data
-                Paragraph brandParagraph = new Paragraph(data.getJenisKebaktian());
-                com.itextpdf.layout.element.Cell brandCell = new Cell().add(brandParagraph);
-                table.addCell(brandCell);
-
-                //3rd empty cell
-                table.addCell(emptyCell);
+            // Mengisi tabel dengan data
+            for (Object[] rowData : data.values()) {
+                for (Object cellData : rowData) {
+                    Paragraph cellParagraph = new Paragraph(cellData != null ? cellData.toString() : "");
+                    cellParagraph.setTextAlignment(TextAlignment.CENTER);
+                    com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(cellParagraph);
+                    table.addCell(cell);
+                }
             }
 
             doc.add(table);
@@ -364,6 +354,8 @@ public class KebaktianController implements Initializable {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -379,22 +371,21 @@ public class KebaktianController implements Initializable {
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
-            // judul
+            // Judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             XSSFCell titleCell = titleRow.createCell(0);
             titleCell.setCellValue("Laporan Kehadiran Tiap Minggu Di Kelas");
 
-            //Export Header
+            // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            Object[] headerArr = kebaktianTbl.getColumns().toArray();
-
+            String[] headers = {"Jenis Kebaktian", "Tanggal", "Kelas", "Laki-laki", "Perempuan", "Total"};
             int cellCounter = 0;
-            for (Object obj : headerArr) {
+            for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(((TableColumn) obj).getText());
+                cell.setCellValue(header);
             }
 
-            //Export Data
+            // Export Data
             Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
             Set<String> keyid = data.keySet();
 
@@ -408,6 +399,12 @@ public class KebaktianController implements Initializable {
                     cell.setCellValue(String.valueOf(obj));
                 }
             }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                spreadsheet.autoSizeColumn(i);
+            }
+
             out = new FileOutputStream(file);
             workbook.write(out);
         } catch (SQLException e) {
@@ -427,5 +424,6 @@ public class KebaktianController implements Initializable {
             }
         }
     }
+
 
 }
