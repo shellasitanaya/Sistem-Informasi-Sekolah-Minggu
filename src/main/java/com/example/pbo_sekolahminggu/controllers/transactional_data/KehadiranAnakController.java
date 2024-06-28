@@ -188,7 +188,7 @@ public class KehadiranAnakController implements Initializable {
             kelasKehadiranAnakCb.getSelectionModel().select(0);
 
             //data dropdown kebaktian
-            //dataKebaktian.addAll(KebaktianDao.getFilteredKebaktian(con, tahunSelected));
+            dataKebaktian.addAll(KebaktianDao.getFilteredKebaktian(con, tahunSelected));
             kebaktianKehadiranAnakCb.setItems(dataKebaktian);
             kebaktianKehadiranAnakCb.setConverter(new StringConverter<Kebaktian>() {
                 @Override
@@ -232,45 +232,27 @@ public class KehadiranAnakController implements Initializable {
 
     @FXML
     public void edit() {
+        Connection con = null;
         try {
-            conn = ConnectionManager.getConnection();
-
+            con = ConnectionManager.getConnection();
             KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
             Kebaktian selectedKebaktian = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
             KehadiranAnakDao.setSelectedKelas(selectedKelas);
             KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
 
             //get the data kehadiran to check if it's empty or not
-            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(conn, selectedKelas, selectedKebaktian));
-            // Disable auto-commit
-            conn.setAutoCommit(false);
+            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con, selectedKelas, selectedKebaktian));
 
             if (dataKehadiranAnak.isEmpty()) {
-                assignKehadiranAnakController.setPopulate(true);
-//                KehadiranAnakDao.populateTblKehadiranAnak(this.conn);
+                KehadiranAnakDao.populateTblKehadiranAnak(con);
             }
-            assignKehadiranAnakController.setCon(this.conn);  //this is to pass the connection
+            //this is to pass the connection
             loadMenuAssignKehadiranAnak();
         } catch (SQLException e) {
             e.printStackTrace();
-//            if (conn != null) {
-//                try {
-//                    conn.rollback();
-//                } catch (SQLException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
+        } finally {
+            ConnectionManager.close(con);
         }
-//        finally {
-//            if (conn != null) {
-//                try {
-//                    conn.setAutoCommit(true);
-//                    ConnectionManager.close(conn);
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
     }
 
     @FXML
@@ -389,7 +371,7 @@ public class KehadiranAnakController implements Initializable {
     }
 
     private void loadMenuAssignKehadiranAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/assignKehadiranAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/assignKehadiranAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

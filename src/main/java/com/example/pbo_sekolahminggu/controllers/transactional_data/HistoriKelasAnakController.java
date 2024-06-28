@@ -1,6 +1,6 @@
 package com.example.pbo_sekolahminggu.controllers.transactional_data;
 
-import com.example.pbo_sekolahminggu.beans.*;
+
 import com.example.pbo_sekolahminggu.beans.master_data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional_data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional_data.KelasPerTahun;
@@ -271,10 +271,9 @@ public class HistoriKelasAnakController implements Initializable {
     }
 
 
-
     //function to change the window
     private void loadMenuAssignKelasAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/assignHistoriKelasAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/assignHistoriKelasAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

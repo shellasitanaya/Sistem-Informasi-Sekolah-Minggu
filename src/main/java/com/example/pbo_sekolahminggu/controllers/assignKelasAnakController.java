@@ -1,6 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
 import com.example.pbo_sekolahminggu.beans.master_data.Anak;
+import com.example.pbo_sekolahminggu.beans.transactional_data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -124,26 +125,17 @@ public class assignKelasAnakController implements Initializable {
     }
 
     // UNTUK UPDATE KEHADIRAN
-//    @FXML
-//    private void addToClass() {
-//        Anak selectedAnak = anakBerdasarkanTahunHistoriKelasTbl.getSelectionModel().getSelectedItem();
-//        if (selectedAnak != null) {
-//            System.out.println(selectedAnak.getID_ANAK());
-//            //klo anaknya ternyata sdh terdaftar
-//            try {
-////                if (HistoriKelasAnakDao.exists(con, selectedAnak, HistoriKelasAnakDao.getSelectedClass())) {
-////
-////                }
-////            } catch (SQLException e) {
-////                System.out.println(e.getMessage());
-////            }
-//
-//            //refresh table view
-//            refreshTable(con);
-//        } else {
-//            alertWarning("Silahkan pilih anak yang akan ditambahkan");
-//        }
-//    }
+    @FXML
+    private void addToClass() {
+        Anak selectedAnak = anakBerdasarkanTahunHistoriKelasTbl.getSelectionModel().getSelectedItem();
+        if (selectedAnak != null) {
+            System.out.println(selectedAnak.getID_ANAK());
+            HistoriKelasAnakDao.insertToClass(con, selectedAnak);
+            refreshTable(con);
+        } else {
+            alertWarning("Silahkan pilih anak yang akan ditambahkan");
+        }
+    }
 
     @FXML
     private void removeFromClass() {
@@ -177,7 +169,7 @@ public class assignKelasAnakController implements Initializable {
     }
 
     private void loadMenuHKA() {
-        loadFXML("/com/example/pbo_sekolahminggu/historiKelasAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {
@@ -192,3 +184,4 @@ public class assignKelasAnakController implements Initializable {
         }
     }
 }
+

@@ -100,21 +100,14 @@ public class assignKehadiranAnakController implements Initializable {
 
         belumHadirKehadiranAnakTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
-        if (populate) {
 
-            KehadiranAnakDao.populateTblKehadiranAnak(con);
-        }
         try {
             conHere = ConnectionManager.getConnection();
             conHere.setAutoCommit(false);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error setting auto-commit to false", e);
         }
-
-        refreshTable(con);
-
-        populate = false;
-
+        refreshTable(conHere);
     }
 
     @FXML
@@ -226,7 +219,7 @@ public class assignKehadiranAnakController implements Initializable {
     // INI UNTUK PINDAH WINDOW
     @FXML
     private void loadMenuKehadiranAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/kehadiranAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/kehadiranAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

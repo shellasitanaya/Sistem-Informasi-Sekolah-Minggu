@@ -13,11 +13,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<<<<<<< HEAD:src/main/resources/com/example/pbo_sekolahminggu/historiKelasAnak.fxml
-<AnchorPane fx:id="historiKelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.HistoriKelasAnakController">
-=======
-<AnchorPane fx:id="historiKelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
->>>>>>> df0648885616148169f92ad7c57fe3d47652d4b5:src/main/resources/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml
+
+<AnchorPane fx:id="historiKelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional_data.HistoriKelasAnakController">
+
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -42,11 +40,7 @@
          </styleClass>
       </Pane>
       <Label layoutX="26.0" layoutY="380.0" text="Kelas" />
-<<<<<<< HEAD:src/main/resources/com/example/pbo_sekolahminggu/historiKelasAnak.fxml
-      <Button fx:id="showHistoriKelas" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#showFilter" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SHOW">
-=======
-      <Button fx:id="showHistoriKelas" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="SHOW">
->>>>>>> df0648885616148169f92ad7c57fe3d47652d4b5:src/main/resources/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml
+      <Button fx:id="showHistoriKelas" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#showFilter" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="SHOW">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -55,11 +49,9 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-<<<<<<< HEAD:src/main/resources/com/example/pbo_sekolahminggu/historiKelasAnak.fxml
-      <Button fx:id="ediHistoriKelas" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#editAssign" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="EDIT">
-=======
-      <Button fx:id="ediHistoriKelas" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="EDIT">
->>>>>>> df0648885616148169f92ad7c57fe3d47652d4b5:src/main/resources/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml
+
+      <Button fx:id="ediHistoriKelas" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#editAssign" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="EDIT">
+
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
