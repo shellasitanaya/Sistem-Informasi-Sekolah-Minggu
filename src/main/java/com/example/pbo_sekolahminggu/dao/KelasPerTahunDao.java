@@ -104,16 +104,15 @@ public class KelasPerTahunDao {
     public static ArrayList<KelasPerTahun> getFilteredClasses(Connection con, TahunAjaran th) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "\n" +
-                "SELECT kpt.id,\n" +
-                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas), \n" +
-                "kpt.kelas_paralel,\n" +
-                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran tj WHERE tj.id = kpt.id_tahun_ajaran),\n" +
-                "kpt.ruang_kelas,\n" +
-                "kpt.id_kelas,\n" +
-                "kpt.id_tahun_ajaran\n" +
-                "FROM tbl_kelas_per_tahun kpt\n" +
-                "WHERE kpt.status_aktif = 1 AND kpt.id_tahun_ajaran = ?";
+        String query = "SELECT kpt.id,\n" +
+                "                (SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas),\n" +
+                "                kpt.kelas_paralel,\n" +
+                "                (SELECT tahun_ajaran FROM tbl_tahun_ajaran tj WHERE tj.id = kpt.id_tahun_ajaran),\n" +
+                "                kpt.ruang_kelas, \n" +
+                "                kpt.id_kelas, \n" +
+                "                kpt.id_tahun_ajaran\n" +
+                "                FROM tbl_kelas_per_tahun kpt\n" +
+                "                WHERE kpt.status_aktif = 1 AND kpt.id_tahun_ajaran = ?";
         ArrayList<KelasPerTahun> listkelasPerTahun = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="assignKehadiranAnakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="assignKehadiranAnakAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.assignKehadiranAnakController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
@@ -20,7 +20,7 @@
             <TableColumn minWidth="4.0" prefWidth="95.0" text="NIS" />
          </columns>
       </TableView>
-      <Button fx:id="saveKehadiranAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SAVE">
+      <Button fx:id="saveKehadiranAnakBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#save" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SAVE">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -29,7 +29,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="cancelKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CANCEL">
+      <Button fx:id="cancelKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="CANCEL">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -54,7 +54,7 @@
             <TableColumn minWidth="4.0" prefWidth="95.0" text="NIS" />
          </columns>
       </TableView>
-      <Button fx:id="addKehadiranAnakBtn" layoutX="381.0" layoutY="210.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" stylesheets="@../../../../../style.css" text="&lt; ADD">
+      <Button fx:id="addKehadiranAnakBtn" layoutX="381.0" layoutY="210.0" mnemonicParsing="false" onAction="#addToHadir" prefHeight="40.0" prefWidth="101.0" stylesheets="@../../../../../style.css" text="&lt; ADD">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -63,7 +63,7 @@
             <String fx:value="shadow2" />
          </styleClass>
       </Button>
-      <Button fx:id="removeKehadiranAnakBtn" layoutX="381.0" layoutY="278.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" stylesheets="@../../../../../style.css" text="REMOVE &gt;">
+      <Button fx:id="removeKehadiranAnakBtn" layoutX="381.0" layoutY="278.0" mnemonicParsing="false" onAction="#removeToTidakHadir" prefHeight="40.0" prefWidth="101.0" stylesheets="@../../../../../style.css" text="REMOVE &gt;">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
