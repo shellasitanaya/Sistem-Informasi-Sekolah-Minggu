@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="kelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <styleClass>
+      <String fx:value="white_bg" />
+      <String fx:value="shadow" />
+   </styleClass>
+   <children>
+      <TableView fx:id="kelasTbl" layoutX="26.0" layoutY="68.0" prefHeight="427.0" prefWidth="296.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
+         <columns>
+            <TableColumn fx:id="idKelas" prefWidth="56.0" text="ID Kelas" />
+            <TableColumn fx:id="namaKelas" prefWidth="238.0" text="Nama Kelas" />
+         </columns>
+      </TableView>
+      <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
+         <styleClass>
+            <String fx:value="search_box_outer" />
+            <String fx:value="shadow" />
+         </styleClass>
+         <children>
+            <TextField fx:id="kelasSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="229.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+         </children>
+      </Pane>
+      <TextField fx:id="namaKelasField" layoutX="570.0" layoutY="64.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <Label layoutX="463.0" layoutY="68.0" text="Nama Kelas" />
+      <Button fx:id="clearKelasBtn" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CLEAR">
+         <styleClass>
+            <String fx:value="btn_clear" />
+            <String fx:value="shadow2" />
+         </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="updateKelasBtn" layoutX="566.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="UPDATE">
+         <styleClass>
+            <String fx:value="btn_updatedkk" />
+            <String fx:value="shadow2" />
+         </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteKelasBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="DELETE">
+         <styleClass>
+            <String fx:value="btn_updatedkk" />
+            <String fx:value="shadow2" />
+         </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="createKelasBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CREATE">
+         <styleClass>
+            <String fx:value="btn_updatedkk" />
+            <String fx:value="shadow2" />
+         </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="exportKelasBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+         <graphic>
+            <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/exportIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <styleClass>
+            <String fx:value="btn_export" />
+            <String fx:value="shadow2" />
+         </styleClass>
+      </Button>
+      <Label layoutX="77.0" layoutY="520.0" text="EXPORT" visible="false">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="43.0" fitWidth="43.0" layoutX="27.0" layoutY="504.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../../images/exportIcon.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="625.0" layoutY="24.0" text="DATA KELAS">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
