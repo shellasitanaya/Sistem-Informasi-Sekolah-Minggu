@@ -6,7 +6,7 @@ public class ConnectionManager {
     public static Connection getConnection() throws SQLException {
         //localhost: server, 5432: port, prakPBO: namaDatabase, admin: password
         // url = jdbc (utk java):(pakai app apa)://(host name/address):(port number)/(database name)?user=(user name)&password=(password)
-        String url = "jdbc:postgresql://localhost:5432/SekolahMinggu?user=postgres&password=admin257";
+        String url = "jdbc:postgresql://localhost:5432/SekolahMinggu?user=postgres&password=admin253";
         Connection con = DriverManager.getConnection(url);
         return con;
 

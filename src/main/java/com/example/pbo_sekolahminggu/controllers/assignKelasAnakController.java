@@ -1,8 +1,8 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.Anak;
-import com.example.pbo_sekolahminggu.dao.HistoriKelasAnakDao;
-import com.example.pbo_sekolahminggu.dao.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.beans.master_data.Anak;
+import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
