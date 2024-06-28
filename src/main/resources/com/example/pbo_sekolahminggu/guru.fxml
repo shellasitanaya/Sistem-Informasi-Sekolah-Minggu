@@ -80,7 +80,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="exportGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>

@@ -51,19 +51,15 @@ public class assignKehadiranAnakController implements Initializable {
 
     private static boolean populate = false;
     private static final Logger logger = Logger.getLogger(assignKehadiranAnakController.class.getName());
-
     public static Connection getCon() {
         return con;
     }
-
     public static void setCon(Connection con) {
         assignKehadiranAnakController.con = con;
     }
-
     public static boolean isPopulate() {
         return populate;
     }
-
     public static void setPopulate(boolean populate) {
         assignKehadiranAnakController.populate = populate;
     }

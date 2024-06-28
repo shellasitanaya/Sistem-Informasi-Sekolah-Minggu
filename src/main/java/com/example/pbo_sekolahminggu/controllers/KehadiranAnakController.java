@@ -204,7 +204,6 @@ public class KehadiranAnakController implements Initializable {
 
     @FXML
     public void edit() {
-//        Connection con = null;
         try {
             conn = ConnectionManager.getConnection();
 
@@ -219,29 +218,31 @@ public class KehadiranAnakController implements Initializable {
             conn.setAutoCommit(false);
 
             if (dataKehadiranAnak.isEmpty()) {
-                KehadiranAnakDao.populateTblKehadiranAnak(this.conn);
+                assignKehadiranAnakController.setPopulate(true);
+//                KehadiranAnakDao.populateTblKehadiranAnak(this.conn);
             }
             assignKehadiranAnakController.setCon(this.conn);  //this is to pass the connection
             loadMenuAssignKehadiranAnak();
         } catch (SQLException e) {
             e.printStackTrace();
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    ConnectionManager.close(conn);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (conn != null) {
+//                try {
+//                    conn.rollback();
+//                } catch (SQLException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
         }
+//        finally {
+//            if (conn != null) {
+//                try {
+//                    conn.setAutoCommit(true);
+//                    ConnectionManager.close(conn);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     @FXML
@@ -359,7 +360,6 @@ public class KehadiranAnakController implements Initializable {
         return empty;
     }
 
-    @FXML
     private void loadMenuAssignKehadiranAnak() {
         loadFXML("/com/example/pbo_sekolahminggu/assignKehadiranAnak.fxml");
     }

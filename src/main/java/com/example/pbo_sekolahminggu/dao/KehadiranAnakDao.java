@@ -208,7 +208,7 @@ public class KehadiranAnakDao {
     }
 
     // Extra query: populate the tbl_kehadiran_anak
-    public static void populateTblKehadiranAnak(Connection con) {
+    public static Connection populateTblKehadiranAnak(Connection con) {
         PreparedStatement ps = null;
         String query = "INSERT INTO tbl_kehadiran_anak (id_histori_kelas_anak, id_kebaktian)\n" +
                 "                SELECT hka.id, ? \n" +
@@ -226,7 +226,6 @@ public class KehadiranAnakDao {
                 ConnectionManager.close(ps);
             }
         }
+        return con;
     }
-
-
 }

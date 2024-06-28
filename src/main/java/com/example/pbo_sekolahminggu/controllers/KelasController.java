@@ -61,7 +61,7 @@ public class KelasController implements Initializable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
     }
 
@@ -82,7 +82,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
         }
     }
@@ -99,7 +99,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
             clear();//clear all the textfield
             selectedKelas = null;
@@ -121,7 +121,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
             clear();//clear all the textfield
             selectedKelas = null;
