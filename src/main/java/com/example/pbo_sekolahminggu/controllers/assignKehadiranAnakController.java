@@ -1,8 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.Anak;
-import com.example.pbo_sekolahminggu.beans.KehadiranAnak;
-import com.example.pbo_sekolahminggu.dao.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.beans.master_data.Anak;
+import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +15,8 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,7 +106,7 @@ public class assignKehadiranAnakController implements Initializable {
 
         if (populate) {
 
-            con = KehadiranAnakDao.populateTblKehadiranAnak(con);
+            KehadiranAnakDao.populateTblKehadiranAnak(con);
         }
         try {
             conHere = ConnectionManager.getConnection();

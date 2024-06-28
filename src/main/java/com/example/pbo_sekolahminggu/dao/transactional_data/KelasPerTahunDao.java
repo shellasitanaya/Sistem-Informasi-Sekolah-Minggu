@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class KelasPerTahunDao {
     public static ArrayList<KelasPerTahun> getAll(Connection con) {
@@ -46,6 +48,48 @@ public class KelasPerTahunDao {
             ConnectionManager.close(ps, rs);
         }
         return listkelasPerTahun;
+    }
+
+    // EXPORT
+    public static Map<String, Object[]> getAllArrayObject(Connection con, int idTahunAjaran) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query =
+                "WITH banyak_murid_kelas_per_tahun AS ( " +
+                        "    SELECT id_kelas_per_tahun, COUNT(*) AS banyak_murid " +
+                        "    FROM tbl_histori_kelas_anak " +
+                        "    GROUP BY id_kelas_per_tahun " +
+                        "), kelas_dan_banyak_murid_per_tahun AS ( " +
+                        "    SELECT (SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas) AS nama_kelas, " +
+                        "           kelas_paralel, bmkpt.banyak_murid " +
+                        "    FROM banyak_murid_kelas_per_tahun bmkpt " +
+                        "    LEFT JOIN tbl_kelas_per_tahun kpt ON bmkpt.id_kelas_per_tahun = kpt.id " +
+                        "    WHERE kpt.id_tahun_ajaran = ? " +
+                        ") " +
+                        "SELECT * " +
+                        "FROM kelas_dan_banyak_murid_per_tahun " +
+                        "ORDER BY banyak_murid DESC";
+
+        Map<String, Object[]> listKelasPerTahun = new TreeMap<>();
+        try {
+            ps = con.prepareStatement(query);
+            ps.setInt(1, idTahunAjaran);
+            rs = ps.executeQuery();
+            int i = 1;
+            while (rs.next()) {
+                Object[] object = new Object[3];
+                object[0] = rs.getString("nama_kelas");
+                object[1] = rs.getString("kelas_paralel");
+                object[2] = rs.getInt("banyak_murid");
+                listKelasPerTahun.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listKelasPerTahun;
     }
 
     // SAVE

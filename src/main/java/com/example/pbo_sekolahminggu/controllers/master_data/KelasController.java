@@ -1,7 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers.master_data;
 
-import com.example.pbo_sekolahminggu.beans.Kelas;
-import com.example.pbo_sekolahminggu.dao.KelasDao;
+import com.example.pbo_sekolahminggu.beans.master_data.Kelas;
+import com.example.pbo_sekolahminggu.dao.master_data.KelasDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,8 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class KelasController implements Initializable {
@@ -61,7 +59,7 @@ public class KelasController implements Initializable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            ConnectionManager.closeConnection(con);
+            ConnectionManager.close(con);
         }
     }
 
@@ -82,7 +80,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
         }
     }
@@ -99,7 +97,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
             clear();//clear all the textfield
             selectedKelas = null;
@@ -121,7 +119,7 @@ public class KelasController implements Initializable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
-                ConnectionManager.closeConnection(con);
+                ConnectionManager.close(con);
             }
             clear();//clear all the textfield
             selectedKelas = null;

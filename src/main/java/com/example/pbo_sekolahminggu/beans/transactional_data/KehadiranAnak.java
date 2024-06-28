@@ -16,6 +16,7 @@ public class KehadiranAnak {
     private String tahun_ajaran;
     private String kebaktian;
     private Date tgl_kebaktian;
+    private int maxKehadiran;
 
     // constructor
     public KehadiranAnak(){
@@ -102,4 +103,13 @@ public class KehadiranAnak {
     public void setPresensi(boolean presensi) {
         Presensi = presensi;
     }
+
+    public int getMaxKehadiran() {
+        return maxKehadiran;
+    }
+
+    public void setMaxKehadiran(int maxKehadiran) {
+        this.maxKehadiran = maxKehadiran;
+    }
+
 }

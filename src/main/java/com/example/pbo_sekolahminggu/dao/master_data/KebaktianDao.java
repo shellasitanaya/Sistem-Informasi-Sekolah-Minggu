@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class KebaktianDao {
     public static ArrayList<Kebaktian> getAll(Connection con) {
@@ -113,5 +115,66 @@ public class KebaktianDao {
         } finally {
             ConnectionManager.close(statement);
         }
+    }
+
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "WITH DetailedCounts AS (\n" +
+                "    SELECT \n" +
+                "        kbk.jenis_kebaktian, \n" +
+                "        kbk.tanggal,\n" +
+                "        CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', '')) AS kelas,\n" +
+                "        SUM(CASE WHEN a.jenis_kelamin = 'male' THEN 1 ELSE 0 END) AS LakiLaki,\n" +
+                "        SUM(CASE WHEN a.jenis_kelamin = 'female' THEN 1 ELSE 0 END) AS Perempuan,\n" +
+                "        COUNT(*) AS Total\n" +
+                "    FROM tbl_kebaktian kbk\n" +
+                "    JOIN tbl_kehadiran_anak ka ON ka.id_kebaktian = kbk.id\n" +
+                "    JOIN tbl_histori_kelas_anak hka ON hka.id = ka.id_histori_kelas_anak\n" +
+                "    JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                "    JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                "    JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "    WHERE \n" +
+                "        kbk.id = 2\n" +
+                "    GROUP BY \n" +
+                "        kbk.jenis_kebaktian, k.nama_kelas, kpt.kelas_paralel, kbk.tanggal\n" +
+                "),\n" +
+                "TotalCounts AS (\n" +
+                "    SELECT\n" +
+                "        'Total' AS jenis_kebaktian,\n" +
+                "        NULL::date AS tanggal,\n" +
+                "        'Total' AS kelas,\n" +
+                "        SUM(LakiLaki) AS LakiLaki,\n" +
+                "        SUM(Perempuan) AS Perempuan,\n" +
+                "        SUM(Total) AS Total\n" +
+                "    FROM DetailedCounts\n" +
+                ")\n" +
+                "SELECT *\n" +
+                "FROM (\n" +
+                "    SELECT * FROM DetailedCounts\n" +
+                "    UNION ALL\n" +
+                "    SELECT * FROM TotalCounts\n" +
+                ") AS combined\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN kelas = 'Total' THEN 1 ELSE 0 END,\n" +
+                "    kelas DESC;\n";
+        Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            int i = 1;
+            while(rs.next()) {
+                Object[] object = new Object[2];
+                object[0] = rs.getInt("id");
+                object[1] = rs.getString("nama");
+                listBrand.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listBrand;
     }
 }
