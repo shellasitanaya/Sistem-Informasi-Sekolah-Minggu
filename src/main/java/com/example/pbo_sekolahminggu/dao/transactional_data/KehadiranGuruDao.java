@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class KehadiranGuruDao {
     public static ArrayList<KehadiranGuru> getAll(Connection con) {
@@ -118,5 +120,30 @@ public class KehadiranGuruDao {
         } finally {
             ConnectionManager.close(statement);
         }
+    }
+
+    // EXPORT
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = " ";
+        Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            int i = 1;
+            while(rs.next()) {
+                Object[] object = new Object[2];
+                object[0] = rs.getInt("id");
+                object[1] = rs.getString("nama");
+                listBrand.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listBrand;
     }
 }
