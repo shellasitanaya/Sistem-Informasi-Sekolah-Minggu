@@ -126,7 +126,7 @@ public class KelasPerTahunController implements Initializable {
             System.out.println("No row selected.");
         }
     }
-
+//
     public void edit() {
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelasPerTahun  = kelasPerTahunTbl.getSelectionModel().getSelectedItem();

@@ -247,6 +247,9 @@ public class HistoriMengajarController implements Initializable {
 
     @FXML
     public void editAssign() {
+        if(!isInputValid()){
+            return;
+        }
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -262,6 +265,22 @@ public class HistoriMengajarController implements Initializable {
             ConnectionManager.close(con);
 
         }
+    }
+
+
+
+    public boolean isInputValid(){
+        if(tahunAjaranHistoriMengajarCb.getValue() != null && kelasHistoriMengajarCb.getValue() != null){
+            return true;
+        }
+
+        if(tahunAjaranHistoriMengajarCb.getValue() == null){
+            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
+        }else if(kelasHistoriMengajarCb.getValue() == null){
+            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
+        }
+
+        return false;
     }
     // --------------------------------------------------
     @FXML

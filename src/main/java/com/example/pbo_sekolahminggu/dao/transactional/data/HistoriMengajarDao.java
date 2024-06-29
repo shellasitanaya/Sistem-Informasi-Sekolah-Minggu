@@ -38,7 +38,8 @@ public class HistoriMengajarDao {
                 "id_guru,\n" +
                 "id_kelas_per_tahun\n" +
                 "FROM tbl_histori_mengajar thm\n" +
-                "WHERE thm.status_aktif = 1";
+                "WHERE thm.status_aktif = 1\n" +
+                "ORDER BY thm.id";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -84,7 +85,8 @@ public class HistoriMengajarDao {
                 "LEFT JOIN tbl_kelas_per_tahun kpt ON thm.id_kelas_per_tahun = kpt.id\n" +
                 "LEFT JOIN tbl_kelas k ON kpt.id_kelas = k.id\n" +
                 "LEFT JOIN tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
-                "WHERE thm.status_aktif = 1 AND kpt.id=?";
+                "WHERE thm.status_aktif = 1 AND kpt.id=?\n" +
+                "ORDER BY thm.id";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
