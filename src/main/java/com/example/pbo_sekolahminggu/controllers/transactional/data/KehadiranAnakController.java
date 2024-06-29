@@ -39,10 +39,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class KehadiranAnakController implements Initializable {
     @FXML
@@ -238,13 +235,29 @@ public class KehadiranAnakController implements Initializable {
             KehadiranAnakDao.setSelectedKelas(selectedKelas);
             KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
 
-            //get the data kehadiran to check if it's empty or not
+            // Get the data kehadiran
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con, selectedKelas, selectedKebaktian));
 
             if (dataKehadiranAnak.isEmpty()) {
-                KehadiranAnakDao.populateTblKehadiranAnak(con);  //untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Konfirmasi pengisian data kehadiran");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data kehadiran yang ditemukan. Isi data kehadiran kelas ini?");
+
+                // Add buttons to the alert
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(cancelButton, confirmButton);
+
+                // Show the alert and wait for the response
+                Connection finalCon = con;
+                Optional<ButtonType> pilihan = alert.showAndWait();
+
+                // Handle the user's response
+                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    KehadiranAnakDao.populateTblKehadiranAnak(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                } else return;
             }
-            //this is to pass the connection
             loadMenuAssignKehadiranAnak();
         } catch (SQLException e) {
             e.printStackTrace();
