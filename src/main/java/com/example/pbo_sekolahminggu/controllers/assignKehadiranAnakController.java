@@ -1,7 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master_data.Anak;
-import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.beans.master.data.Anak;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -219,7 +219,7 @@ public class assignKehadiranAnakController implements Initializable {
     // INI UNTUK PINDAH WINDOW
     @FXML
     private void loadMenuKehadiranAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/kehadiranAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

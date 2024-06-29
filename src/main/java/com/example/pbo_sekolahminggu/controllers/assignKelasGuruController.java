@@ -1,9 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master_data.Anak;
-import com.example.pbo_sekolahminggu.beans.master_data.Guru;
-import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
-import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriMengajarDao;
+import com.example.pbo_sekolahminggu.beans.master.data.Guru;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -165,7 +163,7 @@ public class assignKelasGuruController implements Initializable {
     }
 
     private void loadMenuHM() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/historiMengajar.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/historiMengajar.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

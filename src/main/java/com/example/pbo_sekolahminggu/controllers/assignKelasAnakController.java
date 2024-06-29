@@ -1,9 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master_data.Anak;
-import com.example.pbo_sekolahminggu.beans.transactional_data.HistoriKelasAnak;
-import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
-import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.beans.master.data.Anak;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +15,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -169,7 +166,7 @@ public class assignKelasAnakController implements Initializable {
     }
 
     private void loadMenuHKA() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/historiKelasAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {
