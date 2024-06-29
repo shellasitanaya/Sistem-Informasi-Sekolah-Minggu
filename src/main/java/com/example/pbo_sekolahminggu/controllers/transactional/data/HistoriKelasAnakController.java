@@ -12,6 +12,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -40,14 +41,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import java.util.Map;
-
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -386,14 +384,27 @@ public class HistoriKelasAnakController implements Initializable {
 //            HistoriKelasAnakDao.setSelectedClass(kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
             Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
 
-            // Mengisi tabel dengan data
-            for (Object[] rowData : data.values()) {
-                for (Object cellData : rowData) {
-                    Paragraph cellParagraph = new Paragraph(cellData != null ? cellData.toString() : "");
-                    cellParagraph.setTextAlignment(TextAlignment.CENTER);
-                    com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(cellParagraph);
-                    table.addCell(cell);
-                }
+            Set<String> keySet = data.keySet();
+            for (String key : keySet) {
+                Object[] row = data.get(key);
+                System.out.println("ID Anak: " + row[0]);
+                System.out.println("Nama Anak: " + row[1]);
+                System.out.println("Total Kehadiran: " + row[2]);
+
+                Paragraph idAnakParagraph = new Paragraph(String.valueOf(row[0]));
+                idAnakParagraph.setTextAlignment(TextAlignment.CENTER);
+                Cell idAnakCell = new Cell().add(idAnakParagraph);
+                table.addCell(idAnakCell);
+
+                Paragraph namaAnakParagraph = new Paragraph(String.valueOf(row[1]));
+                namaAnakParagraph.setTextAlignment(TextAlignment.CENTER);
+                Cell namaAnakCell = new Cell().add(namaAnakParagraph);
+                table.addCell(namaAnakCell);
+
+                Paragraph totalKehadiranParagraph = new Paragraph(String.valueOf(row[2]));
+                totalKehadiranParagraph.setTextAlignment(TextAlignment.CENTER);
+                Cell totalKehadiranCell = new Cell().add(totalKehadiranParagraph);
+                table.addCell(totalKehadiranCell);
             }
 
             doc.add(table);
@@ -437,21 +448,22 @@ public class HistoriKelasAnakController implements Initializable {
 
             Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
             Set<String> keyid = data.keySet();
-
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
-                int cellid = 0;
 
-                for (Object obj : objectArr) {
-                    XSSFCell cell = row.createCell(cellid++);
-                    cell.setCellValue(String.valueOf(obj));
-                }
-            }
+                XSSFCell cellIdAnak = row.createCell(0);
+                cellIdAnak.setCellValue(String.valueOf(objectArr[0]));
 
-            // Auto-size columns
-            for (int i = 0; i < headers.length; i++) {
-                spreadsheet.autoSizeColumn(i);
+                XSSFCell cellNamaAnak = row.createCell(1);
+                cellNamaAnak.setCellValue(String.valueOf(objectArr[1]));
+
+                XSSFCell cellTotalKehadiran = row.createCell(2);
+                cellTotalKehadiran.setCellValue(String.valueOf(objectArr[2]));
+
+                spreadsheet.autoSizeColumn(0);
+                spreadsheet.autoSizeColumn(1);
+                spreadsheet.autoSizeColumn(2);
             }
 
             out = new FileOutputStream(file);

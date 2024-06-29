@@ -1,6 +1,7 @@
 package com.example.pbo_sekolahminggu.dao.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -122,9 +123,9 @@ public class KehadiranGuruDao {
         }
     }
 
+
     // EXPORT
-    // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT " +
@@ -155,6 +156,7 @@ public class KehadiranGuruDao {
 
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, kpt.getID_TAHUN_AJARAN());
             rs = ps.executeQuery();
             int i = 1;
             while(rs.next()) {
