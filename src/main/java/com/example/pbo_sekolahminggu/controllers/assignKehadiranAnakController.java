@@ -1,7 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master_data.Anak;
-import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.beans.master.data.Anak;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,10 +67,10 @@ public class assignKehadiranAnakController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Ensure con is not null before using it
-        if (con == null) {
-            logger.severe("Database connection is null!");
-            return;
-        }
+//        if (con == null) {
+//            logger.severe("Database connection is null!");
+//            return;
+//        }
 
         dataAnakHadir = FXCollections.observableArrayList();
         dataAnakTidakHadir = FXCollections.observableArrayList();
@@ -100,21 +100,14 @@ public class assignKehadiranAnakController implements Initializable {
 
         belumHadirKehadiranAnakTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
-        if (populate) {
 
-            KehadiranAnakDao.populateTblKehadiranAnak(con);
-        }
         try {
             conHere = ConnectionManager.getConnection();
             conHere.setAutoCommit(false);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error setting auto-commit to false", e);
         }
-
-        refreshTable(con);
-
-        populate = false;
-
+        refreshTable(conHere);
     }
 
     @FXML
@@ -226,7 +219,7 @@ public class assignKehadiranAnakController implements Initializable {
     // INI UNTUK PINDAH WINDOW
     @FXML
     private void loadMenuKehadiranAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/kehadiranAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranAnak.fxml");
     }
 
     private void loadFXML(String fxmlFile) {

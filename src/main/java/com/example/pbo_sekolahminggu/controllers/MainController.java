@@ -65,47 +65,47 @@ public class MainController {
 
     @FXML
     private void loadMenuGuru() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/master_data/guru.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/master.data/guru.fxml");
     }
 
     @FXML
     private void loadMenuAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/master_data/anak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/master.data/anak.fxml");
     }
 
     @FXML
     private void loadMenuKelas() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/master_data/kelas.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/master.data/kelas.fxml");
     }
 
     @FXML
     private void loadMenuKebaktian() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/master_data/kebaktian.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/master.data/kebaktian.fxml");
     }
 
     @FXML
     private void loadMenuTahunAjaran() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/master_data/tahunAjaran.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/master.data/tahunAjaran.fxml");
     }
     @FXML
     private void loadMenuKelasPerTahun() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/kelasPerTahun.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kelasPerTahun.fxml");
     }
     @FXML
     private void loadMenuKehadiranAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/kehadiranAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranAnak.fxml");
     }
     @FXML
     private void loadMenuKehadiranGuru() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/kehadiranGuru.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranGuru.fxml");
     }
     @FXML
     private void loadMenuHistorikelasAnak() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/historiKelasAnak.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/historiKelasAnak.fxml");
     }
     @FXML
     private void loadMenuHistoriMengajar() {
-        loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/historiMengajar.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/historiMengajar.fxml");
     }
 
     private void loadFXML(String fxmlFile) {
