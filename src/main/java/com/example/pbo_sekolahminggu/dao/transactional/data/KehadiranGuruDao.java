@@ -17,13 +17,13 @@ public class KehadiranGuruDao {
         ResultSet rs = null;
         String query = "SELECT\n" +
                 "kg.id,\n" +
-                "(SELECT nama FROM tbl_guru g WHERE g.id = kg.id_pembimbing),\n" +
-                "(SELECT nip FROM tbl_guru g WHERE g.id = kg.id_pembimbing),\n" +
+                "(SELECT nama FROM tbl_guru g WHERE g.id = kg.id_histori_mengajar),\n" +
+                "(SELECT nip FROM tbl_guru g WHERE g.id = kg.id_histori_mengajar),\n" +
                 "(SELECT \n" +
                 " \tnama_kelas FROM tbl_kelas k WHERE k.id = \n" +
                 " \t(SELECT id_kelas FROM tbl_kelas_per_tahun kpt WHERE kpt.id =\n" +
                 "\t\t(SELECT id_kelas_per_tahun FROM tbl_histori_mengajar hm WHERE hm.id =\n" +
-                "\t\t\tkg.id_pembimbing\n" +
+                "\t\t\tkg.id_histori_mengajar\n" +
                 "\t\t)\n" +
                 "\t)\n" +
                 ")\n" +
@@ -31,7 +31,7 @@ public class KehadiranGuruDao {
                 "COALESCE(\n" +
                 "\t(SELECT kelas_paralel FROM tbl_kelas_per_tahun kpt WHERE kpt.id =\n" +
                 "\t\t(SELECT id_kelas_per_tahun FROM tbl_histori_mengajar hm WHERE hm.id =\n" +
-                "\t\t\tkg.id_pembimbing\n" +
+                "\t\t\tkg.id_histori_mengajar\n" +
                 "\t\t)\n" +
                 "\t),''\n" +
                 ") AS kelas\n" +
@@ -39,7 +39,7 @@ public class KehadiranGuruDao {
                 "(SELECT jenis_kebaktian FROM tbl_kebaktian k WHERE k.id = kg.id_kebaktian),\n" +
                 "(SELECT tanggal FROM tbl_kebaktian k WHERE k.id = kg.id_kebaktian),\n" +
                 "presensi,\n" +
-                "id_pembimbing,\n" +
+                "id_histori_mengajar,\n" +
                 "id_kebaktian\n" +
                 "FROM tbl_kehadiran_guru kg\n" +
                 "WHERE kg.status_aktif = 1\n";
@@ -56,7 +56,7 @@ public class KehadiranGuruDao {
                 kehadiranGuru.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kehadiranGuru.setTanggal(rs.getDate("tanggal"));
                 kehadiranGuru.setID_KEBAKTIAN(rs.getInt("id_kebaktian"));
-                kehadiranGuru.setID_HISTORI_MENGAJAR(rs.getInt("id_pembimbing"));
+                kehadiranGuru.setID_HISTORI_MENGAJAR(rs.getInt("id_histori_mengajar"));
                 kehadiranGuru.setKelas(rs.getString("kelas"));
                 listkehadiranGuru.add(kehadiranGuru);
             }
@@ -134,7 +134,7 @@ public class KehadiranGuruDao {
                 "FROM " +
                 "    tbl_kehadiran_guru kg " +
                 "JOIN " +
-                "    tbl_histori_mengajar h ON kg.id_pembimbing = h.id " +
+                "    tbl_histori_mengajar h ON kg.id_histori_mengajar = h.id " +
                 "JOIN " +
                 "    tbl_kebaktian k ON kg.id_kebaktian = k.id " +
                 "JOIN " +
