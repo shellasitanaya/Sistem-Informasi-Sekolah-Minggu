@@ -369,6 +369,10 @@ public class KehadiranGuruController implements Initializable {
             // Get the ArrayList of Guru objects from the database
             ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getID_KEBAKTIAN());
 
+            if (listKehadiranGuru.isEmpty()) {
+                alertWarning("Belum ada data kehadiran guru!");
+                return;
+            }
             // Set cell value factory for each TableColumn
             idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_KEHADIRAN_GURU())));
             namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama()));
