@@ -51,27 +51,8 @@ public class assignKehadiranAnakController implements Initializable {
 
     private static boolean populate = false;
     private static final Logger logger = Logger.getLogger(assignKehadiranAnakController.class.getName());
-    public static Connection getCon() {
-        return con;
-    }
-    public static void setCon(Connection con) {
-        assignKehadiranAnakController.con = con;
-    }
-    public static boolean isPopulate() {
-        return populate;
-    }
-    public static void setPopulate(boolean populate) {
-        assignKehadiranAnakController.populate = populate;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Ensure con is not null before using it
-//        if (con == null) {
-//            logger.severe("Database connection is null!");
-//            return;
-//        }
-
         dataAnakHadir = FXCollections.observableArrayList();
         dataAnakTidakHadir = FXCollections.observableArrayList();
         hadirKehadiranAnakTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -113,10 +94,6 @@ public class assignKehadiranAnakController implements Initializable {
     @FXML
     public void cancel() {
         try {
-            if (con != null) {
-                con.rollback();
-                logger.info("Main connection rollback executed.");
-            }
             if (conHere != null) {
                 conHere.rollback();
                 logger.info("Secondary connection rollback executed.");
@@ -134,10 +111,6 @@ public class assignKehadiranAnakController implements Initializable {
     @FXML
     public void save() {
         try {
-            if (con != null) {
-                con.commit();
-                logger.info("Main connection commit executed.");
-            }
             if (conHere != null) {
                 conHere.commit();
                 logger.info("Secondary connection commit executed.");
@@ -153,11 +126,6 @@ public class assignKehadiranAnakController implements Initializable {
 
     private void closeConnections() {
         try {
-            if (con != null && !con.isClosed()) {
-                con.setAutoCommit(true);
-                con.close();
-                logger.info("Main connection closed.");
-            }
             if (conHere != null && !conHere.isClosed()) {
                 conHere.setAutoCommit(true);
                 conHere.close();

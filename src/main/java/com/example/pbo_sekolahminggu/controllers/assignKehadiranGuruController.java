@@ -38,23 +38,8 @@ public class assignKehadiranGuruController implements Initializable {
     private ObservableList<Guru> dataGuruTidakHadir;
     private static boolean populate = false;
     private static final Logger logger = Logger.getLogger(assignKehadiranGuruController.class.getName());
-    public Connection getCon() {
-        return con;
-    }
-
-    public static void setCon(Connection conn) {
-        assignKehadiranGuruController.con = conn;
-    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Ensure con is not null before using it
-        if (con == null) {
-            logger.severe("Database connection is null!");
-            return;
-        }
-
-        System.out.println("DOR");
-
         dataGuruHadir = FXCollections.observableArrayList();
         dataGuruTidakHadir = FXCollections.observableArrayList();
         hadirKehadiranGuruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -83,10 +68,6 @@ public class assignKehadiranGuruController implements Initializable {
 
         belumHadirKehadiranGuruTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
-        if (populate) {
-
-            KehadiranGuruDao.populateTblKehadiranGuru(con);
-        }
         try {
             conHere = ConnectionManager.getConnection();
             conHere.setAutoCommit(false);
@@ -95,11 +76,7 @@ public class assignKehadiranGuruController implements Initializable {
         }
 
         refreshTable(con);
-
-        populate = false;
-
     }
-
 
     @FXML
     public void cancel() {
@@ -169,7 +146,7 @@ public class assignKehadiranGuruController implements Initializable {
             //refresh table view
             refreshTable(conHere);
         } else {
-            alertWarning("Silahkan pilih anak yang akan dijadikan hadir");
+            alertWarning("Silahkan pilih pengajar kelas untuk hadir");
         }
     }
 
@@ -182,7 +159,7 @@ public class assignKehadiranGuruController implements Initializable {
             //refresh table view
             refreshTable(conHere);
         } else {
-            alertWarning("Silahkan pilih anak yang akan dijadikan tidak hadir");
+            alertWarning("Silahkan pilih pengajar kelas untuk tidak hadir");
         }
     }
 
@@ -214,12 +191,8 @@ public class assignKehadiranGuruController implements Initializable {
         //refresh data anak HADIR
         dataGuruHadir = FXCollections.observableArrayList(KehadiranGuruDao.getAllGuruHadir(con));
         hadirKehadiranGuruTbl.setItems(dataGuruHadir);
-        System.out.println(dataGuruHadir);
-
         //refresh data anak TIDAK HADIR
         dataGuruTidakHadir = FXCollections.observableArrayList(KehadiranGuruDao.getAllGuruTidakHadir(con));
         belumHadirKehadiranGuruTbl.setItems(dataGuruTidakHadir);
-        System.out.println("tidak hadir:");
-        System.out.println(dataGuruTidakHadir);
     }
 }

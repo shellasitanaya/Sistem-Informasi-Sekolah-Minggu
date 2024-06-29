@@ -1,6 +1,5 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
-import com.example.pbo_sekolahminggu.assignKehadiranGuruController;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
@@ -77,7 +76,7 @@ public class KehadiranGuruController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        populateKelasTable();
+        populateKelasTable();
         tahunAjaranKehadiranGuruCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
             public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
@@ -308,7 +307,6 @@ public class KehadiranGuruController implements Initializable {
             if (dataKehadiranGuru.isEmpty()) {
                 KehadiranGuruDao.populateTblKehadiranGuru(this.conn);
             }
-            assignKehadiranGuruController.setCon(this.conn);  //this is to pass the connection
             loadMenuAssignKehadiranGuru();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -89,54 +89,45 @@ public class KehadiranAnakController implements Initializable {
 
         kehadiranAnakTbl.getColumns().clear();
         //column no
-        TableColumn idCol = new TableColumn<>("No");
-        idCol.setMinWidth(20);
+        TableColumn idCol = new TableColumn<>("ID Kehadiran");
+        idCol.setMinWidth(81);
         idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("ID_KEHADIRAN_ANAK"));  //yg ini harus sama dgn attribute di beans
 
         //column nama anak
         TableColumn namaAnakCol = new TableColumn("Nama");
-        namaAnakCol.setMinWidth(110);
+        namaAnakCol.setMinWidth(188);
         namaAnakCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("nama_anak"));
 
         TableColumn nisCOL = new TableColumn("NIS");
-        nisCOL.setMinWidth(100);
+        nisCOL.setMinWidth(128);
         nisCOL.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("NIS"));
 
         TableColumn namaKelasCol = new TableColumn("Kelas");
-        namaKelasCol.setMinWidth(110);
+        namaKelasCol.setMinWidth(127);
         namaKelasCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("kelas"));
 
-        TableColumn taCol = new TableColumn("Tahun Ajaran");
-        taCol.setMinWidth(100);
-        taCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("tahun_ajaran"));
-
         TableColumn kebaktianCol = new TableColumn("Kebaktian");
-        kebaktianCol.setMinWidth(100);
+        kebaktianCol.setMinWidth(88);
         kebaktianCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("kebaktian"));
 
         TableColumn tanggalCol = new TableColumn("Tanggal");
-        tanggalCol.setMinWidth(100);
+        tanggalCol.setMinWidth(106);
         tanggalCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("tgl_kebaktian"));
 
         TableColumn presensiCol = new TableColumn("Presensi");
-        presensiCol.setMinWidth(100);
+        presensiCol.setMinWidth(92);
         presensiCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<KehadiranAnak, String>, ObservableValue<String>>() {
             @Override
             public javafx.beans.value.ObservableValue<String> call(TableColumn.CellDataFeatures<KehadiranAnak, String> cellData) {
                 return new SimpleStringProperty(cellData.getValue().isPresensi() ? "Hadir" : "Tidak Hadir");
             }
         });
-        kehadiranAnakTbl.getColumns().addAll(idCol, namaAnakCol, nisCOL, namaKelasCol, taCol, kebaktianCol, tanggalCol, presensiCol);
-
-//        tahunAjaranKehadiranAnakCb.setValue(null);
-//        kelasKehadiranAnakCb.setValue(null);
-//        kebaktianKehadiranAnakCb.setValue(null);
+        kehadiranAnakTbl.getColumns().addAll(idCol, namaAnakCol, nisCOL, namaKelasCol, kebaktianCol, tanggalCol, presensiCol);
 
         Connection con = null;
         try {
@@ -204,12 +195,16 @@ public class KehadiranAnakController implements Initializable {
                 }
             });
             kebaktianKehadiranAnakCb.getSelectionModel().select(0);
-//
+
+            //get the table data
+            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con));
+            kehadiranAnakTbl.setItems(dataKehadiranAnak);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             ConnectionManager.close(con);
         }
+
 //        tahunAjaranKehadiranAnakCb.setValue(null);
     }
 
@@ -240,7 +235,7 @@ public class KehadiranAnakController implements Initializable {
             KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
 
             // Get the data kehadiran
-            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con, selectedKelas, selectedKebaktian));
+            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKebaktian));
 
             if (dataKehadiranAnak.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -377,7 +372,7 @@ public class KehadiranAnakController implements Initializable {
         KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
         Kebaktian selectedKbk = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
         //get the table data
-        dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con, selectedKelas, selectedKbk));
+        dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKbk));
         if (!dataKehadiranAnak.isEmpty()) {
             kehadiranAnakTbl.setItems(dataKehadiranAnak);
             empty = false;

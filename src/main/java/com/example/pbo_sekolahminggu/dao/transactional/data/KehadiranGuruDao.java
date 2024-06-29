@@ -280,11 +280,7 @@ public class KehadiranGuruDao {
         }
     }
 
-//<<<<<<< HEAD
-//
-//    // EXPORT
-//    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
-//=======
+
     public static void populateTblKehadiranGuru(Connection con) {
         PreparedStatement ps = null;
         String query = "INSERT INTO tbl_kehadiran_guru (id_histori_mengajar, id_kebaktian)\n" +
@@ -293,9 +289,6 @@ public class KehadiranGuruDao {
                 "                WHERE hka.id_kelas_per_tahun = ?";
         try {
             ps = con.prepareStatement(query);
-//<<<<<<< HEAD
-//            ps.setInt(1, kpt.getID_TAHUN_AJARAN());
-//=======
             ps.setInt(1, selectedKebaktian.getID_KEBAKTIAN());
             ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
             ps.executeUpdate(); // Use executeUpdate instead of executeQuery for INSERT statement

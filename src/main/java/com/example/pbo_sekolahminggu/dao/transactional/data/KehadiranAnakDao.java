@@ -36,9 +36,43 @@ public class KehadiranAnakDao {
         KehadiranAnakDao.selectedKebaktian = selectedKebaktian;
     }
 
-    //    public static int getId_kelas_per_tahun(Connection con)
-    //ini function untuk di main menu kehadiran anak, bukan di assign
-    public static ArrayList<KehadiranAnak> getAll(Connection con, KelasPerTahun kelas, Kebaktian kbk) {
+
+    public static ArrayList<KehadiranAnak> getAll(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "SELECT ka.id, a.nama, a.nis, CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', ''))AS kelas, ta.tahun_ajaran, kbk.jenis_kebaktian, kbk.tanggal, ka.presensi\n" +
+                "                FROM tbl_kehadiran_anak ka\n" +
+                "                JOIN tbl_histori_kelas_anak hka ON hka.id = ka.id_histori_kelas_anak\n" +
+                "                JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                "                JOIN tbl_kelas_per_tahun kpt ON hka.id_kelas_per_tahun = kpt.id\n" +
+                "                JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "                JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
+                "                JOIN tbl_kebaktian kbk ON kbk.id = ka.id_kebaktian\n" +
+                "                WHERE kbk.status_aktif = 1 AND a.status_aktif = 1 AND kpt.status_aktif = 1 ORDER BY ka.id ASC";
+        ArrayList<KehadiranAnak> listkehadiranAnak = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                KehadiranAnak kehadiranAnak = new KehadiranAnak();
+                kehadiranAnak.setID_KEHADIRAN_ANAK(rs.getInt("id"));
+                kehadiranAnak.setNama_anak(rs.getString("nama"));
+                kehadiranAnak.setNIS(rs.getString("nis"));
+                kehadiranAnak.setKelas(rs.getString("kelas"));
+                kehadiranAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
+                kehadiranAnak.setKebaktian(rs.getString("jenis_kebaktian"));
+                kehadiranAnak.setTgl_kebaktian(rs.getDate("tanggal"));
+                kehadiranAnak.setPresensi(rs.getBoolean("presensi"));
+                listkehadiranAnak.add(kehadiranAnak);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return listkehadiranAnak;
+    }
+    public static ArrayList<KehadiranAnak> getAllFiltered(Connection con, KelasPerTahun kelas, Kebaktian kbk) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT ka.id, a.nama, a.nis, CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', ''))AS kelas, ta.tahun_ajaran, kbk.jenis_kebaktian, kbk.tanggal, ka.presensi\n" +
