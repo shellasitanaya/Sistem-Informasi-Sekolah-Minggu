@@ -41,14 +41,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import java.util.Map;
-
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -371,10 +368,6 @@ public class HistoriKelasAnakController implements Initializable {
              logoCell.setBorder(Border.NO_BORDER);
              table.addCell(logoCell);
 
-            com.itextpdf.layout.element.Cell emptyCell = new Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
-
             // Header Tabel
             String[] headers = {"ID Anak", "Nama Anak", "Total Kehadiran"};
             for (String header : headers) {
@@ -387,10 +380,10 @@ public class HistoriKelasAnakController implements Initializable {
             }
 
             // Mengambil data dari DAO
-            // INI ADA ANEH POT TOLONG
-            //HistoriKelasAnak selected= kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
-           // HistoriKelasAnakDao.setSelectedClass(kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(ConnectionManager.getConnection(), kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+            Connection con = ConnectionManager.getConnection();
+//            HistoriKelasAnakDao.setSelectedClass(kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
@@ -452,13 +445,9 @@ public class HistoriKelasAnakController implements Initializable {
             }
 
             // Export Data
-            KelasPerTahun selectedKelas = kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
-            HistoriKelasAnakDao.setSelectedClass(selectedKelas);
-            // INI JUGA SELECTEDNYA GMN
-            // !!
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, selectedKelas);
-            Set<String> keyid = data.keySet();
 
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+            Set<String> keyid = data.keySet();
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
@@ -479,29 +468,6 @@ public class HistoriKelasAnakController implements Initializable {
 
             out = new FileOutputStream(file);
             workbook.write(out);
-
-//            // Export Data
-//            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
-//            Set<String> keyid = data.keySet();
-//
-//            for (String key : keyid) {
-//                XSSFRow row = spreadsheet.createRow(rowid++);
-//                Object[] objectArr = data.get(key);
-//                int cellid = 0;
-//
-//                for (Object obj : objectArr) {
-//                    XSSFCell cell = row.createCell(cellid++);
-//                    cell.setCellValue(String.valueOf(obj));
-//                }
-//            }
-//
-//            // Auto-size columns
-//            for (int i = 0; i < headers.length; i++) {
-//                spreadsheet.autoSizeColumn(i);
-//            }
-//
-//            out = new FileOutputStream(file);
-//            workbook.write(out);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {

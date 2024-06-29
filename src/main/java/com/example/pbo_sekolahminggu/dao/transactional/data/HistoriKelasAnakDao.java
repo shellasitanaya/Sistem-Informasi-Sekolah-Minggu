@@ -61,7 +61,7 @@ public class HistoriKelasAnakDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con, HistoriKelasAnak hka) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
@@ -79,7 +79,7 @@ public class HistoriKelasAnakDao {
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, hka.getID_HISTORI_KELAS_ANAK());
+            ps.setInt(1, kpt.getID_KELAS_PER_TAHUN());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
