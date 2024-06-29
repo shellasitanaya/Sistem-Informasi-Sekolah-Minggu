@@ -11,7 +11,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>5.9.2</junit.version>  </properties>
+    <junit.version>5.9.2</junit.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -25,14 +26,14 @@
       <version>20</version>
     </dependency>
 
-    <!--    jdbc-->
+    <!-- JDBC -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.7.3</version>
     </dependency>
 
-    <!--    Library PDF    -->
+    <!-- Library PDF -->
     <dependency>
       <groupId>com.itextpdf</groupId>
       <artifactId>itext-core</artifactId>
@@ -40,7 +41,7 @@
       <type>pom</type>
     </dependency>
 
-    <!--    Library Export Excel    -->
+    <!-- Library Export Excel -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
@@ -68,6 +69,13 @@
       <groupId>com.itextpdf</groupId>
       <artifactId>kernel</artifactId>
       <version>8.0.4</version>
+    </dependency>
+
+<!--     Logback (SLF4J) -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.10</version>
     </dependency>
   </dependencies>
 

@@ -51,29 +51,30 @@ public class KelasPerTahunDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
-                "WITH banyak_murid_kelas_per_tahun AS ( " +
-                        "    SELECT id_kelas_per_tahun, COUNT(*) AS banyak_murid " +
-                        "    FROM tbl_histori_kelas_anak " +
-                        "    GROUP BY id_kelas_per_tahun " +
-                        "), kelas_dan_banyak_murid_per_tahun AS ( " +
-                        "    SELECT (SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas) AS nama_kelas, " +
-                        "           kelas_paralel, bmkpt.banyak_murid " +
-                        "    FROM banyak_murid_kelas_per_tahun bmkpt " +
-                        "    LEFT JOIN tbl_kelas_per_tahun kpt ON bmkpt.id_kelas_per_tahun = kpt.id " +
-                        "    WHERE kpt.id_tahun_ajaran = ? " +
-                        ") " +
-                        "SELECT * " +
-                        "FROM kelas_dan_banyak_murid_per_tahun " +
+                "WITH banyak_murid_kelas_per_tahun AS(\n" +
+                        "\tSELECT id_kelas_per_tahun, COUNT(*) AS banyak_murid\n" +
+                        "\tFROM tbl_histori_kelas_anak\n" +
+                        "\tGROUP BY id_kelas_per_tahun\n" +
+                        "),kelas_dan_banyak_murid_per_tahun AS (\n" +
+                        "\tSELECT (SELECT nama_kelas FROM tbl_kelas k WHERE k.id = kpt.id_kelas), kelas_paralel, bmkpt.banyak_murid\n" +
+                        "\tFROM banyak_murid_kelas_per_tahun bmkpt\n" +
+                        "\tLEFT JOIN tbl_kelas_per_tahun kpt ON bmkpt.id_kelas_per_tahun = kpt.id\n" +
+                        "\tWHERE kpt.id_tahun_ajaran = ?\n" +
+                        ")\n" +
+                        "SELECT *\n" +
+                        "FROM kelas_dan_banyak_murid_per_tahun\n" +
                         "ORDER BY banyak_murid DESC";
 
         Map<String, Object[]> listMengajar = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, kpt.getID_KELAS_PER_TAHUN());
             rs = ps.executeQuery();
+
             int i = 1;
             while(rs.next()) {
                 Object[] object = new Object[3];

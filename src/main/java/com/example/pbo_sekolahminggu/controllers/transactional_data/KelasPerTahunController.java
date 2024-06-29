@@ -179,7 +179,8 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Data Table
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection());
+            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
@@ -240,7 +241,8 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Export Data
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con);
+            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {

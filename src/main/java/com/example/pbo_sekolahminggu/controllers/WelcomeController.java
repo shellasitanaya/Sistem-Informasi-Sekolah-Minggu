@@ -27,15 +27,16 @@ public class WelcomeController {
 
         myImageView.setImage(new Image(getClass().getResource("/images/sekolahMingguLogo.png").toString()));
     }
+
     @FXML
     void SwitchToDashboard(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/com/example/pbo_sekolahminggu/views/mainWindow.fxml"));
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        root = FXMLLoader.load(getClass().getResource("/com/example/projekbdpbo/mainWindow.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setTitle("Dasboard");
         stage.setScene(scene);
         stage.show();
+
+
     }
-
-
 }
