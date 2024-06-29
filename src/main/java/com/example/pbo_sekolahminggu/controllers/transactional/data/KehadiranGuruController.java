@@ -441,6 +441,11 @@ public class KehadiranGuruController implements Initializable {
         }
     }
     private void exportToPdf(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih tahun ajaran terlebih dahulu!");
+            return;
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -469,7 +474,7 @@ public class KehadiranGuruController implements Initializable {
 
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, selectedTahun);
 
             // Mengisi tabel dengan data
             for (Object[] rowData : data.values()) {
@@ -516,7 +521,13 @@ public class KehadiranGuruController implements Initializable {
         FileOutputStream out = null;
         Connection con = null;
 
+
         try {
+            TahunAjaran selectedTahun = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
+            if (selectedTahun == null) {
+                alertWarning("Pilih tahun ajaran terlebih dahulu!");
+                return;
+            }
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
@@ -535,7 +546,7 @@ public class KehadiranGuruController implements Initializable {
             }
 
             // Export Data
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
