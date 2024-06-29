@@ -72,7 +72,7 @@ public class HistoriKelasAnakDao {
                         "                        JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                         "                        JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
                         "                        JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
-                        "                        WHERE kpt.id = ?\n" +
+                        "                        WHERE kpt.id = ? AND a.status_aktif = 1 AND ka.presensi = true\n" +
                         "                        GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
                         "                        ORDER BY anak_id\n";
 

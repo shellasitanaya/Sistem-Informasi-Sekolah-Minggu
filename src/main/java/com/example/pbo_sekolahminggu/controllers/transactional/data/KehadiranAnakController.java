@@ -442,6 +442,7 @@ public class KehadiranAnakController implements Initializable {
     }
 
     private void exportToPdf(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -477,7 +478,7 @@ public class KehadiranAnakController implements Initializable {
 
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con, selectedTahun);
 
             // Mengisi tabel dengan data
             Set<String> keySet = data.keySet();
@@ -517,6 +518,7 @@ public class KehadiranAnakController implements Initializable {
     }
 
     private void exportToExcel(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Kehadiran Anak Data");
 
@@ -545,7 +547,7 @@ public class KehadiranAnakController implements Initializable {
             }
 
             // Export Data
-            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {

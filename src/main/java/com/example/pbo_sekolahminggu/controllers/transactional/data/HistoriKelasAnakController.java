@@ -44,11 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-
+import java.util.*;
 
 
 public class HistoriKelasAnakController implements Initializable {
@@ -236,11 +232,11 @@ public class HistoriKelasAnakController implements Initializable {
             Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
             TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahun_ajaran()));
 
-            IDHistori.setMinWidth(10);
-            Nama.setMinWidth(100);
-            NIS.setMinWidth(60);
-            Kelas.setMinWidth(50);
-            TahunAjaran.setMinWidth(20);
+            IDHistori.setMinWidth(81);
+            Nama.setMinWidth(297);
+            NIS.setMinWidth(141);
+            Kelas.setMinWidth(151);
+            TahunAjaran.setMinWidth(140);
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
             historiKelasTbl.getColumns().addAll(IDHistori, Nama, NIS, Kelas, TahunAjaran);
@@ -346,6 +342,10 @@ public class HistoriKelasAnakController implements Initializable {
     }
 
     private void exportToPdf(File file) {
+        KelasPerTahun selectedKelas = kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
+        if (selectedKelas == null) {
+            alertWarning("Silahkan pilih kelas terlebih dahulu!");
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -353,7 +353,10 @@ public class HistoriKelasAnakController implements Initializable {
             Document doc = new Document(pdfDoc);
 
             // Judul
-            Paragraph title = new Paragraph("Laporan Kehadiran total dalam 1 tahun kelas");
+            //buat nama kelas
+            String kelasParalel = (selectedKelas.getKelasParalel() == null) ? "" :  selectedKelas.getKelasParalel();
+
+            Paragraph title = new Paragraph("Laporan Kehadiran total dalam 1 tahun - Kelas " + selectedKelas.getNamaKelas() +" " + kelasParalel);
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
@@ -363,7 +366,7 @@ public class HistoriKelasAnakController implements Initializable {
 
             // Logo header
              Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-             logo.setWidth(UnitValue.createPercentValue(50));
+             logo.setWidth(UnitValue.createPercentValue(20));
              com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 3).add(logo);
              logoCell.setBorder(Border.NO_BORDER);
              table.addCell(logoCell);
@@ -382,7 +385,7 @@ public class HistoriKelasAnakController implements Initializable {
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
 //            HistoriKelasAnakDao.setSelectedClass(kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, selectedKelas);
 
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
@@ -420,6 +423,10 @@ public class HistoriKelasAnakController implements Initializable {
 
 
     private void exportToExcel(File file) {
+        KelasPerTahun selectedKelas = kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
+        if (selectedKelas == null) {
+            alertWarning("Silahkan pilih kelas terlebih dahulu!");
+        }
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Kehadiran Anak");
 
@@ -445,8 +452,8 @@ public class HistoriKelasAnakController implements Initializable {
             }
 
             // Export Data
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, selectedKelas);
 
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
             Set<String> keyid = data.keySet();
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);

@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.dao.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
+import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -140,64 +141,52 @@ public class KehadiranAnakDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, TahunAjaran ta) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query =
-                "WITH info_anak AS (\n" +
-                "    SELECT\n" +
-                "        hka.id AS id_histori_kelas_anak,\n" +
-                "        a.nis,\n" +
-                "        a.nama,\n" +
-                "        k.nama_kelas ||\n" +
+        String query = "WITH info_anak AS (\n" +
+                "    SELECT \n" +
+                "        hka.id AS id_histori_kelas_anak, \n" +
+                "        a.nis, \n" +
+                "        a.nama, \n" +
+                "        k.nama_kelas || \n" +
                 "            CASE\n" +
                 "                WHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
                 "                ELSE ''\n" +
                 "            END AS kelas,\n" +
                 "        kpt.id_tahun_ajaran\n" +
-                "    FROM\n" +
-                "        tbl_histori_kelas_anak hka\n" +
-                "        JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
-                "        JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
-                "        JOIN tbl_anak a ON a.id = hka.id_anak\n" +
-                "), banyak_kehadiran AS (\n" +
-                "    SELECT\n" +
-                "        ka.id_histori_kelas_anak,\n" +
+                "    FROM tbl_histori_kelas_anak hka\n" +
+                "    JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                "    JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "    JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                "),\n" +
+                "banyak_kehadiran AS (\n" +
+                "    SELECT \n" +
+                "        ka.id_histori_kelas_anak, \n" +
                 "        COUNT(*) AS n_kehadiran\n" +
-                "    FROM\n" +
-                "        tbl_kehadiran_anak ka\n" +
-                "    WHERE\n" +
-                "        presensi = true\n" +
-                "    GROUP BY\n" +
-                "        ka.id_histori_kelas_anak\n" +
-                "), data_kehadiran_lengkap AS (\n" +
+                "    FROM tbl_kehadiran_anak ka\n" +
+                "    WHERE presensi = true\n" +
+                "    GROUP BY ka.id_histori_kelas_anak\n" +
+                "),\n" +
+                "data_kehadiran_lengkap AS (\n" +
                 "    SELECT *\n" +
-                "    FROM\n" +
-                "        banyak_kehadiran bk\n" +
-                "        JOIN info_anak ia ON ia.id_histori_kelas_anak = bk.id_histori_kelas_anak\n" +
-                "), max_per_kelas AS (\n" +
-                "    SELECT\n" +
-                "        dkl.kelas,\n" +
-                "        MAX(dkl.n_kehadiran) AS max_kehadiran\n" +
-                "    FROM\n" +
-                "        data_kehadiran_lengkap dkl\n" +
-                "    GROUP BY\n" +
-                "        dkl.kelas\n" +
+                "    FROM banyak_kehadiran bk\n" +
+                "    JOIN info_anak ia ON ia.id_histori_kelas_anak = bk.id_histori_kelas_anak\n" +
+                "    WHERE ia.id_tahun_ajaran = ?\n" +
+                "),\n" +
+                "max_per_kelas AS (\n" +
+                "    SELECT dkl.kelas, MAX(dkl.n_kehadiran) AS max_n_kehadiran\n" +
+                "    FROM data_kehadiran_lengkap dkl\n" +
+                "    GROUP BY dkl.kelas\n" +
                 ")\n" +
-                "SELECT\n" +
-                "    ia.id_histori_kelas_anak,\n" +
-                "    ia.nis,\n" +
-                "    ia.nama,\n" +
-                "    ia.kelas,\n" +
-                "    dkl.max_kehadiran\n" +
-                "FROM\n" +
-                "    data_kehadiran_lengkap dkl\n" +
-                "    JOIN max_per_kelas mpk ON mpk.kelas = dkl.kelas AND mpk.max_kehadiran = dkl.n_kehadiran\n" +
-                "    JOIN info_anak ia ON ia.id_histori_kelas_anak = dkl.id_histori_kelas_anak\n";
-
+                "SELECT * \n" +
+                "FROM data_kehadiran_lengkap dkl\n" +
+                "JOIN max_per_kelas mpk ON mpk.kelas = dkl.kelas\n" +
+                "WHERE dkl.n_kehadiran = mpk.max_n_kehadiran AND dkl.kelas = mpk.kelas";
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, ta.getID_TAHUN_AJARAN());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
