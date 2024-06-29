@@ -12,6 +12,7 @@ import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -30,7 +31,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -441,20 +445,20 @@ public class KehadiranAnakController implements Initializable {
             Table table = new Table(UnitValue.createPercentArray(new float[]{20, 20, 20, 20, 20})).useAllAvailableWidth();
 
             // Logo header (jika ada)
-            // Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            // logo.setWidth(UnitValue.createPercentValue(50));
-            // com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 6).add(logo);
-            // logoCell.setBorder(Border.NO_BORDER);
-            // table.addCell(logoCell);
+//             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+//             logo.setWidth(UnitValue.createPercentValue(50));
+//             com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 6).add(logo);
+//             logoCell.setBorder(Border.NO_BORDER);
+//             table.addCell(logoCell);
 
             // Header Tabel
-            String[] headers = {"ID Histori Kelas Anak", "N Kehadiran", "NIS", "Nama", "Kelas"};
+            String[] headers = {"ID Histori Kelas Anak", "NIS", "Nama Anak", "Kelas", "Max Kehadiran"};
             for (String header : headers) {
-                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
-                Paragraph headerParagraph = new Paragraph(header);
-                headerParagraph.setTextAlignment(TextAlignment.CENTER);
-                headerParagraph.setBold();
-                headerCell.add(headerParagraph);
+                Cell headerCell = new Cell();
+                Paragraph headerText = new Paragraph(header);
+                headerText.setTextAlignment(TextAlignment.CENTER);
+                headerText.setBold();
+                headerCell.add(headerText);
                 table.addCell(headerCell);
             }
 
@@ -463,14 +467,32 @@ public class KehadiranAnakController implements Initializable {
             Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
 
             // Mengisi tabel dengan data
-            for (Object[] rowData : data.values()) {
-                for (Object cellData : rowData) {
-                    Paragraph cellParagraph = new Paragraph(cellData != null ? cellData.toString() : "");
-                    cellParagraph.setTextAlignment(TextAlignment.CENTER);
-                    com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(cellParagraph);
-                    table.addCell(cell);
-                }
+            Set<String> keySet = data.keySet();
+            for (String key : keySet) {
+                Object[] row = data.get(key);
+                // debug
+                System.out.println("ID Histori Kelas Anak: " + row[0]);
+                System.out.println("NIS: " + row[1]);
+                System.out.println("Nama Anak: " + row[2]);
+                System.out.println("Kelas: " + row[3]);
+                System.out.println("Max Kehadiran: " + row[4]);
+
+                Cell idHistoriKelasAnakCell = new Cell().add(new Paragraph(String.valueOf(row[0])));
+                table.addCell(idHistoriKelasAnakCell);
+
+                Cell nisCell = new Cell().add(new Paragraph(String.valueOf(row[1])));
+                table.addCell(nisCell);
+
+                Cell namaAnakCell = new Cell().add(new Paragraph(String.valueOf(row[2])));
+                table.addCell(namaAnakCell);
+
+                Cell kelasCell = new Cell().add(new Paragraph(String.valueOf(row[3])));
+                table.addCell(kelasCell);
+
+                Cell maxKehadiranCell = new Cell().add(new Paragraph(String.valueOf(row[4])));
+                table.addCell(maxKehadiranCell);
             }
+
 
             doc.add(table);
             doc.close();
@@ -483,7 +505,7 @@ public class KehadiranAnakController implements Initializable {
 
     private void exportToExcel(File file) {
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Kebaktian Data");
+        XSSFSheet spreadsheet = workbook.createSheet("Kehadiran Anak Data");
 
         FileOutputStream out = null;
         Connection con = null;
@@ -500,47 +522,48 @@ public class KehadiranAnakController implements Initializable {
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            String[] headers = {"ID Histori Kelas Anak", "NIS", "Nama", "Kelas", "Total Kehadiran"};
+            String[] headers = {"ID Histori Kelas Anak", "NIS", "Nama Anak", "Kelas", "Max Kehadiran"};
             int cellCounter = 0;
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
                 cell.setCellValue(header);
+
+                spreadsheet.autoSizeColumn(cellCounter - 1);
             }
 
             // Export Data
-            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
-                int cellid = 0;
 
-                for (Object obj : objectArr) {
-                    XSSFCell cell = row.createCell(cellid++);
-                    if (obj instanceof Integer) {
-                        cell.setCellValue((Integer) obj);
-                    } else if (obj instanceof String) {
-                        cell.setCellValue((String) obj);
-                    } else {
-                        // Handle other types if necessary
-                        cell.setCellValue(String.valueOf(obj));
-                    }
-                }
-            }
+                XSSFCell cellIdHistori = row.createCell(0);
+                cellIdHistori.setCellValue(String.valueOf(objectArr[0]));
 
-            // Auto-size columns
-            for (int i = 0; i < headers.length; i++) {
-                spreadsheet.autoSizeColumn(i);
+                XSSFCell cellNIS = row.createCell(1);
+                cellNIS.setCellValue(String.valueOf(objectArr[1]));
+
+                XSSFCell cellNamaAnak = row.createCell(2);
+                cellNamaAnak.setCellValue(String.valueOf(objectArr[2]));
+
+                XSSFCell cellKelas = row.createCell(3);
+                cellKelas.setCellValue(String.valueOf(objectArr[3]));
+
+                XSSFCell cellMaxKehadiran = row.createCell(4);
+                cellMaxKehadiran.setCellValue(String.valueOf(objectArr[4]));
+
+                spreadsheet.autoSizeColumn(0);
+                spreadsheet.autoSizeColumn(1);
+                spreadsheet.autoSizeColumn(2);
+                spreadsheet.autoSizeColumn(3);
+                spreadsheet.autoSizeColumn(4);
             }
 
             out = new FileOutputStream(file);
             workbook.write(out);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionManager.close(con);
