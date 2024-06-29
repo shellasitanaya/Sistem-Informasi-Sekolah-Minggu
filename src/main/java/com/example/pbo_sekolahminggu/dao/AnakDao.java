@@ -14,8 +14,10 @@ public class AnakDao {
     public static ArrayList<Anak> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_anak where status_aktif = 1";
-        ArrayList<Anak> listanak = new ArrayList<>();
+        String query = "select * \n" +
+                "from tbl_anak \n" +
+                "ORDER BY id";
+        ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
@@ -25,28 +27,32 @@ public class AnakDao {
                 anak.setNama(rs.getString("nama"));
                 anak.setNIS(rs.getString("nis"));
                 anak.setJenisKelamin(rs.getString("jenis_kelamin"));
-                anak.setAlamat(rs.getString("alamat"));
-                listanak.add(anak);
+                anak.setNamaOrangTua(rs.getString("nama_ortu"));
+                anak.setAlamatOrangTua(rs.getString("alamat_ortu"));
+                anak.setNoTelpOrangTua(rs.getString("no_telp_ortu"));
+                listAnak.add(anak);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionManager.close(ps, rs);
         }
-        return listanak;
+        return listAnak;
     }
 
     // SAVE
     public static void create(Connection con, Anak anak) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, alamat) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, nama_ortu, alamat_ortu, no_telp_ortu) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
-            statement.setString(4, anak.getAlamat());
+            statement.setString(4, anak.getNamaOrangTua());
+            statement.setString(5, anak.getAlamatOrangTua());
+            statement.setString(6, anak.getNoTelpOrangTua());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error saving anak: " + e.getMessage());
@@ -58,15 +64,17 @@ public class AnakDao {
     // EDIT
     public static void update(Connection con, Anak anak) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ?, alamat = ? WHERE id = ?";
+        String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ?, nama_ortu = ?, alamat_ortu= ?, no_telp_ortu = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
             statement.setString(2, anak.getNIS());
             statement.setString(3, anak.getJenisKelamin());
-            statement.setString(4, anak.getAlamat());
-            statement.setInt(5, anak.getID_ANAK());
+            statement.setString(4, anak.getNamaOrangTua());
+            statement.setString(5, anak.getAlamatOrangTua());
+            statement.setString(6, anak.getNoTelpOrangTua());
+            statement.setInt(7, anak.getID_ANAK());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing anak: " + e.getMessage());

@@ -1,6 +1,5 @@
 package com.example.pbo_sekolahminggu.dao;
 
-import com.example.pbo_sekolahminggu.beans.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.Kelas;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 
@@ -14,7 +13,7 @@ public class KelasDao {
     public static ArrayList<Kelas> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_kelas where status_aktif = 1";
+        String query = "select * from tbl_kelas where status_aktif = 1 ORDER BY id ASC";
         ArrayList<Kelas> listkelas = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -36,7 +35,7 @@ public class KelasDao {
     // SAVE
     public static void save(Connection con, Kelas kelas) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_kelas(nama) VALUES (?)";
+        String query = "INSERT INTO tbl_kelas(nama_kelas) VALUES (?)";
 
         try {
             statement = con.prepareStatement(query);
@@ -50,9 +49,9 @@ public class KelasDao {
     }
 
     // EDIT
-    public static void edit(Connection con, Kelas kelas) {
+    public static void update(Connection con, Kelas kelas) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_kelas SET nama = ? WHERE id = ?";
+        String query = "UPDATE tbl_kelas SET nama_kelas = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);

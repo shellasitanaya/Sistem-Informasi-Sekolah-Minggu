@@ -2,6 +2,10 @@ module com.example.pbo_sekolahminggu {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires io;
+    requires kernel;
+    requires layout;
+    requires org.apache.poi.ooxml;
 
 
     opens com.example.pbo_sekolahminggu to javafx.fxml;

@@ -13,7 +13,7 @@ public class TahunAjaranDao {
     public static ArrayList<TahunAjaran> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_tahun_ajaran where status_aktif = 1";
+        String query = "select * from tbl_tahun_ajaran where status_aktif = 1 ORDER BY tahun_ajaran DESC";
         ArrayList<TahunAjaran> listtahunAjaran = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -51,7 +51,7 @@ public class TahunAjaranDao {
     // UPDATE
     public static void update(Connection con, TahunAjaran tahunAjaran) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_tahun_Ajaran SET tahun_ajaran = ? WHERE id = ?";
+        String query = "UPDATE tbl_tahun_ajaran SET tahun_ajaran = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);

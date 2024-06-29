@@ -5,12 +5,17 @@ import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GuruDao {
     public static ArrayList<Guru> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_guru where status_aktif = 1";
+        String query = "select * \n" +
+                "from tbl_guru \n" +
+                "where status_aktif = 1\n" +
+                "ORDER BY id";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -32,6 +37,29 @@ public class GuruDao {
         return listGuru;
     }
 
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "select id, nama from tbl_guru where status_aktif = 1 order by id asc";
+        Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
+        try {
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            int i = 1;
+            while(rs.next()) {
+                Object[] object = new Object[2];
+                object[0] = rs.getInt("id");
+                object[1] = rs.getString("nama");
+                listBrand.put(String.valueOf(i), object);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(rs, ps);
+        }
+        return listBrand;
+    }
     // CREATE
     public static void create (Connection con, Guru guru) {
         PreparedStatement statement = null;
