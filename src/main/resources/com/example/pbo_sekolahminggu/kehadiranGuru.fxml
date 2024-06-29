@@ -13,13 +13,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="kehadiranGuruAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional.data.KehadiranGuruController">
+<AnchorPane fx:id="kehadiranGuruAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.KehadiranGuruController">
    <styleClass>
       <String fx:value="white_bg" />
       <String fx:value="shadow" />
    </styleClass>
    <children>
-      <TableView fx:id="kehadiranGuruTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
+      <TableView fx:id="kehadiranGuruTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../style.css">
          <columns>
             <TableColumn fx:id="idKehadiranCol" prefWidth="81.0" text="ID Kehadiran" />
             <TableColumn fx:id="namaCol" prefWidth="188.0" text="Nama" />
@@ -30,9 +30,9 @@
             <TableColumn fx:id="presensiCol" prefWidth="92.0" text="Presensi" />
          </columns>
       </TableView>
-      <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
+      <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../style.css">
          <children>
-            <TextField fx:id="kehadiranGuruSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="kehadiranGuruSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />
@@ -41,7 +41,7 @@
       </Pane>
       <Label layoutX="26.0" layoutY="380.0" text="Kelas" />
       <Label layoutX="26.0" layoutY="423.0" text="Kebaktian" />
-      <Button fx:id="editKehadiranGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" onAction="#showFilter" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="SHOW">
+      <Button fx:id="editKehadiranGuruBtn" layoutX="657.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="SHOW">
          <styleClass>
             <String fx:value="btn_clear" />
             <String fx:value="shadow2" />
@@ -50,7 +50,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="EDIT">
+      <Button fx:id="editKehadiranAnakBtn" layoutX="745.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../style.css" text="EDIT">
          <styleClass>
             <String fx:value="btn_updatedkk" />
             <String fx:value="shadow2" />
@@ -66,7 +66,7 @@
       </Label>
       <ImageView fitHeight="43.0" fitWidth="43.0" layoutX="27.0" layoutY="504.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
-            <Image url="@../../images/exportIcon.png" />
+            <Image url="@../../../images/exportIcon.png" />
          </image>
       </ImageView>
       <Label layoutX="348.0" layoutY="281.0" text="DATA KEHADIRAN GURU">
@@ -75,14 +75,14 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <ComboBox fx:id="tahunAjaranKehadiranGuruCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ComboBox fx:id="kelasKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ComboBox fx:id="kebaktianKehadiranGuruCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <Button fx:id="exportKehadiranGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <ComboBox fx:id="kelasKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="tahunAjaranKehadiranGuruCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <Button fx:id="exportKehadiranGuruBtn" layoutX="20.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../images/exportIcon.png" />
+                  <Image url="@../../../images/exportIcon.png" />
                </image>
             </ImageView>
          </graphic>
