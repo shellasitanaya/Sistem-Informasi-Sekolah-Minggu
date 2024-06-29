@@ -61,25 +61,25 @@ public class HistoriKelasAnakDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
                 "SELECT a.id AS anak_id, a.nama AS nama_anak, COUNT(ka.id) AS total_kehadiran\n" +
-                        "FROM tbl_histori_kelas_anak hka\n" +
-                        "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
-                        "JOIN tbl_anak a ON a.id = hka.id_anak\n" +
-                        "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
-                        "JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
-                        "JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
-                        "WHERE kpt.id = \n" +
-                        "GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
-                        "ORDER BY anak_id;\n";
+                        "                        FROM tbl_histori_kelas_anak hka\n" +
+                        "                        JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                        "                        JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                        "                        JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                        "                        JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
+                        "                        JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
+                        "                        WHERE kpt.id = ?\n" +
+                        "                        GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
+                        "                        ORDER BY anak_id\n";
 
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, kpt.getID_KELAS_PER_TAHUN());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -89,12 +89,11 @@ public class HistoriKelasAnakDao {
                 object[2] = rs.getInt("total_kehadiran");
                 listKehadiran.put(String.valueOf(i), object);
                 i++;
-
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            ConnectionManager.close(ps, rs);
+            ConnectionManager.close(rs, ps);
         }
         return listKehadiran;
     }

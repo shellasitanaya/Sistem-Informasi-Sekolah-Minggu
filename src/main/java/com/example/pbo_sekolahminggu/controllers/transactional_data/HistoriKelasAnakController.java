@@ -5,6 +5,7 @@ import com.example.pbo_sekolahminggu.beans.transactional_data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional_data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master_data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -116,6 +117,7 @@ public class HistoriKelasAnakController implements Initializable {
             NIS.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
             Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
             TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahun_ajaran()));
+
 
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
@@ -237,6 +239,11 @@ public class HistoriKelasAnakController implements Initializable {
             Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
             TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahun_ajaran()));
 
+            IDHistori.setMinWidth(10);
+            Nama.setMinWidth(100);
+            NIS.setMinWidth(60);
+            Kelas.setMinWidth(50);
+            TahunAjaran.setMinWidth(20);
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
             historiKelasTbl.getColumns().addAll(IDHistori, Nama, NIS, Kelas, TahunAjaran);
@@ -377,7 +384,8 @@ public class HistoriKelasAnakController implements Initializable {
 
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con);
+//            HistoriKelasAnakDao.setSelectedClass(kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
 
             // Mengisi tabel dengan data
             for (Object[] rowData : data.values()) {
@@ -427,7 +435,8 @@ public class HistoriKelasAnakController implements Initializable {
             }
 
             // Export Data
-            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con);
+
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con, kelasHistoriKelasCb.getSelectionModel().getSelectedItem());
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {

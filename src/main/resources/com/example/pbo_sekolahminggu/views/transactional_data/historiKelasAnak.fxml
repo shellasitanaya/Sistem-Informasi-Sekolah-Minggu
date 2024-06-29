@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="historiKelasAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional_data.HistoriKelasAnakController">
 
    <styleClass>
@@ -78,9 +77,9 @@
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
       <ChoiceBox fx:id="tahunAjaranHistoriKelasCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ChoiceBox fx:id="kelasHistoriKelasCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <Button fx:id="exportHistoriKelasBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportHistoriKelasBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
-            <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../images/exportIcon.png" />
                </image>
@@ -93,6 +92,6 @@
             <String fx:value="btn_export" />
             <String fx:value="shadow2" />
          </styleClass>
-      </Button>
+       </Button>
    </children>
 </AnchorPane>
