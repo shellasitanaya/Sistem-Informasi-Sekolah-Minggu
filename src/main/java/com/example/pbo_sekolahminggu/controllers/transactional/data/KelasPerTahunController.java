@@ -326,6 +326,11 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToPdf(File file) {
+        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+        if (selectedKelas == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -333,7 +338,7 @@ public class KelasPerTahunController implements Initializable {
             Document doc = new Document(pdfDoc);
 
             // Judul
-            Paragraph title = new Paragraph("Laporan Data Kelas");
+            Paragraph title = new Paragraph("Laporan Data Kelas - Tahun ajaran " + selectedKelas.getTahunAjaran() );
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
@@ -342,7 +347,7 @@ public class KelasPerTahunController implements Initializable {
 
             // Logo header (Ubah sesuai kebutuhan)
             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
+            logo.setWidth(UnitValue.createPercentValue(20));
             Cell logoCell = new Cell(1, 2).add(logo);
             logoCell.setBorder(Border.NO_BORDER);
             table.addCell(logoCell);
@@ -362,7 +367,6 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Data Table
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
             Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
@@ -397,8 +401,14 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToExcel(File file) {
+        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+        if (selectedKelas == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
+        // Data Table
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas");
+        XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas - Tahun ajaran " + selectedKelas.getTahunAjaran());
 
         FileOutputStream out = null;
         Connection con = null;
@@ -424,7 +434,6 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Export Data
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
             Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
             Set<String> keyid = data.keySet();
 
