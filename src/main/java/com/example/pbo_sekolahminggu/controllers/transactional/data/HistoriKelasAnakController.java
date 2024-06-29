@@ -255,17 +255,17 @@ public class HistoriKelasAnakController implements Initializable {
 //                    KelasPerTahun selectedKelasPerTahun = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
 //                    //selected tahun ajaran
 //                    TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
-                    HistoriKelasAnak selectedHistoriAnak = historiKelasTbl.getSelectionModel().getSelectedItem();
-                    KelasPerTahun newKelas = kelasHistoriKelasCb.getItems().stream()
-                            .filter(kelas -> kelas.getID_KELAS_PER_TAHUN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
-                            .findFirst()
-                            .orElse(null);
-                    kelasHistoriKelasCb.getSelectionModel().select(newKelas);
-                    TahunAjaran newTahunAjaran = tahunAjaranHistoriKelasCb.getItems().stream()
-                            .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
-                            .findFirst()
-                            .orElse(null);
-                    tahunAjaranHistoriKelasCb.getSelectionModel().select(newTahunAjaran);
+//                    HistoriKelasAnak selectedHistoriAnak = historiKelasTbl.getSelectionModel().getSelectedItem();
+//                    KelasPerTahun newKelas = kelasHistoriKelasCb.getItems().stream()
+//                            .filter(kelas -> kelas.getID_KELAS_PER_TAHUN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
+//                            .findFirst()
+//                            .orElse(null);
+//                    kelasHistoriKelasCb.getSelectionModel().select(newKelas);
+//                    TahunAjaran newTahunAjaran = tahunAjaranHistoriKelasCb.getItems().stream()
+//                            .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
+//                            .findFirst()
+//                            .orElse(null);
+//                    tahunAjaranHistoriKelasCb.getSelectionModel().select(newTahunAjaran);
                 }
             });
         } catch (SQLException e) {

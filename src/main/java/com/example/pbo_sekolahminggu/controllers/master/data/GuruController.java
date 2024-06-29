@@ -358,156 +358,156 @@ public class GuruController implements Initializable {
         guruTbl.setItems(sortList);
     }
 
-    // --------------------------------------------------
-    @FXML
-    public void export() {
-        FileChooser chooser = new FileChooser();
-        FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
-        FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
-        chooser.getExtensionFilters().add(pdfFilter);
-        chooser.getExtensionFilters().add(excelFilter);
-
-        chooser.setInitialDirectory(new File("C:\\Users"));
-        File file = chooser.showSaveDialog(guruTbl.getScene().getWindow());
-        FileChooser.ExtensionFilter selectedFilter = chooser.getSelectedExtensionFilter();
-
-        if (file != null) {
-            if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.xlsx")) {
-                exportToExcel(file);
-            } else if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.pdf")) {
-                exportToPdf(file);
-            }
-        }
-    }
-
-    private void exportToPdf(File file) {
-        System.out.println(file.getAbsolutePath());
-        PdfDocument pdfDoc = null;
-        try {
-            pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
-            Document doc = new Document(pdfDoc);
-
-            //  judul
-            Paragraph title = new Paragraph("Laporan BLABLA");
-            title.setTextAlignment(TextAlignment.CENTER);
-            title.setBold();
-            doc.add(title);
-
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
-
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            Cell logoCell = new Cell(1, 2).add(logo);
-            logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
-
-
-            Cell emptyCell = new Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
-
-            //Header Table
-            for (int i = 0; i< guruTbl.getColumns().size(); i++) {
-                TableColumn col = (TableColumn) guruTbl.getColumns().get(i);
-                Cell headerCell = new Cell();
-                title = new Paragraph(col.getText());
-                title.setTextAlignment(TextAlignment.CENTER);
-                title.setBold();
-
-                headerCell.add(title);
-                table.addCell(headerCell);
-            }
-            table.addCell(emptyCell);
-
-            //Table Data
-            for (int i = 0; i< guruTbl.getItems().size(); i++) {
-                Guru data = guruTbl.getItems().get(i);
-
-                //Data id
-                Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_GURU()));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                Cell idCell = new Cell().add(idParagraph);
-                table.addCell(idCell);
-
-                //Data
-                Paragraph brandParagraph = new Paragraph(data.getNamaGuru());
-                Cell brandCell = new Cell().add(brandParagraph);
-                table.addCell(brandCell);
-
-                //3rd empty cell
-                table.addCell(emptyCell);
-            }
-
-            doc.add(table);
-            doc.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void exportToExcel(File file) {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Guru Data");
-
-        FileOutputStream out = null;
-        Connection con = null;
-
-        try {
-            con = ConnectionManager.getConnection();
-            int rowid = 0;
-
-            // judul
-            XSSFRow titleRow = spreadsheet.createRow(rowid++);
-            XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan BLABLA");
-
-            //Export Header
-            XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            Object[] headerArr = guruTbl.getColumns().toArray();
-
-            int cellCounter = 0;
-            for (Object obj : headerArr) {
-                XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(((TableColumn) obj).getText());
-            }
-
-            //Export Data
-            Map<String, Object[]> data = GuruDao.getAllArrayObject(con);
-            Set<String> keyid = data.keySet();
-
-            for (String key : keyid) {
-                XSSFRow row = spreadsheet.createRow(rowid++);
-                Object[] objectArr = data.get(key);
-                int cellid = 0;
-
-                for (Object obj : objectArr) {
-                    XSSFCell cell = row.createCell(cellid++);
-                    cell.setCellValue(String.valueOf(obj));
-                }
-            }
-            out = new FileOutputStream(file);
-            workbook.write(out);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            ConnectionManager.close(con);
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
+//    // --------------------------------------------------
+//    @FXML
+//    public void export() {
+//        FileChooser chooser = new FileChooser();
+//        FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
+//        FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
+//        chooser.getExtensionFilters().add(pdfFilter);
+//        chooser.getExtensionFilters().add(excelFilter);
+//
+//        chooser.setInitialDirectory(new File("C:\\Users"));
+//        File file = chooser.showSaveDialog(guruTbl.getScene().getWindow());
+//        FileChooser.ExtensionFilter selectedFilter = chooser.getSelectedExtensionFilter();
+//
+//        if (file != null) {
+//            if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.xlsx")) {
+//                exportToExcel(file);
+//            } else if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.pdf")) {
+//                exportToPdf(file);
+//            }
+//        }
+//    }
+//
+//    private void exportToPdf(File file) {
+//        System.out.println(file.getAbsolutePath());
+//        PdfDocument pdfDoc = null;
+//        try {
+//            pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
+//            Document doc = new Document(pdfDoc);
+//
+//            //  judul
+//            Paragraph title = new Paragraph("Laporan BLABLA");
+//            title.setTextAlignment(TextAlignment.CENTER);
+//            title.setBold();
+//            doc.add(title);
+//
+//            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
+//            //Logo header
+//
+//            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+//            logo.setWidth(UnitValue.createPercentValue(50));
+//            Cell logoCell = new Cell(1, 2).add(logo);
+//            logoCell.setBorder(Border.NO_BORDER);
+//            table.addCell(logoCell);
+//
+//
+//            Cell emptyCell = new Cell(1, 1);
+//            emptyCell.setBorder(Border.NO_BORDER);
+//            table.addCell(emptyCell);
+//
+//            //Header Table
+//            for (int i = 0; i< guruTbl.getColumns().size(); i++) {
+//                TableColumn col = (TableColumn) guruTbl.getColumns().get(i);
+//                Cell headerCell = new Cell();
+//                title = new Paragraph(col.getText());
+//                title.setTextAlignment(TextAlignment.CENTER);
+//                title.setBold();
+//
+//                headerCell.add(title);
+//                table.addCell(headerCell);
+//            }
+//            table.addCell(emptyCell);
+//
+//            //Table Data
+//            for (int i = 0; i< guruTbl.getItems().size(); i++) {
+//                Guru data = guruTbl.getItems().get(i);
+//
+//                //Data id
+//                Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_GURU()));
+//                idParagraph.setTextAlignment(TextAlignment.CENTER);
+//                Cell idCell = new Cell().add(idParagraph);
+//                table.addCell(idCell);
+//
+//                //Data
+//                Paragraph brandParagraph = new Paragraph(data.getNamaGuru());
+//                Cell brandCell = new Cell().add(brandParagraph);
+//                table.addCell(brandCell);
+//
+//                //3rd empty cell
+//                table.addCell(emptyCell);
+//            }
+//
+//            doc.add(table);
+//            doc.close();
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    private void exportToExcel(File file) {
+//        XSSFWorkbook workbook = new XSSFWorkbook();
+//        XSSFSheet spreadsheet = workbook.createSheet("Guru Data");
+//
+//        FileOutputStream out = null;
+//        Connection con = null;
+//
+//        try {
+//            con = ConnectionManager.getConnection();
+//            int rowid = 0;
+//
+//            // judul
+//            XSSFRow titleRow = spreadsheet.createRow(rowid++);
+//            XSSFCell titleCell = titleRow.createCell(0);
+//            titleCell.setCellValue("Laporan BLABLA");
+//
+//            //Export Header
+//            XSSFRow headerRow = spreadsheet.createRow(rowid++);
+//            Object[] headerArr = guruTbl.getColumns().toArray();
+//
+//            int cellCounter = 0;
+//            for (Object obj : headerArr) {
+//                XSSFCell cell = headerRow.createCell(cellCounter++);
+//                cell.setCellValue(((TableColumn) obj).getText());
+//            }
+//
+//            //Export Data
+//            Map<String, Object[]> data = GuruDao.getAllArrayObject(con);
+//            Set<String> keyid = data.keySet();
+//
+//            for (String key : keyid) {
+//                XSSFRow row = spreadsheet.createRow(rowid++);
+//                Object[] objectArr = data.get(key);
+//                int cellid = 0;
+//
+//                for (Object obj : objectArr) {
+//                    XSSFCell cell = row.createCell(cellid++);
+//                    cell.setCellValue(String.valueOf(obj));
+//                }
+//            }
+//            out = new FileOutputStream(file);
+//            workbook.write(out);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            ConnectionManager.close(con);
+//            try {
+//                if (out != null) {
+//                    out.close();
+//                }
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    }
+//
 
 }

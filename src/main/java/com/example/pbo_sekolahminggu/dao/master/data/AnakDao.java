@@ -16,6 +16,7 @@ public class AnakDao {
         ResultSet rs = null;
         String query = "select * \n" +
                 "from tbl_anak \n" +
+                "WHERE status_aktif=1\n" +
                 "ORDER BY id";
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
