@@ -6,6 +6,7 @@ import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -25,10 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
@@ -44,10 +42,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class KehadiranGuruController implements Initializable {
     @FXML
@@ -304,11 +299,26 @@ public class KehadiranGuruController implements Initializable {
 
             //get the data kehadiran to check if it's empty or not
             dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(conn, selectedKelas, selectedKebaktian));
-            // Disable auto-commit
-            conn.setAutoCommit(false);
 
             if (dataKehadiranGuru.isEmpty()) {
-                KehadiranGuruDao.populateTblKehadiranGuru(this.conn);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Konfirmasi pengisian data kehadiran");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data kehadiran guru yang ditemukan. Isi data kehadiran kelas ini?");
+
+                // Add buttons to the alert
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(cancelButton, confirmButton);
+
+                // Show the alert and wait for the response
+                Connection finalCon = conn;
+                Optional<ButtonType> pilihan = alert.showAndWait();
+
+                // Handle the user's response
+                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    KehadiranGuruDao.populateTblKehadiranGuru(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                } else return;
             }
             loadMenuAssignKehadiranGuru();
         } catch (SQLException e) {
@@ -362,6 +372,10 @@ public class KehadiranGuruController implements Initializable {
             // Get the ArrayList of Guru objects from the database
             ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getID_KEBAKTIAN());
 
+            if (listKehadiranGuru.isEmpty()) {
+                alertWarning("Belum ada data kehadiran guru!");
+                return;
+            }
             // Set cell value factory for each TableColumn
             idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_KEHADIRAN_GURU())));
             namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama()));
@@ -447,6 +461,11 @@ public class KehadiranGuruController implements Initializable {
         }
     }
     private void exportToPdf(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih tahun ajaran terlebih dahulu!");
+            return;
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -475,7 +494,7 @@ public class KehadiranGuruController implements Initializable {
 
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, selectedTahun);
 
             // Mengisi tabel dengan data
             for (Object[] rowData : data.values()) {
@@ -522,7 +541,13 @@ public class KehadiranGuruController implements Initializable {
         FileOutputStream out = null;
         Connection con = null;
 
+
         try {
+            TahunAjaran selectedTahun = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
+            if (selectedTahun == null) {
+                alertWarning("Pilih tahun ajaran terlebih dahulu!");
+                return;
+            }
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
@@ -541,7 +566,7 @@ public class KehadiranGuruController implements Initializable {
             }
 
             // Export Data
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
