@@ -94,19 +94,25 @@
     -fx-text-fill:#ffff;
 }
 
-.table-view{
-    -fx-background-color: transparent;
-    -fx-border-color:linear-gradient(to bottom right, #276acf, #032d4d);
+.table-view {
+	-fx-background-color: transparent;
+    -fx-border-color: linear-gradient(to bottom right, #276acf, #032d4d);
+    -fx-border-radius:8px 8px 8px 8px;
 }
-
-.table-view.table-column-header(
-    -fx-background-color:linear-gradient(to bottom right, #276acf, #032d4d);
-    -fx-background-inset: 0 0 0 0;
-    -f-background-radius:8px 8px 0px 0px;
+.table-view .column-header-background,
+.table-view .column-header-background .filler {
+	-fx-background-color: linear-gradient(to bottom right, #276acf, #032d4d);
+	-fx-background-inset: 0 0 0 0;
+    -fx-background-radius:8px 8px 0px 0px;
 }
-
-.table-view.column-header, .filter{
-    -fx-background-color:transparent;
+.table-view .column-header {
+	-fx-background-color: -fx-light-grey-color;
+	-fx-border-color: -fx-grey-color;
+}
+.table-view .column-header .label{
+	-fx-font-weight: bold;
+	-fx-alignment: center;
+	-fx-text-fill:white
 }
 
 .textfield{

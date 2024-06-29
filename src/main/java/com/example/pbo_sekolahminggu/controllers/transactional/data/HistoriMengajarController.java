@@ -19,16 +19,15 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -60,9 +59,9 @@ public class HistoriMengajarController implements Initializable {
     @FXML
     TableColumn<HistoriMengajar, String> IDHistori, Nama, NIP, Kelas, TahunAjaran;
     @FXML
-    ChoiceBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
+    ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
-    ChoiceBox<KelasPerTahun> kelasHistoriMengajarCb;
+    ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
@@ -70,6 +69,20 @@ public class HistoriMengajarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+
+        tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+            @Override
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    filterDataKelas();
+                    //kosongin cb kelas
+                    kelasHistoriMengajarCb.getSelectionModel().clearSelection();
+                }
+            }
+        });
+
         try {
             fillTahunAjaranCb();
         } catch (SQLException e) {
@@ -184,9 +197,9 @@ public class HistoriMengajarController implements Initializable {
             });
 
             // Optionally, select an item in the ChoiceBox
-            if (!dataKelas.isEmpty()) {
-                kelasHistoriMengajarCb.getSelectionModel().selectFirst();
-            }
+//            if (!dataKelas.isEmpty()) {
+//                kelasHistoriMengajarCb.getSelectionModel().selectFirst();
+//            }
 
             System.out.println("Filtered classes loaded successfully.");
         } catch (SQLException e) {
@@ -194,7 +207,7 @@ public class HistoriMengajarController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-        kelasHistoriMengajarCb.show();
+//        kelasHistoriMengajarCb.show();
     }
 
 
