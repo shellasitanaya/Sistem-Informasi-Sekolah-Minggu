@@ -27,9 +27,9 @@ public class assignKehadiranGuruController implements Initializable {
     @FXML
     Button addKehadiranGuruBtn, removeKehadiranGuruBtn, saveKehadiranGuruBtn, cancelKehadiranGuruBtn;
     @FXML
-    TableView<Guru> hadirKehadiranGuruTbl;
+    TableView<Guru> addedGuruTbl;
     @FXML
-    TableView<Guru> belumHadirKehadiranGuruTbl;
+    TableView<Guru> removedGuruTbl;
     private static Connection con = null;
     @FXML
     private AnchorPane assignKehadiranGuruAncPane;
@@ -57,10 +57,10 @@ public class assignKehadiranGuruController implements Initializable {
 
         dataGuruHadir = FXCollections.observableArrayList();
         dataGuruTidakHadir = FXCollections.observableArrayList();
-        hadirKehadiranGuruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        belumHadirKehadiranGuruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        addedGuruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        removedGuruTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        hadirKehadiranGuruTbl.getColumns().clear();
+        addedGuruTbl.getColumns().clear();
         //set the columns
         TableColumn<Guru, String> namaColHadir = new TableColumn<>("Nama");
         namaColHadir.setMinWidth(100);
@@ -70,9 +70,9 @@ public class assignKehadiranGuruController implements Initializable {
         nisHadirCol.setMinWidth(60);
         nisHadirCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
 
-        hadirKehadiranGuruTbl.getColumns().addAll(namaColHadir, nisHadirCol);
+        addedGuruTbl.getColumns().addAll(namaColHadir, nisHadirCol);
 
-        belumHadirKehadiranGuruTbl.getColumns().clear();
+        removedGuruTbl.getColumns().clear();
         TableColumn<Guru, String> namaColTidak = new TableColumn<>("Nama");
         namaColTidak.setMinWidth(100);
         namaColTidak.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
@@ -81,7 +81,7 @@ public class assignKehadiranGuruController implements Initializable {
         nisTidakCol.setMinWidth(60);
         nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
 
-        belumHadirKehadiranGuruTbl.getColumns().addAll(namaColTidak, nisTidakCol);
+        removedGuruTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
         if (populate) {
 
@@ -162,7 +162,7 @@ public class assignKehadiranGuruController implements Initializable {
     // UNTUK UPDATE KEHADIRAN
     @FXML
     private void addToHadir() {
-        Guru selectedAnak = belumHadirKehadiranGuruTbl.getSelectionModel().getSelectedItem();
+        Guru selectedAnak = removedGuruTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
             System.out.println(selectedAnak.getID_GURU());
             KehadiranGuruDao.updateHadir(conHere, selectedAnak);
@@ -175,7 +175,7 @@ public class assignKehadiranGuruController implements Initializable {
 
     @FXML
     private void removeToTidakHadir() {
-        Guru selectedGuru = hadirKehadiranGuruTbl.getSelectionModel().getSelectedItem();
+        Guru selectedGuru = addedGuruTbl.getSelectionModel().getSelectedItem();
         if (selectedGuru != null) {
             System.out.println(selectedGuru.getID_GURU());
             KehadiranGuruDao.updateTidakHadir(conHere, selectedGuru);
@@ -196,7 +196,7 @@ public class assignKehadiranGuruController implements Initializable {
 
 
     private void loadMenuKehadiranGuru() {
-        loadFXML("/com/example/pbo_sekolahminggu/kehadiranGuru.fxml");
+        loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranGuru.fxml");
     }
 
     private void loadFXML(String fxmlFile) {
@@ -213,12 +213,12 @@ public class assignKehadiranGuruController implements Initializable {
     private void refreshTable(Connection con) {
         //refresh data anak HADIR
         dataGuruHadir = FXCollections.observableArrayList(KehadiranGuruDao.getAllGuruHadir(con));
-        hadirKehadiranGuruTbl.setItems(dataGuruHadir);
+        addedGuruTbl.setItems(dataGuruHadir);
         System.out.println(dataGuruHadir);
 
         //refresh data anak TIDAK HADIR
         dataGuruTidakHadir = FXCollections.observableArrayList(KehadiranGuruDao.getAllGuruTidakHadir(con));
-        belumHadirKehadiranGuruTbl.setItems(dataGuruTidakHadir);
+        removedGuruTbl.setItems(dataGuruTidakHadir);
         System.out.println("tidak hadir:");
         System.out.println(dataGuruTidakHadir);
     }

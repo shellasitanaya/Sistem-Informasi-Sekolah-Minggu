@@ -77,7 +77,7 @@ public class KehadiranGuruController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        populateKelasTable();
+        populateKelasTable();
         tahunAjaranKehadiranGuruCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
             public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
@@ -292,6 +292,9 @@ public class KehadiranGuruController implements Initializable {
     }
 
     public void edit() {
+        if(!isInputValid()){
+            return;
+        }
         try {
             conn = ConnectionManager.getConnection();
 
@@ -398,6 +401,23 @@ public class KehadiranGuruController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public boolean isInputValid(){
+        if(tahunAjaranKehadiranGuruCb.getValue() != null && kelasKehadiranGuruCb.getValue() != null && kebaktianKehadiranGuruCb.getValue() != null){
+            return true;
+        }
+
+        if(tahunAjaranKehadiranGuruCb.getValue() == null){
+            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
+        }else if(kelasKehadiranGuruCb.getValue() == null){
+            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
+        }else if(kebaktianKehadiranGuruCb.getValue() == null){
+            alertWarning("Silahkan pilih Kebaktian terlebih dahulu.");
+        }
+
+        return false;
+    }
+
 
 
     public void clear(){

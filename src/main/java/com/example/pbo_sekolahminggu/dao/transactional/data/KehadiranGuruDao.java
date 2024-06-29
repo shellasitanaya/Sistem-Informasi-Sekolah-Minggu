@@ -73,28 +73,28 @@ public class KehadiranGuruDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT\n" +
-                "    kg.id,\n" +
-                "    g.nama,\n" +
-                "    g.nip,\n" +
-                "    k.nama_kelas  ||\n" +
-                "\t\tCASE\n" +
-                "\t\t\tWHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
-                "\t\t\tELSE ''\n" +
-                "\t\tEND AS kelas,\n" +
-                "    keb.jenis_kebaktian,\n" +
-                "    keb.tanggal,\n" +
-                "    kg.presensi,\n" +
-                "    kg.id_histori_mengajar,\n" +
-                "    kg.id_kebaktian,\n" +
-                "\tkpt.id AS id_kelas_per_tahun,\n" +
-                "\tkpt.id_tahun_ajaran\n" +
+                "kg.id,\n" +
+                "g.nama,\n" +
+                "g.nip,\n" +
+                "k.nama_kelas ||\n" +
+                "CASE\n" +
+                "WHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
+                "ELSE ''\n" +
+                "END AS kelas,\n" +
+                "keb.jenis_kebaktian,\n" +
+                "keb.tanggal,\n" +
+                "kg.presensi,\n" +
+                "kg.id_histori_mengajar,\n" +
+                "kg.id_kebaktian,\n" +
+                "kpt.id AS id_kelas_per_tahun,\n" +
+                "kpt.id_tahun_ajaran\n" +
                 "FROM tbl_kehadiran_guru kg\n" +
-                "LEFT JOIN tbl_guru g ON g.id = kg.id_histori_mengajar\n" +
                 "LEFT JOIN tbl_histori_mengajar hm ON hm.id = kg.id_histori_mengajar\n" +
-                "LEFT JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
-                "LEFT JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "LEFT JOIN tbl_guru g ON g.id = hm.id_guru\n" +
+                "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
+                "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1";
+                "WHERE kg.status_aktif = 1 \nORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -126,28 +126,28 @@ public class KehadiranGuruDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT\n" +
-                "    kg.id,\n" +
-                "    g.nama,\n" +
-                "    g.nip,\n" +
-                "    k.nama_kelas  ||\n" +
-                "\t\tCASE\n" +
-                "\t\t\tWHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
-                "\t\t\tELSE ''\n" +
-                "\t\tEND AS kelas,\n" +
-                "    keb.jenis_kebaktian,\n" +
-                "    keb.tanggal,\n" +
-                "    kg.presensi,\n" +
-                "    kg.id_histori_mengajar,\n" +
-                "    kg.id_kebaktian,\n" +
-                "\tkpt.id AS id_kelas_per_tahun,\n" +
-                "\tkpt.id_tahun_ajaran\n" +
+                "kg.id,\n" +
+                "g.nama,\n" +
+                "g.nip,\n" +
+                "k.nama_kelas ||\n" +
+                "CASE\n" +
+                "WHEN kpt.kelas_paralel IS NOT NULL THEN ' ' || kpt.kelas_paralel\n" +
+                "ELSE ''\n" +
+                "END AS kelas,\n" +
+                "keb.jenis_kebaktian,\n" +
+                "keb.tanggal,\n" +
+                "kg.presensi,\n" +
+                "kg.id_histori_mengajar,\n" +
+                "kg.id_kebaktian,\n" +
+                "kpt.id AS id_kelas_per_tahun,\n" +
+                "kpt.id_tahun_ajaran\n" +
                 "FROM tbl_kehadiran_guru kg\n" +
-                "LEFT JOIN tbl_guru g ON g.id = kg.id_histori_mengajar\n" +
                 "LEFT JOIN tbl_histori_mengajar hm ON hm.id = kg.id_histori_mengajar\n" +
-                "LEFT JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
-                "LEFT JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "LEFT JOIN tbl_guru g ON g.id = hm.id_guru\n" +
+                "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
+                "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian=?\n";
+                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian=?\nORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
