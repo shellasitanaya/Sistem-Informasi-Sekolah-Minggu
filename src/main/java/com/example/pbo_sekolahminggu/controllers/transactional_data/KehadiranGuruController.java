@@ -1,16 +1,11 @@
 package com.example.pbo_sekolahminggu.controllers.transactional_data;
 
 import com.example.pbo_sekolahminggu.beans.transactional_data.KehadiranGuru;
-import com.example.pbo_sekolahminggu.dao.master_data.GuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -30,7 +25,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -107,7 +101,6 @@ public class KehadiranGuruController implements Initializable {
             }
         }
     }
-
     private void exportToPdf(File file) {
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
@@ -115,66 +108,71 @@ public class KehadiranGuruController implements Initializable {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            //  judul
-            Paragraph title = new Paragraph("Laporan Kehadiran Guru Per Tahun");
+            // Judul
+            Paragraph title = new Paragraph("Laporan Kehadiran Guru Berdasarkan Tahun Ajaran");
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            Cell logoCell = new Cell(1, 2).add(logo);
-            logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
+            // Membuat tabel dengan kolom yang sesuai
+            Table table = new Table(UnitValue.createPercentArray(new float[]{40, 40, 20})).useAllAvailableWidth();
 
-            Cell emptyCell = new Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
-
-            //Header Table
-            for (int i = 0; i< kehadiranGuruTbl.getColumns().size(); i++) {
-                TableColumn col = (TableColumn) kehadiranGuruTbl.getColumns().get(i);
-                Cell headerCell = new Cell();
-                title = new Paragraph(col.getText());
-                title.setTextAlignment(TextAlignment.CENTER);
-                title.setBold();
-
-                headerCell.add(title);
+            // Header Tabel
+            String[] headers = {"Nama Guru", "Tahun Ajaran", "Total Kehadiran"};
+            for (String header : headers) {
+                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
-            table.addCell(emptyCell);
 
-            //Table Data
-            for (int i = 0; i< kehadiranGuruTbl.getItems().size(); i++) {
-                KehadiranGuru data = kehadiranGuruTbl.getItems().get(i);
+            // Mengambil data dari DAO
+            Connection con = ConnectionManager.getConnection();
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
 
-                //Data id
-                Paragraph idParagraph = new Paragraph(String.valueOf(data.getID_KEHADIRAN_GURU()));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                Cell idCell = new Cell().add(idParagraph);
-                table.addCell(idCell);
+            // Mengisi tabel dengan data
+            for (Object[] rowData : data.values()) {
+                // Pastikan data yang diambil sesuai dengan urutan kolom yang diharapkan
+                String namaGuru = rowData[0].toString();
+                String tahunAjaran = rowData[1].toString();
+                String totalKehadiran = rowData[2].toString();
 
-                //Data
+                // Data Nama Guru
+                com.itextpdf.layout.element.Cell namaGuruCell = new com.itextpdf.layout.element.Cell();
+                Paragraph namaGuruParagraph = new Paragraph(namaGuru);
+                namaGuruParagraph.setTextAlignment(TextAlignment.CENTER);
+                namaGuruCell.add(namaGuruParagraph);
+                table.addCell(namaGuruCell);
 
+                // Data Tahun Ajaran
+                com.itextpdf.layout.element.Cell tahunAjaranCell = new com.itextpdf.layout.element.Cell();
+                Paragraph tahunAjaranParagraph = new Paragraph(tahunAjaran);
+                tahunAjaranParagraph.setTextAlignment(TextAlignment.CENTER);
+                tahunAjaranCell.add(tahunAjaranParagraph);
+                table.addCell(tahunAjaranCell);
 
-                //3rd empty cell
-                table.addCell(emptyCell);
+                // Data Total Kehadiran
+                com.itextpdf.layout.element.Cell totalKehadiranCell = new com.itextpdf.layout.element.Cell();
+                Paragraph totalKehadiranParagraph = new Paragraph(totalKehadiran);
+                totalKehadiranParagraph.setTextAlignment(TextAlignment.CENTER);
+                totalKehadiranCell.add(totalKehadiranParagraph);
+                table.addCell(totalKehadiranCell);
             }
 
             doc.add(table);
             doc.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void exportToExcel(File file) {
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Guru Data");
+        XSSFSheet spreadsheet = workbook.createSheet("Laporan Kehadiran Guru");
 
         FileOutputStream out = null;
         Connection con = null;
@@ -183,23 +181,22 @@ public class KehadiranGuruController implements Initializable {
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
-            // judul
+            // Judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Kehadiran Guru Per Tahun");
+            titleCell.setCellValue("Laporan Kehadiran Guru Berdasarkan Tahun Ajaran");
 
-            //Export Header
+            // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            Object[] headerArr = kehadiranGuruTbl.getColumns().toArray();
-
+            String[] headers = {"Nama Guru", "Tahun Ajaran", "Total Kehadiran"};
             int cellCounter = 0;
-            for (Object obj : headerArr) {
+            for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(((TableColumn) obj).getText());
+                cell.setCellValue(header);
             }
 
-            //Export Data
-            Map<String, Object[]> data = GuruDao.getAllArrayObject(con);
+            // Export Data
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
@@ -212,6 +209,12 @@ public class KehadiranGuruController implements Initializable {
                     cell.setCellValue(String.valueOf(obj));
                 }
             }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                spreadsheet.autoSizeColumn(i);
+            }
+
             out = new FileOutputStream(file);
             workbook.write(out);
         } catch (SQLException e) {

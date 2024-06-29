@@ -1,15 +1,22 @@
 package com.example.pbo_sekolahminggu.controllers.transactional_data;
 
-
 import com.example.pbo_sekolahminggu.beans.master_data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional_data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional_data.KelasPerTahun;
-import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
-import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
-
-import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.dao.master_data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.HistoriKelasAnakDao;
+import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,14 +28,29 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import java.util.Map;
+
 import java.util.ResourceBundle;
+import java.util.Set;
+
 
 
 public class HistoriKelasAnakController implements Initializable {
@@ -271,6 +293,7 @@ public class HistoriKelasAnakController implements Initializable {
     }
 
 
+
     //function to change the window
     private void loadMenuAssignKelasAnak() {
         loadFXML("/com/example/pbo_sekolahminggu/views/transactional_data/assignHistoriKelasAnak.fxml");
@@ -295,5 +318,155 @@ public class HistoriKelasAnakController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    //EXPORT--------------------
+    @FXML
+    public void export() {
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
+        FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
+        chooser.getExtensionFilters().add(pdfFilter);
+        chooser.getExtensionFilters().add(excelFilter);
+
+        chooser.setInitialDirectory(new File("C:\\Users"));
+        File file = chooser.showSaveDialog(historiKelasTbl.getScene().getWindow());
+        FileChooser.ExtensionFilter selectedFilter = chooser.getSelectedExtensionFilter();
+
+        if (file != null) {
+            if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.xlsx")) {
+                exportToExcel(file);
+            } else if (selectedFilter.getExtensions().get(0).equalsIgnoreCase("*.pdf")) {
+                exportToPdf(file);
+            }
+        }
+    }
+
+    private void exportToPdf(File file) {
+        System.out.println(file.getAbsolutePath());
+        PdfDocument pdfDoc = null;
+        try {
+            pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
+            Document doc = new Document(pdfDoc);
+
+            // Judul
+            Paragraph title = new Paragraph("Laporan Kehadiran total dalam 1 tahun kelas");
+            title.setTextAlignment(TextAlignment.CENTER);
+            title.setBold();
+            doc.add(title);
+
+            // Membuat tabel dengan kolom yang sesuai
+            Table table = new Table(UnitValue.createPercentArray(new float[]{20, 40, 40})).useAllAvailableWidth();
+
+            // Logo header
+             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+             logo.setWidth(UnitValue.createPercentValue(50));
+             com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 3).add(logo);
+             logoCell.setBorder(Border.NO_BORDER);
+             table.addCell(logoCell);
+
+            // Header Tabel
+            String[] headers = {"ID Anak", "Nama Anak", "Total Kehadiran"};
+            for (String header : headers) {
+                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerCell.add(headerParagraph);
+                table.addCell(headerCell);
+            }
+
+            // Mengambil data dari DAO
+            Connection con = ConnectionManager.getConnection();
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con);
+
+            // Mengisi tabel dengan data
+            for (Object[] rowData : data.values()) {
+                for (Object cellData : rowData) {
+                    Paragraph cellParagraph = new Paragraph(cellData != null ? cellData.toString() : "");
+                    cellParagraph.setTextAlignment(TextAlignment.CENTER);
+                    com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(cellParagraph);
+                    table.addCell(cell);
+                }
+            }
+
+            doc.add(table);
+            doc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void exportToExcel(File file) {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("Kehadiran Anak");
+
+        FileOutputStream out = null;
+        Connection con = null;
+
+        try {
+            con = ConnectionManager.getConnection();
+            int rowid = 0;
+
+            // Judul
+            XSSFRow titleRow = spreadsheet.createRow(rowid++);
+            XSSFCell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("Laporan Kehadiran total dalam 1 tahun kelas");
+
+            // Export Header
+            XSSFRow headerRow = spreadsheet.createRow(rowid++);
+            String[] headers = {"ID Anak", "Nama Anak", "Total Kehadiran"};
+            int cellCounter = 0;
+            for (String header : headers) {
+                XSSFCell cell = headerRow.createCell(cellCounter++);
+                cell.setCellValue(header);
+            }
+
+            // Export Data
+            Map<String, Object[]> data = HistoriKelasAnakDao.getAllArrayObject(con);
+            Set<String> keyid = data.keySet();
+
+            for (String key : keyid) {
+                XSSFRow row = spreadsheet.createRow(rowid++);
+                Object[] objectArr = data.get(key);
+                int cellid = 0;
+
+                for (Object obj : objectArr) {
+                    XSSFCell cell = row.createCell(cellid++);
+                    cell.setCellValue(String.valueOf(obj));
+                }
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                spreadsheet.autoSizeColumn(i);
+            }
+
+            out = new FileOutputStream(file);
+            workbook.write(out);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+
 }
 

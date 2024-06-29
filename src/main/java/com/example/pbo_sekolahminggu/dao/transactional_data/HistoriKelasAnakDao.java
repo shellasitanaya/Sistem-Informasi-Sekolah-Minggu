@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HistoriKelasAnakDao {
     //to get the id from selected class
@@ -58,39 +60,43 @@ public class HistoriKelasAnakDao {
         return listHistoriKelasAnak;
     }
 
-    public static ArrayList<HistoriKelasAnak> get(Connection con, int kelasPerTahunId) {
+    // EXPORT
+    public static Map<String, Object[]> getAllArrayObject(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
+        String query =
+                "SELECT a.id AS anak_id, a.nama AS nama_anak, COUNT(ka.id) AS total_kehadiran\n" +
+                        "FROM tbl_histori_kelas_anak hka\n" +
+                        "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                        "JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                        "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                        "JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
+                        "JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
+                        "WHERE kpt.id = \n" +
+                        "GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
+                        "ORDER BY anak_id;\n";
 
-        String query = "SELECT histAnak.id, anak.nama, anak.nis, CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', '')) AS kelas, t.tahun_ajaran, histAnak.id_anak, histAnak.id_kelas_per_tahun, kpt.id_tahun_ajaran\n" +
-                "FROM tbl_histori_kelas_anak histAnak\n" +
-                "JOIN tbl_kelas_per_tahun kpt ON histAnak.id_kelas_per_tahun = kpt.id\n" +
-                "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
-                "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
-                "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE kpt.id = ? and anak.status_aktif = 1";
-        ArrayList<HistoriKelasAnak> listhistoriAnak = new ArrayList<>();
+        Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kelasPerTahunId);
+            ps.setInt(1, selectedClass.getID_KELAS_PER_TAHUN());
             rs = ps.executeQuery();
+            int i = 1;
             while (rs.next()) {
-                HistoriKelasAnak histAnak = new HistoriKelasAnak();
-                histAnak.setID_HISTORI_KELAS_ANAK(rs.getInt("id"));
-                histAnak.setNama_anak(rs.getString("nama"));
-                histAnak.setNis(rs.getString("nis"));
-                histAnak.setKelas(rs.getString("kelas"));
-                histAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
-                histAnak.setId_anak(rs.getInt("id_anak"));
-                histAnak.setId_kelas_per_tahun(rs.getInt("id_kelas_per_tahun"));
-                listhistoriAnak.add(histAnak);
+                Object[] object = new Object[3];
+                object[0] = rs.getInt("anak_id");
+                object[1] = rs.getString("nama_anak");
+                object[2] = rs.getInt("total_kehadiran");
+                listKehadiran.put(String.valueOf(i), object);
+                i++;
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionManager.close(ps, rs);
         }
-        return listhistoriAnak;
+        return listKehadiran;
     }
 
     // INI UNTUK DI WINDOW ASSIGN, ADA 2 QUERY (MASUK DI KELAS ITU, DAN TIDAK MASUK DI KELAS ITU)
@@ -161,6 +167,7 @@ public class HistoriKelasAnakDao {
         }
     }
 
+
     public static void removeFromClass(Connection con, Anak selectedStudent) {
         PreparedStatement ps = null;
         String query = "DELETE FROM tbl_histori_kelas_anak " +
@@ -172,26 +179,76 @@ public class HistoriKelasAnakDao {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            ConnectionManager.close(ps);
         }
+    }
+
+
+    public static ArrayList<HistoriKelasAnak> get(Connection con, int kelasPerTahunId) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String query = "SELECT histAnak.id, anak.nama, anak.nis, CONCAT(k.nama_kelas, ' ', COALESCE(kpt.kelas_paralel || ' ', '')) AS kelas, t.tahun_ajaran, histAnak.id_anak, histAnak.id_kelas_per_tahun, kpt.id_tahun_ajaran\n" +
+                "FROM tbl_histori_kelas_anak histAnak\n" +
+                "JOIN tbl_kelas_per_tahun kpt ON histAnak.id_kelas_per_tahun = kpt.id\n" +
+                "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
+                "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
+                "WHERE kpt.id = ? and anak.status_aktif = 1";
+        ArrayList<HistoriKelasAnak> listhistoriAnak = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(query);
+            ps.setInt(1, kelasPerTahunId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                HistoriKelasAnak histAnak = new HistoriKelasAnak();
+                histAnak.setID_HISTORI_KELAS_ANAK(rs.getInt("id"));
+                histAnak.setNama_anak(rs.getString("nama"));
+                histAnak.setNis(rs.getString("nis"));
+                histAnak.setKelas(rs.getString("kelas"));
+                histAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
+                histAnak.setId_anak(rs.getInt("id_anak"));
+                histAnak.setId_kelas_per_tahun(rs.getInt("id_kelas_per_tahun"));
+                listhistoriAnak.add(histAnak);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return listhistoriAnak;
     }
 
     //Function to check if the anak already exists in the class
-    public static boolean exists(Connection conn, int idAnak, int idKelasPerTahun) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM tbl_histori_kelas_anak WHERE id_anak = ? AND id_kelas_per_tahun = ?";
+//    public static boolean exists(Connection conn, int idAnak, int idKelasPerTahun) throws SQLException {
+//        String sql = "SELECT COUNT(*) FROM tbl_histori_kelas_anak WHERE id_anak = ? AND id_kelas_per_tahun = ?";
+//
+//        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setInt(1, idAnak);
+//            pstmt.setInt(2, idKelasPerTahun);
+//            try (ResultSet rs = pstmt.executeQuery()) {
+//                if (rs.next()) {
+//                    return rs.getInt(1) > 0;
+//                }
+//            }
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idAnak);
-            pstmt.setInt(2, idKelasPerTahun);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            }
-        }
-        return false;
-    }
+
+//
+//    //Function to check if the anak already exists in the class
+//    public static boolean exists(Connection conn, int idAnak, int idKelasPerTahun) throws SQLException {
+//        String sql = "SELECT COUNT(*) FROM tbl_histori_kelas_anak WHERE id_anak = ? AND id_kelas_per_tahun = ?";
+//
+//        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setInt(1, idAnak);
+//            pstmt.setInt(2, idKelasPerTahun);
+//            try (ResultSet rs = pstmt.executeQuery()) {
+//                if (rs.next()) {
+//                    return rs.getInt(1) > 0;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
 
 //    // SAVE
 //    public static void save(Connection con, HistoriKelasAnak HistoriKelasAnak) {
@@ -226,5 +283,7 @@ public class HistoriKelasAnakDao {
 //        }
 //    }
 
+        }
 
-}
+
+
