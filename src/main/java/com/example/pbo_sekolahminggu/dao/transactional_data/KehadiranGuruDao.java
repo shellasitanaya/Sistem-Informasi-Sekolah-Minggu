@@ -123,30 +123,46 @@ public class KehadiranGuruDao {
     }
 
     // EXPORT
+    // EXPORT
     public static Map<String, Object[]> getAllArrayObject(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "g.nama,\n" +
-                "    k.jenis_kebaktian AS kebaktian,\n" +
-                "    EXTRACT(YEAR FROM k.tanggal) AS tahun,\n" +
-                "    COUNT(*) AS jumlah_kehadiran\n" +
-                "FROM tbl_kehadiran_guru kg\n" +
-                "JOIN tbl_histori_mengajar h ON kg.id_histori_mengajar = h.id\n" +
-                "JOIN tbl_kebaktian k ON kg.id_kebaktian = k.id\n" +
-                "JOIN tbl_guru g ON h.id = h.id_guru\n" +
-                "--WHERE kg.presensi = true\n" +
-                "GROUP BY k.jenis_kebaktian, EXTRACT(YEAR FROM k.tanggal), g.nama\n" +
-                "ORDER BY tahun, k.jenis_kebaktian;\n";
-        Map<String, Object[]> listBrand = new TreeMap<String, Object[]>();
+        String query = "SELECT " +
+                "    g.nama AS nama_guru, " +
+                "    ta.tahun_ajaran, " +
+                "    COUNT(*) AS total_kehadiran " +
+                "FROM " +
+                "    tbl_kehadiran_guru kg " +
+                "JOIN " +
+                "    tbl_histori_mengajar h ON kg.id_pembimbing = h.id " +
+                "JOIN " +
+                "    tbl_kebaktian k ON kg.id_kebaktian = k.id " +
+                "JOIN " +
+                "    tbl_guru g ON h.id_guru = g.id " +
+                "JOIN " +
+                "    tbl_kelas_per_tahun kpt ON h.id_kelas_per_tahun = kpt.id " +
+                "JOIN " +
+                "    tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id " +
+                "WHERE " +
+                "    kg.presensi = false " +
+                "    AND kpt.id_tahun_ajaran = ? " +
+                "GROUP BY " +
+                "    g.nama, ta.tahun_ajaran " +
+                "ORDER BY " +
+                "    ta.tahun_ajaran, g.nama";
+
+        Map<String, Object[]> listData = new TreeMap<>();
+
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
             int i = 1;
             while(rs.next()) {
-                Object[] object = new Object[2];
-                object[0] = rs.getInt("id");
-                object[1] = rs.getString("nama");
-                listBrand.put(String.valueOf(i), object);
+                Object[] object = new Object[3];
+                object[0] = rs.getString("nama_guru");
+                object[1] = rs.getString("tahun_ajaran");
+                object[2] = rs.getInt("total_kehadiran");
+                listData.put(String.valueOf(i), object);
                 i++;
             }
         } catch (SQLException e) {
@@ -154,6 +170,8 @@ public class KehadiranGuruDao {
         } finally {
             ConnectionManager.close(rs, ps);
         }
-        return listBrand;
+
+        return listData;
     }
+
 }

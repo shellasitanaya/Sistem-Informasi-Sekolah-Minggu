@@ -10,12 +10,9 @@ import com.example.pbo_sekolahminggu.dao.master_data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional_data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -31,16 +28,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -451,86 +444,59 @@ public class KehadiranAnakController implements Initializable {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            //  judul
-            Paragraph title = new Paragraph("Laporan Kehadiran Anak Berdasarkan Kelas Dengan Presensi Paling Banyak");
+            // Judul
+            Paragraph title = new Paragraph("Laporan Kehadiran Anak di Kelas");
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 2).add(logo);
-            logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
+            // Membuat tabel dengan kolom yang sesuai
+            Table table = new Table(UnitValue.createPercentArray(new float[]{20, 20, 20, 20, 20})).useAllAvailableWidth();
 
-            com.itextpdf.layout.element.Cell emptyCell = new com.itextpdf.layout.element.Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
+            // Logo header (jika ada)
+            // Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+            // logo.setWidth(UnitValue.createPercentValue(50));
+            // com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 6).add(logo);
+            // logoCell.setBorder(Border.NO_BORDER);
+            // table.addCell(logoCell);
 
-            //Header Table
-            for (int i = 0; i< kehadiranAnakTbl.getColumns().size(); i++) {
-                TableColumn col = (TableColumn) kehadiranAnakTbl.getColumns().get(i);
+            // Header Tabel
+            String[] headers = {"ID Histori Kelas Anak", "N Kehadiran", "NIS", "Nama", "Kelas"};
+            for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
-                title = new Paragraph(col.getText());
-                title.setTextAlignment(TextAlignment.CENTER);
-                title.setBold();
-
-
-                headerCell.add(title);
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
-            table.addCell(emptyCell);
 
-            //Table Data
-            for (int i = 0; i< kehadiranAnakTbl.getItems().size(); i++) {
-                KehadiranAnak data = kehadiranAnakTbl.getItems().get(i);
+            // Mengambil data dari DAO
+            Connection con = ConnectionManager.getConnection();
+            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
 
-
-
-                // Data id
-                Paragraph idParagraph = new Paragraph(String.valueOf(data.getId_histori_kelas_anak()));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                com.itextpdf.layout.element.Cell idCell = new com.itextpdf.layout.element.Cell().add(idParagraph);
-                table.addCell(idCell);
-
-                // Data NIS
-                Paragraph nisParagraph = new Paragraph(data.getNIS());
-                com.itextpdf.layout.element.Cell nisCell = new com.itextpdf.layout.element.Cell().add(nisParagraph);
-                table.addCell(nisCell);
-
-                // Data Nama Anak
-                Paragraph namaParagraph = new Paragraph(data.getNama_anak());
-                com.itextpdf.layout.element.Cell namaCell = new com.itextpdf.layout.element.Cell().add(namaParagraph);
-                table.addCell(namaCell);
-
-                // Data Kelas
-                Paragraph kelasParagraph = new Paragraph(data.getKelas());
-                com.itextpdf.layout.element.Cell kelasCell = new com.itextpdf.layout.element.Cell().add(kelasParagraph);
-                table.addCell(kelasCell);
-
-                // Data Max Kehadiran
-                Paragraph maxKehadiranParagraph = new Paragraph(String.valueOf(data.getMaxKehadiran()));
-                com.itextpdf.layout.element.Cell maxKehadiranCell = new com.itextpdf.layout.element.Cell().add(maxKehadiranParagraph);
-                table.addCell(maxKehadiranCell);
-
-                // 3rd empty cell
-                table.addCell(emptyCell);
+            // Mengisi tabel dengan data
+            for (Object[] rowData : data.values()) {
+                for (Object cellData : rowData) {
+                    Paragraph cellParagraph = new Paragraph(cellData != null ? cellData.toString() : "");
+                    cellParagraph.setTextAlignment(TextAlignment.CENTER);
+                    com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(cellParagraph);
+                    table.addCell(cell);
+                }
             }
 
             doc.add(table);
             doc.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void exportToExcel(File file) {
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Kehadiran Anak Data");
+        XSSFSheet spreadsheet = workbook.createSheet("Kebaktian Data");
 
         FileOutputStream out = null;
         Connection con = null;
@@ -539,23 +505,23 @@ public class KehadiranAnakController implements Initializable {
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
-            // judul
+            // Judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Kehadiran Anak Berdasarkan Kelas Dengan Presensi Paling Banyak");
+            titleCell.setCellValue("Laporan Kehadiran Tiap Minggu Di Kelas");
 
-            //Export Header
+
+            // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            Object[] headerArr = kehadiranAnakTbl.getColumns().toArray();
-
+            String[] headers = {"ID Histori Kelas Anak", "NIS", "Nama", "Kelas", "Total Kehadiran"};
             int cellCounter = 0;
-            for (Object obj : headerArr) {
+            for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(((TableColumn) obj).getText());
+                cell.setCellValue(header);
             }
 
-            //Export Data
-            Map<String, Object[]> data = KehadiranAnakDao.getAllArrayObject(con);
+            // Export Data
+            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
@@ -565,9 +531,22 @@ public class KehadiranAnakController implements Initializable {
 
                 for (Object obj : objectArr) {
                     XSSFCell cell = row.createCell(cellid++);
-                    cell.setCellValue(String.valueOf(obj));
+                    if (obj instanceof Integer) {
+                        cell.setCellValue((Integer) obj);
+                    } else if (obj instanceof String) {
+                        cell.setCellValue((String) obj);
+                    } else {
+                        // Handle other types if necessary
+                        cell.setCellValue(String.valueOf(obj));
+                    }
                 }
             }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                spreadsheet.autoSizeColumn(i);
+            }
+
             out = new FileOutputStream(file);
             workbook.write(out);
         } catch (SQLException e) {
@@ -587,6 +566,7 @@ public class KehadiranAnakController implements Initializable {
             }
         }
     }
+
 
 
 
