@@ -241,7 +241,7 @@ public class KehadiranAnakController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Konfirmasi pengisian data kehadiran");
                 alert.setHeaderText(null);
-                alert.setContentText("Tidak ada data kehadiran yang ditemukan. Isi data kehadiran kelas ini?");
+                alert.setContentText("Tidak ada data kehadiran anak yang ditemukan. Isi data kehadiran kelas ini?");
 
                 // Add buttons to the alert
                 ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
