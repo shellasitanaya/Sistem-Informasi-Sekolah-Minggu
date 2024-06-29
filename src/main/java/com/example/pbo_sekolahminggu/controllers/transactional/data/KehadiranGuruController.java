@@ -1,11 +1,13 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -120,7 +122,7 @@ public class KehadiranGuruController implements Initializable {
             // Header Tabel
             String[] headers = {"Nama Guru", "Tahun Ajaran", "Total Kehadiran"};
             for (String header : headers) {
-                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                Cell headerCell = new Cell();
                 Paragraph headerParagraph = new Paragraph(header);
                 headerParagraph.setTextAlignment(TextAlignment.CENTER);
                 headerParagraph.setBold();
@@ -129,35 +131,31 @@ public class KehadiranGuruController implements Initializable {
             }
 
             // Mengambil data dari DAO
+            // KODE BUAT SELECTED TAHUN AJARAN??
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, ??);
 
-            // Mengisi tabel dengan data
-            for (Object[] rowData : data.values()) {
-                // Pastikan data yang diambil sesuai dengan urutan kolom yang diharapkan
-                String namaGuru = rowData[0].toString();
-                String tahunAjaran = rowData[1].toString();
-                String totalKehadiran = rowData[2].toString();
 
-                // Data Nama Guru
-                com.itextpdf.layout.element.Cell namaGuruCell = new com.itextpdf.layout.element.Cell();
-                Paragraph namaGuruParagraph = new Paragraph(namaGuru);
+            Set<String> keySet = data.keySet();
+            for (String key : keySet) {
+                Object[] row = data.get(key);
+                System.out.println("Nama Guru: " + row[0]);
+                System.out.println("Tahun ajaran: " + row[1]);
+                System.out.println("Total Kehadiran: " + row[2]);
+
+                Paragraph namaGuruParagraph = new Paragraph(String.valueOf(row[0]));
                 namaGuruParagraph.setTextAlignment(TextAlignment.CENTER);
-                namaGuruCell.add(namaGuruParagraph);
+                Cell namaGuruCell = new Cell().add(namaGuruParagraph);
                 table.addCell(namaGuruCell);
 
-                // Data Tahun Ajaran
-                com.itextpdf.layout.element.Cell tahunAjaranCell = new com.itextpdf.layout.element.Cell();
-                Paragraph tahunAjaranParagraph = new Paragraph(tahunAjaran);
+                Paragraph tahunAjaranParagraph = new Paragraph(String.valueOf(row[1]));
                 tahunAjaranParagraph.setTextAlignment(TextAlignment.CENTER);
-                tahunAjaranCell.add(tahunAjaranParagraph);
+                Cell tahunAjaranCell = new Cell().add(tahunAjaranParagraph);
                 table.addCell(tahunAjaranCell);
 
-                // Data Total Kehadiran
-                com.itextpdf.layout.element.Cell totalKehadiranCell = new com.itextpdf.layout.element.Cell();
-                Paragraph totalKehadiranParagraph = new Paragraph(totalKehadiran);
+                Paragraph totalKehadiranParagraph = new Paragraph(String.valueOf(row[2]));
                 totalKehadiranParagraph.setTextAlignment(TextAlignment.CENTER);
-                totalKehadiranCell.add(totalKehadiranParagraph);
+                Cell totalKehadiranCell = new Cell().add(totalKehadiranParagraph);
                 table.addCell(totalKehadiranCell);
             }
 
@@ -192,29 +190,33 @@ public class KehadiranGuruController implements Initializable {
             int cellCounter = 0;
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
-                cell.setCellValue(header);
+                cell.setCellValue(header);    spreadsheet.autoSizeColumn(cellCounter - 1);
+
             }
 
             // Export Data
-            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con);
+            // KODE SELECTED TAHUN AJARAN??
+            Map<String, Object[]> data = KehadiranGuruDao.getAllArrayObject(con, ??);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
-                int cellid = 0;
 
-                for (Object obj : objectArr) {
-                    XSSFCell cell = row.createCell(cellid++);
-                    cell.setCellValue(String.valueOf(obj));
-                }
+                // Isi data ke dalam kolom Excel
+                XSSFCell cellNamaGuru = row.createCell(0);
+                cellNamaGuru.setCellValue(String.valueOf(objectArr[0]));
+
+                XSSFCell cellTahunAjaran = row.createCell(1);
+                cellTahunAjaran.setCellValue(String.valueOf(objectArr[1]));
+
+                XSSFCell cellTotalKehadiran = row.createCell(2);
+                cellTotalKehadiran.setCellValue(String.valueOf(objectArr[2]));
+
+                spreadsheet.autoSizeColumn(0);
+                spreadsheet.autoSizeColumn(1);
+                spreadsheet.autoSizeColumn(2);
             }
-
-            // Auto-size columns
-            for (int i = 0; i < headers.length; i++) {
-                spreadsheet.autoSizeColumn(i);
-            }
-
             out = new FileOutputStream(file);
             workbook.write(out);
         } catch (SQLException e) {
