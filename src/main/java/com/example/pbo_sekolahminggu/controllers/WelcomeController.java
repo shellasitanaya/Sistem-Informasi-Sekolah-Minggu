@@ -35,9 +35,10 @@ public class WelcomeController {
         root = FXMLLoader.load(getClass().getResource("/com/example/PBO_sekolahMinggu/views/mainWindow.fxml"));
         stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
         scene = new Scene(root);
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((screenBounds.getWidth() - scene.getWidth()) / 2);
-        stage.setY((screenBounds.getHeight() - scene.getHeight()) / 2);
+        stage.setX(210);
+        stage.setY(100);
+        stage.setResizable(false);
+        stage.setMaximized(true);
         stage.setTitle("Dasboard");
         stage.setScene(scene);
         stage.show();
