@@ -19,6 +19,8 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -62,6 +64,44 @@ public class KelasPerTahunController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        namaKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Kelas>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Kelas> observableValue, Kelas kelas, Kelas t1) {
+
+            }
+
+            public void changedInKelasPerTahun(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(tahunAjaranKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+        tahunAjaranKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+            @Override
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(namaKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+
         try {
             fillKelasCb();
             fillTahunAjaranCb();
