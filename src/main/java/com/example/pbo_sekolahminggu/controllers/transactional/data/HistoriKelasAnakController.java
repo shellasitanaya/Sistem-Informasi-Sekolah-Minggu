@@ -69,6 +69,7 @@ public class HistoriKelasAnakController implements Initializable {
     @FXML
     private TableColumn<HistoriKelasAnak, String> idHistori, nama, nis, kelas, tahunAjaran;
     ObservableList<HistoriKelasAnak> dataKehadiranAnak ;
+    ObservableList<HistoriKelasAnak> listHistoriKelasAnak ;
     ObservableList<TahunAjaran> dataTahunAjaran = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
     @Override
@@ -76,6 +77,7 @@ public class HistoriKelasAnakController implements Initializable {
         kelasHistoriKelasCb.setPromptText(" ");
         tahunAjaranHistoriKelasCb.setPromptText(" ");
         populateKelasTable();
+        listHistoriKelasAnak = FXCollections.observableArrayList();
 
         tahunAjaranHistoriKelasCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
@@ -93,6 +95,55 @@ public class HistoriKelasAnakController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listHistoriKelasAnak = FXCollections.
+                    observableList(HistoriKelasAnakDao.getAll(con));
+            for (HistoriKelasAnak historiKelasAnak: listHistoriKelasAnak) {
+                System.out.println(historiKelasAnak);
+            }
+            historiKelasTbl.setItems(listHistoriKelasAnak);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<HistoriKelasAnak> filter = new FilteredList<>(listHistoriKelasAnak, e -> true);
+
+        historiKelasSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaAnak().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNis().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<HistoriKelasAnak> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(historiKelasTbl.comparatorProperty());
+        historiKelasTbl.setItems(sortList);
     }
 
     @FXML

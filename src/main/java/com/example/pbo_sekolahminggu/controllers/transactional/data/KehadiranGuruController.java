@@ -2,10 +2,13 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -21,6 +24,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -55,6 +60,8 @@ public class KehadiranGuruController implements Initializable {
     @FXML
     ComboBox<Kebaktian> kebaktianKehadiranGuruCb;
     @FXML
+    private TextField kehadiranGuruSearchField;
+    @FXML
     private AnchorPane kehadiranGuruAncPane;
 
     ObservableList<KehadiranGuru> dataKehadiranGuru ;
@@ -63,6 +70,7 @@ public class KehadiranGuruController implements Initializable {
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<Kebaktian> dataKebaktian = FXCollections.observableArrayList();
+    ObservableList<KehadiranGuru> listKehadiranGuru = FXCollections.observableArrayList() ;
 
     private Connection conn;
 
@@ -104,6 +112,58 @@ public class KehadiranGuruController implements Initializable {
 //                }
 //            }
 //        });
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listKehadiranGuru = FXCollections.
+                    observableList(KehadiranGuruDao.getAll(con));
+            for (KehadiranGuru kehadiranGuru: listKehadiranGuru) {
+                System.out.println(kehadiranGuru);
+            }
+            kehadiranGuruTbl.setItems(listKehadiranGuru);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<KehadiranGuru> filter = new FilteredList<>(listKehadiranGuru, e -> true);
+
+        kehadiranGuruSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNama().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNip().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateEmployeeData.getKebaktian().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateEmployeeData.getTglKebaktian().toString().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KehadiranGuru> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kehadiranGuruTbl.comparatorProperty());
+        kehadiranGuruTbl.setItems(sortList);
     }
 
 

@@ -2,9 +2,11 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -23,6 +25,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -57,10 +61,13 @@ public class KelasPerTahunController implements Initializable {
     @FXML
     ComboBox<TahunAjaran> tahunAjaranKelasPerTahunCb;
     @FXML
+    private TextField kelasPerTahunSearchField;
+    @FXML
     TextField namaPararelKelasPerTahunField, namaRuangKelasPerTahunField;
 
     ObservableList<Kelas> namaKelasList = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
+    ObservableList<KelasPerTahun> listKelasPerTahun = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -111,6 +118,55 @@ public class KelasPerTahunController implements Initializable {
             throw new RuntimeException(e);
         }
         populateKelasTable();
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listKelasPerTahun = FXCollections.
+                    observableList(KelasPerTahunDao.getAll(con));
+            for (KelasPerTahun kelasPerTahun: listKelasPerTahun) {
+                System.out.println(kelasPerTahun);
+            }
+            kelasPerTahunTbl.setItems(listKelasPerTahun);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<KelasPerTahun> filter = new FilteredList<>(listKelasPerTahun, e -> true);
+
+        kelasPerTahunSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getRuangKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getKelasParalel().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getNamaKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KelasPerTahun> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kelasPerTahunTbl.comparatorProperty());
+        kelasPerTahunTbl.setItems(sortList);
     }
 
     public void addKelasPerTahun(){

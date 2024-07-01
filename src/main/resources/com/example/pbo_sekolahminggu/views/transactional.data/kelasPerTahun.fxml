@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="kelasPerTahunAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional.data.KelasPerTahunController">
@@ -107,5 +108,14 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
+      <Pane layoutX="25.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
+         <children>
+            <TextField fx:id="kelasPerTahunSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#Search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+         </children>
+         <styleClass>
+            <String fx:value="search_box_outer" />
+            <String fx:value="shadow" />
+         </styleClass>
+      </Pane>
    </children>
 </AnchorPane>

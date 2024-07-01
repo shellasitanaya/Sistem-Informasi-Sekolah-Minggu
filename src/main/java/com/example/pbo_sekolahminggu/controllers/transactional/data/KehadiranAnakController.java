@@ -2,10 +2,12 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -21,6 +23,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -62,6 +66,8 @@ public class KehadiranAnakController implements Initializable {
     private ComboBox<KelasPerTahun> kelasKehadiranAnakCb;
     @FXML
     private ComboBox<Kebaktian> kebaktianKehadiranAnakCb;
+
+    ObservableList<KehadiranAnak> listKehadiranAnak = FXCollections.observableArrayList() ;
 
     ObservableList<KehadiranAnak> dataKehadiranAnak ;
     ObservableList<TahunAjaran> dataTahunAjaran;
@@ -203,13 +209,60 @@ public class KehadiranAnakController implements Initializable {
             //get the table data
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con));
             kehadiranAnakTbl.setItems(dataKehadiranAnak);
+
+            listKehadiranAnak = FXCollections.
+                    observableList(KehadiranAnakDao.getAll(con));
+            for (KehadiranAnak kehadiranAnak: listKehadiranAnak) {
+                System.out.println(kehadiranAnak);
+            }
+            kehadiranAnakTbl.setItems(listKehadiranAnak);
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             ConnectionManager.close(con);
         }
 
+
 //        tahunAjaranKehadiranAnakCb.setValue(null);
+    }
+    public void Search() {
+
+        FilteredList<KehadiranAnak> filter = new FilteredList<>(listKehadiranAnak, e -> true);
+
+        kehadiranAnakSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaAnak().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNis().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateEmployeeData.getKebaktian().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateEmployeeData.getTglKebaktian().toString().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KehadiranAnak> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kehadiranAnakTbl.comparatorProperty());
+        kehadiranAnakTbl.setItems(sortList);
     }
 
     @FXML
