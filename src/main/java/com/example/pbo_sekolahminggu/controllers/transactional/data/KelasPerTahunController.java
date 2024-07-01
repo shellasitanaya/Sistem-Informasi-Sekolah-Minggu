@@ -98,6 +98,9 @@ public class KelasPerTahunController implements Initializable {
             kelasPerTahun.setID_KELAS_PER_TAHUN(KelasPerTahunDao.getIdByProperties(con, kelasPerTahun));
 
             kelasPerTahunTbl.getItems().add(kelasPerTahun);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Data Kelas Per Tahun berhasil ditambahkan!");
+            alert.show();
 //            skinCareDao.resetSequence(con);
         } catch (Exception e) {
             e.printStackTrace(); // Handle or log the exception
@@ -116,7 +119,9 @@ public class KelasPerTahunController implements Initializable {
 
                 // Remove the selected item from the TableView
                 kelasPerTahunTbl.getItems().remove(selectedKelas);
-
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Data Kelas Per Tahun berhasil dihapus!");
+                alert.show();
 //                skinCareDao.resetSequence(con);
             } catch (Exception e) {
                 e.printStackTrace(); // Handle or log the exception
@@ -126,7 +131,7 @@ public class KelasPerTahunController implements Initializable {
             System.out.println("No row selected.");
         }
     }
-
+//
     public void edit() {
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelasPerTahun  = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
@@ -160,6 +165,9 @@ public class KelasPerTahunController implements Initializable {
                 } else {
                     System.out.println("Selected item not found in the TableView.");
                 }
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Data Kelas Per Tahun berhasil diupdate!");
+                alert.show();
             } catch (Exception e) {
                 e.printStackTrace(); // Handle or log the exception
             }

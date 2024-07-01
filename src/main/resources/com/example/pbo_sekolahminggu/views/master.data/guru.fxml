@@ -83,24 +83,6 @@
          </font>
       </Button>
 
-      <Button layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
->>>>>>> df0648885616148169f92ad7c57fe3d47652d4b5:src/main/resources/com/example/pbo_sekolahminggu/views/master_data/guru.fxml
-         <graphic>
-            <ImageView fx:id="exportGuruBtn" fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../images/exportIcon.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <styleClass>
-            <String fx:value="btn_export" />
-            <String fx:value="shadow2" />
-         </styleClass>
-      </Button>
-
       <Label layoutX="77.0" layoutY="520.0" text="EXPORT" visible="false">
          <font>
             <Font name="System Bold" size="12.0" />

@@ -365,11 +365,11 @@ public class HistoriKelasAnakController implements Initializable {
             Table table = new Table(UnitValue.createPercentArray(new float[]{20, 40, 40})).useAllAvailableWidth();
 
             // Logo header
-             Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-             logo.setWidth(UnitValue.createPercentValue(20));
-             com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 3).add(logo);
-             logoCell.setBorder(Border.NO_BORDER);
-             table.addCell(logoCell);
+            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
+            logo.setWidth(UnitValue.createPercentValue(20));
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 3).add(logo);
+            logoCell.setBorder(Border.NO_BORDER);
+            table.addCell(logoCell);
 
             // Header Tabel
             String[] headers = {"ID Anak", "Nama Anak", "Total Kehadiran"};
@@ -496,4 +496,3 @@ public class HistoriKelasAnakController implements Initializable {
 
 
 }
-
