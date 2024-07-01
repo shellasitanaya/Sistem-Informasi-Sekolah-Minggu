@@ -141,7 +141,7 @@ public class assignKehadiranAnakController implements Initializable {
     private void addToHadir() {
         Anak selectedAnak = belumHadirKehadiranAnakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             KehadiranAnakDao.updateHadir(conHere, selectedAnak);
             //refresh table view
             refreshTable(conHere);
@@ -154,7 +154,7 @@ public class assignKehadiranAnakController implements Initializable {
     private void removeToTidakHadir() {
         Anak selectedAnak = hadirKehadiranAnakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             KehadiranAnakDao.updateTidakHadir(conHere, selectedAnak);
             //refresh table view
             refreshTable(conHere);

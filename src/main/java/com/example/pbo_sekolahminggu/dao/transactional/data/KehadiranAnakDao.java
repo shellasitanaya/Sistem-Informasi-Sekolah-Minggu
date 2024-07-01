@@ -55,13 +55,13 @@ public class KehadiranAnakDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranAnak kehadiranAnak = new KehadiranAnak();
-                kehadiranAnak.setID_KEHADIRAN_ANAK(rs.getInt("id"));
-                kehadiranAnak.setNama_anak(rs.getString("nama"));
-                kehadiranAnak.setNIS(rs.getString("nis"));
+                kehadiranAnak.setIdKehadiranAnak(rs.getInt("id"));
+                kehadiranAnak.setNamaAnak(rs.getString("nama"));
+                kehadiranAnak.setNis(rs.getString("nis"));
                 kehadiranAnak.setKelas(rs.getString("kelas"));
-                kehadiranAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
+                kehadiranAnak.setTahunAjaran(rs.getString("tahun_ajaran"));
                 kehadiranAnak.setKebaktian(rs.getString("jenis_kebaktian"));
-                kehadiranAnak.setTgl_kebaktian(rs.getDate("tanggal"));
+                kehadiranAnak.setTglKebaktian(rs.getDate("tanggal"));
                 kehadiranAnak.setPresensi(rs.getBoolean("presensi"));
                 listkehadiranAnak.add(kehadiranAnak);
             }
@@ -87,19 +87,19 @@ public class KehadiranAnakDao {
         ArrayList<KehadiranAnak> listkehadiranAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, kbk.getID_KEBAKTIAN());
+            ps.setInt(1, kelas.getIdKelasPerTahun());
+            ps.setInt(2, kbk.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranAnak kehadiranAnak = new KehadiranAnak();
-                kehadiranAnak.setID_KEHADIRAN_ANAK(rs.getInt("id"));
-                kehadiranAnak.setNama_anak(rs.getString("nama"));
-                kehadiranAnak.setNIS(rs.getString("nis"));
+                kehadiranAnak.setIdKehadiranAnak(rs.getInt("id"));
+                kehadiranAnak.setNamaAnak(rs.getString("nama"));
+                kehadiranAnak.setNis(rs.getString("nis"));
                 kehadiranAnak.setKelas(rs.getString("kelas"));
-                kehadiranAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
+                kehadiranAnak.setTahunAjaran(rs.getString("tahun_ajaran"));
                 kehadiranAnak.setKebaktian(rs.getString("jenis_kebaktian"));
-                kehadiranAnak.setTgl_kebaktian(rs.getDate("tanggal"));
+                kehadiranAnak.setTglKebaktian(rs.getDate("tanggal"));
                 kehadiranAnak.setPresensi(rs.getBoolean("presensi"));
                 listkehadiranAnak.add(kehadiranAnak);
             }
@@ -124,15 +124,15 @@ public class KehadiranAnakDao {
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, selectedKebaktian.getID_KEBAKTIAN());
+            ps.setInt(1, selectedKelas.getIdKelasPerTahun());
+            ps.setInt(2, selectedKebaktian.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
-                anak.setID_ANAK(rs.getInt("id"));
+                anak.setIdAnak(rs.getInt("id"));
                 anak.setNama(rs.getString("nama"));
-                anak.setNIS(rs.getString("nis"));
+                anak.setNis(rs.getString("nis"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {
@@ -155,15 +155,15 @@ public class KehadiranAnakDao {
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, selectedKebaktian.getID_KEBAKTIAN());
+            ps.setInt(1, selectedKelas.getIdKelasPerTahun());
+            ps.setInt(2, selectedKebaktian.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
-                anak.setID_ANAK(rs.getInt("id"));
+                anak.setIdAnak(rs.getInt("id"));
                 anak.setNama(rs.getString("nama"));
-                anak.setNIS(rs.getString("nis"));
+                anak.setNis(rs.getString("nis"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {
@@ -220,7 +220,7 @@ public class KehadiranAnakDao {
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, ta.getID_TAHUN_AJARAN());
+            ps.setInt(1, ta.getIdTahunAjaran());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -268,8 +268,8 @@ public class KehadiranAnakDao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, anak.getID_ANAK());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, anak.getIdAnak());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -287,8 +287,8 @@ public class KehadiranAnakDao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, anak.getID_ANAK());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, anak.getIdAnak());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -304,7 +304,7 @@ public class KehadiranAnakDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kehadiranAnak.getID_KEHADIRAN_ANAK());
+            statement.setInt(1, kehadiranAnak.getIdKehadiranAnak());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kehadiranAnak: " + e.getMessage());
@@ -322,8 +322,8 @@ public class KehadiranAnakDao {
                 "                WHERE hka.id_kelas_per_tahun = ?";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKebaktian.getID_KEBAKTIAN());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedKebaktian.getIdKebaktian());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate(); // Use executeUpdate instead of executeQuery for INSERT statement
         } catch (SQLException e ){
             throw new RuntimeException(e);

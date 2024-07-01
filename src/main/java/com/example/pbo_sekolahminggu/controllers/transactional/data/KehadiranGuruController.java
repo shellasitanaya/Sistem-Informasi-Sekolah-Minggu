@@ -6,7 +6,6 @@ import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -189,7 +188,7 @@ public class KehadiranGuruController implements Initializable {
             ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.getAll(ConnectionManager.getConnection());
 
             // Set cell value factory for each TableColumn
-            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_KEHADIRAN_GURU())));
+            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranGuru())));
             namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama()));
             nipCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
             kelasCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
@@ -214,17 +213,17 @@ public class KehadiranGuruController implements Initializable {
                 }
                 KehadiranGuru selectedKehadiranGuru = kehadiranGuruTbl.getSelectionModel().getSelectedItem();
                 KelasPerTahun newKelas = kelasKehadiranGuruCb.getItems().stream()
-                        .filter(kelas -> kelas.getID_KELAS_PER_TAHUN() == selectedKehadiranGuru.getID_KELAS_PER_TAHUN())
+                        .filter(kelas -> kelas.getIdKelasPerTahun() == selectedKehadiranGuru.getIdKelasPerTahun())
                         .findFirst()
                         .orElse(null);
                 kelasKehadiranGuruCb.getSelectionModel().select(newKelas);
                 TahunAjaran newTahunAjaran = tahunAjaranKehadiranGuruCb.getItems().stream()
-                        .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedKehadiranGuru.getID_TAHUN_AJARAN())
+                        .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedKehadiranGuru.getIdTahunAjaran())
                         .findFirst()
                         .orElse(null);
                 tahunAjaranKehadiranGuruCb.getSelectionModel().select(newTahunAjaran);
                 Kebaktian newKebaktian = kebaktianKehadiranGuruCb.getItems().stream()
-                        .filter(kebaktian -> kebaktian.getID_KEBAKTIAN() == selectedKehadiranGuru.getID_KEBAKTIAN())
+                        .filter(kebaktian -> kebaktian.getIdKebaktian() == selectedKehadiranGuru.getIdKebaktian())
                         .findFirst()
                         .orElse(null);
                 kebaktianKehadiranGuruCb.getSelectionModel().select(newKebaktian);
@@ -367,14 +366,14 @@ public class KehadiranGuruController implements Initializable {
 
 
             // Get the ArrayList of Guru objects from the database
-            ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getID_KEBAKTIAN());
+            ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getIdKebaktian());
 
             if (listKehadiranGuru.isEmpty()) {
                 alertWarning("Belum ada data kehadiran guru!");
                 return;
             }
             // Set cell value factory for each TableColumn
-            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_KEHADIRAN_GURU())));
+            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranGuru())));
             namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama()));
             nipCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
             kelasCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));

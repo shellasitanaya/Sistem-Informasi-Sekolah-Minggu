@@ -1,8 +1,8 @@
 package com.example.pbo_sekolahminggu.beans.master.data;
 
 public class TahunAjaran {
-    private int ID_TAHUN_AJARAN;
-    private String TahunAjaran;
+    private int idTahunAjaran;
+    private String tahunAjaran;
 
     // constructor
     public TahunAjaran(){
@@ -11,19 +11,19 @@ public class TahunAjaran {
 
     // getter setter
 
-    public int getID_TAHUN_AJARAN() {
-        return ID_TAHUN_AJARAN;
+    public int getIdTahunAjaran() {
+        return idTahunAjaran;
     }
 
-    public void setID_TAHUN_AJARAN(int ID_TAHUN_AJARAN) {
-        this.ID_TAHUN_AJARAN = ID_TAHUN_AJARAN;
+    public void setIdTahunAjaran(int idTahunAjaran) {
+        this.idTahunAjaran = idTahunAjaran;
     }
 
     public String getTahunAjaran() {
-        return TahunAjaran;
+        return tahunAjaran;
     }
 
     public void setTahunAjaran(String tahunAjaran) {
-        TahunAjaran = tahunAjaran;
+        this.tahunAjaran = tahunAjaran;
     }
 }

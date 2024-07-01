@@ -126,7 +126,7 @@ public class assignKelasAnakController implements Initializable {
     private void addToClass() {
         Anak selectedAnak = anakBerdasarkanTahunHistoriKelasTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             HistoriKelasAnakDao.insertToClass(con, selectedAnak);
             refreshTable(con);
         } else {
@@ -138,7 +138,7 @@ public class assignKelasAnakController implements Initializable {
     private void removeFromClass() {
         Anak selectedAnak = anakDalamKelasHistoriKelasTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             HistoriKelasAnakDao.removeFromClass(con, selectedAnak);
             //refresh table view
             refreshTable(con);

@@ -58,13 +58,13 @@ public class HistoriKelasAnakController implements Initializable {
     @FXML
     private TableView<HistoriKelasAnak> historiKelasTbl;
     @FXML
-    private ChoiceBox<KelasPerTahun> kelasHistoriKelasCb;
+    private ComboBox<KelasPerTahun> kelasHistoriKelasCb;
     @FXML
     private Button showHistoriKelas;
     @FXML
-    private ChoiceBox<com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran> tahunAjaranHistoriKelasCb;
+    private ComboBox<com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran> tahunAjaranHistoriKelasCb;
     @FXML
-    private TableColumn<HistoriKelasAnak, String> IDHistori, Nama, NIS, Kelas, TahunAjaran;
+    private TableColumn<HistoriKelasAnak, String> idHistori, nama, nis, kelas, tahunAjaran;
     ObservableList<HistoriKelasAnak> dataKehadiranAnak ;
     ObservableList<TahunAjaran> dataTahunAjaran = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
@@ -99,22 +99,22 @@ public class HistoriKelasAnakController implements Initializable {
             //selected tahun ajaran
 //            TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
             // Get the ArrayList of Guru objects from the database
-            ArrayList<HistoriKelasAnak> listHistoryKelasAnak = HistoriKelasAnakDao.get(ConnectionManager.getConnection(), selectedKelas.getID_KELAS_PER_TAHUN());
+            ArrayList<HistoriKelasAnak> listHistoryKelasAnak = HistoriKelasAnakDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
 
             if (listHistoryKelasAnak.isEmpty()) {
                 alertWarning("Belum ada anak yang terdaftar di kelas ini!");
             }
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_KELAS_ANAK())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama_anak()));
-            NIS.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahun_ajaran()));
+            idHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriKelasAnak())));
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaAnak()));
+            nis.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
 
 
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
-            historiKelasTbl.getColumns().addAll(IDHistori, Nama, NIS, Kelas, TahunAjaran);
+            historiKelasTbl.getColumns().addAll(idHistori, nama, nis, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiKelasTbl.getItems().clear(); // Clear existing data
@@ -218,28 +218,28 @@ public class HistoriKelasAnakController implements Initializable {
             ArrayList<HistoriKelasAnak> listHistoryMengajar = HistoriKelasAnakDao.getAll(ConnectionManager.getConnection());
 
             //initialize
-            IDHistori = new TableColumn<>("ID Histori");
-            Nama = new TableColumn<>("Nama");
-            NIS = new TableColumn<>("NIS");
-            Kelas = new TableColumn<>("Kelas");
-            TahunAjaran = new TableColumn<>("Tahun Ajaran");
+            idHistori = new TableColumn<>("ID Histori");
+            nama = new TableColumn<>("Nama");
+            nis = new TableColumn<>("NIS");
+            kelas = new TableColumn<>("Kelas");
+            tahunAjaran = new TableColumn<>("Tahun Ajaran");
 
 
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_KELAS_ANAK())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama_anak()));
-            NIS.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahun_ajaran()));
+            idHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriKelasAnak())));
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaAnak()));
+            nis.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
 
-            IDHistori.setMinWidth(81);
-            Nama.setMinWidth(297);
-            NIS.setMinWidth(141);
-            Kelas.setMinWidth(151);
-            TahunAjaran.setMinWidth(140);
+            idHistori.setMinWidth(81);
+            nama.setMinWidth(297);
+            nis.setMinWidth(141);
+            kelas.setMinWidth(151);
+            tahunAjaran.setMinWidth(140);
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
-            historiKelasTbl.getColumns().addAll(IDHistori, Nama, NIS, Kelas, TahunAjaran);
+            historiKelasTbl.getColumns().addAll(idHistori, nama, nis, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiKelasTbl.getItems().clear(); // Clear existing data
@@ -257,12 +257,12 @@ public class HistoriKelasAnakController implements Initializable {
 //                    TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
                     HistoriKelasAnak selectedHistoriAnak = historiKelasTbl.getSelectionModel().getSelectedItem();
                     KelasPerTahun newKelas = kelasHistoriKelasCb.getItems().stream()
-                            .filter(kelas -> kelas.getID_KELAS_PER_TAHUN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
+                            .filter(kelas -> kelas.getIdKelasPerTahun() == selectedHistoriAnak.getIdHistoriKelasAnak())
                             .findFirst()
                             .orElse(null);
                     kelasHistoriKelasCb.getSelectionModel().select(newKelas);
                     TahunAjaran newTahunAjaran = tahunAjaranHistoriKelasCb.getItems().stream()
-                            .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedHistoriAnak.getID_HISTORI_KELAS_ANAK())
+                            .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedHistoriAnak.getIdHistoriKelasAnak())
                             .findFirst()
                             .orElse(null);
                     tahunAjaranHistoriKelasCb.getSelectionModel().select(newTahunAjaran);

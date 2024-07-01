@@ -57,11 +57,11 @@ public class KehadiranAnakController implements Initializable {
     @FXML
     private TableView<KehadiranAnak> kehadiranAnakTbl;
     @FXML
-    private ChoiceBox<TahunAjaran> tahunAjaranKehadiranAnakCb;
+    private ComboBox<TahunAjaran> tahunAjaranKehadiranAnakCb;
     @FXML
-    private ChoiceBox<KelasPerTahun> kelasKehadiranAnakCb;
+    private ComboBox<KelasPerTahun> kelasKehadiranAnakCb;
     @FXML
-    private ChoiceBox<Kebaktian> kebaktianKehadiranAnakCb;
+    private ComboBox<Kebaktian> kebaktianKehadiranAnakCb;
 
     ObservableList<KehadiranAnak> dataKehadiranAnak ;
     ObservableList<TahunAjaran> dataTahunAjaran;

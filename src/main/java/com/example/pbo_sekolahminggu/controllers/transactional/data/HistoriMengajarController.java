@@ -57,7 +57,7 @@ public class HistoriMengajarController implements Initializable {
     @FXML
     TableView<HistoriMengajar> historiMengajarTbl;
     @FXML
-    TableColumn<HistoriMengajar, String> IDHistori, Nama, NIP, Kelas, TahunAjaran;
+    TableColumn<HistoriMengajar, String> idhistori, nama, nip, kelas, tahunAjaran;
     @FXML
     ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
@@ -98,21 +98,21 @@ public class HistoriMengajarController implements Initializable {
             //selected tahun ajaran
 //            TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
             // Get the ArrayList of Guru objects from the database
-            ArrayList<HistoriMengajar> listHistoryKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getID_KELAS_PER_TAHUN());
+            ArrayList<HistoriMengajar> listHistoryKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
 
             if (listHistoryKelasGuru.isEmpty()) {
                 alertWarning("Belum ada anak yang terdaftar di kelas ini!");
             }
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
-            NIP.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns
-            historiMengajarTbl.getColumns().addAll(IDHistori, Nama, NIP, Kelas, TahunAjaran);
+            historiMengajarTbl.getColumns().addAll(idhistori, nama, nip, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiMengajarTbl.getItems().clear(); // Clear existing data
@@ -218,15 +218,15 @@ public class HistoriMengajarController implements Initializable {
             ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.getAll(ConnectionManager.getConnection());
 
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
-            NIP.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns
-            historiMengajarTbl.getColumns().addAll(IDHistori, Nama, NIP, Kelas, TahunAjaran);
+            historiMengajarTbl.getColumns().addAll(idhistori, nama, nip, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiMengajarTbl.getItems().clear(); // Clear existing data

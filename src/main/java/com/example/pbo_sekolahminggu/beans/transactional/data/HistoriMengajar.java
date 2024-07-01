@@ -1,12 +1,12 @@
 package com.example.pbo_sekolahminggu.beans.transactional.data;
 
 public class HistoriMengajar {
-    private int ID_HISTORI_MENGAJAR;
-    private int ID_GURU, ID_KELAS_PER_TAHUN;
+    private int idHistoriMengajar;
+    private int idGuru, idKelasPerTahun;
 
     //non-original-database attributes
     private String namaGuru, nip, kelas, tahunAjaran;
-    private int ID_TAHUN_AJARAN;
+    private int idTahunAjaran;
 
 
     // constructor
@@ -15,28 +15,28 @@ public class HistoriMengajar {
     }
 
     // getter setter
-    public int getID_HISTORI_MENGAJAR() {
-        return ID_HISTORI_MENGAJAR;
+    public int getIdHistoriMengajar() {
+        return idHistoriMengajar;
     }
 
-    public void setID_HISTORI_MENGAJAR(int ID_HISTORI_MENGAJAR) {
-        this.ID_HISTORI_MENGAJAR = ID_HISTORI_MENGAJAR;
+    public void setIdHistoriMengajar(int idHistoriMengajar) {
+        this.idHistoriMengajar = idHistoriMengajar;
     }
 
-    public int getID_GURU() {
-        return ID_GURU;
+    public int getIdGuru() {
+        return idGuru;
     }
 
-    public void setID_GURU(int ID_GURU) {
-        this.ID_GURU = ID_GURU;
+    public void setIdGuru(int idGuru) {
+        this.idGuru = idGuru;
     }
 
-    public int getID_KELAS_PER_TAHUN() {
-        return ID_KELAS_PER_TAHUN;
+    public int getIdKelasPerTahun() {
+        return idKelasPerTahun;
     }
 
-    public void setID_KELAS_PER_TAHUN(int ID_KELAS_PER_TAHUN) {
-        this.ID_KELAS_PER_TAHUN = ID_KELAS_PER_TAHUN;
+    public void setIdKelasPerTahun(int idKelasPerTahun) {
+        this.idKelasPerTahun = idKelasPerTahun;
     }
 
     public String getNamaGuru() {
@@ -71,11 +71,11 @@ public class HistoriMengajar {
         this.tahunAjaran = tahunAjaran;
     }
 
-    public int getID_TAHUN_AJARAN() {
-        return ID_TAHUN_AJARAN;
+    public int getIdTahunAjaran() {
+        return idTahunAjaran;
     }
 
-    public void setID_TAHUN_AJARAN(int ID_TAHUN_AJARAN) {
-        this.ID_TAHUN_AJARAN = ID_TAHUN_AJARAN;
+    public void setIdTahunAjaran(int idTahunAjaran) {
+        this.idTahunAjaran = idTahunAjaran;
     }
 }
