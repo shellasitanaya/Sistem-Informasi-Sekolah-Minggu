@@ -20,7 +20,7 @@ public class TahunAjaranDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 TahunAjaran tahunAjaran = new TahunAjaran();
-                tahunAjaran.setID_TAHUN_AJARAN(rs.getInt("id"));
+                tahunAjaran.setIdTahunAjaran(rs.getInt("id"));
                 tahunAjaran.setTahunAjaran(rs.getString("tahun_ajaran"));
                 listtahunAjaran.add(tahunAjaran);
             }
@@ -56,7 +56,7 @@ public class TahunAjaranDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, tahunAjaran.getTahunAjaran());
-            statement.setInt(2, tahunAjaran.getID_TAHUN_AJARAN());
+            statement.setInt(2, tahunAjaran.getIdTahunAjaran());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing tahun ajaran: " + e.getMessage());
@@ -72,7 +72,7 @@ public class TahunAjaranDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, tahunAjaran.getID_TAHUN_AJARAN());
+            statement.setInt(1, tahunAjaran.getIdTahunAjaran());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting tahun ajaran: " + e.getMessage());

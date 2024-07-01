@@ -24,7 +24,7 @@ public class KebaktianDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kebaktian kebaktian = new Kebaktian();
-                kebaktian.setID_KEBAKTIAN(rs.getInt("id"));
+                kebaktian.setIdKebaktian(rs.getInt("id"));
                 kebaktian.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kebaktian.setTanggal(rs.getDate("tanggal"));;
                 listkebaktian.add(kebaktian);
@@ -53,7 +53,7 @@ public class KebaktianDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kebaktian kebaktian = new Kebaktian();
-                kebaktian.setID_KEBAKTIAN(rs.getInt("id"));
+                kebaktian.setIdKebaktian(rs.getInt("id"));
                 kebaktian.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kebaktian.setTanggal(rs.getDate("tanggal"));;
                 listkebaktian.add(kebaktian);
@@ -92,7 +92,7 @@ public class KebaktianDao {
             statement = con.prepareStatement(query);
             statement.setString(1, kebaktian.getJenisKebaktian());
             statement.setDate(2, kebaktian.getTanggal());
-            statement.setInt(3, kebaktian.getID_KEBAKTIAN());
+            statement.setInt(3, kebaktian.getIdKebaktian());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kebaktian: " + e.getMessage());
@@ -108,7 +108,7 @@ public class KebaktianDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kebaktian.getID_KEBAKTIAN());
+            statement.setInt(1, kebaktian.getIdKebaktian());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kebaktian: " + e.getMessage());

@@ -3,17 +3,6 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.dao.master.data.GuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
-import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -22,23 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class GuruController implements Initializable {
     // text field
@@ -134,7 +111,7 @@ public class GuruController implements Initializable {
             if (newSelection != null) {
                 selectedGuru = newSelection;
                 namaGuruField.setText(selectedGuru.getNamaGuru());
-                nipGuruField.setText(selectedGuru.getNIP());
+                nipGuruField.setText(selectedGuru.getNip());
                 noTelpGuruField.setText(selectedGuru.getNoTelp());
                 alamatGuruField.setText(selectedGuru.getAlamat());
             }
@@ -184,7 +161,7 @@ public class GuruController implements Initializable {
         // buat objek dengan inputan datanya
         Guru guru = new Guru();
         guru.setNamaGuru(nama);
-        guru.setNIP(nip);
+        guru.setNip(nip);
         guru.setNoTelp(noTelp);
         guru.setAlamat(alamat);
 
@@ -248,7 +225,7 @@ public class GuruController implements Initializable {
 
         // update selected Guru pake value baru
         selected.setNamaGuru(nama);
-        selected.setNIP(nip);
+        selected.setNip(nip);
         selected.setNoTelp(noTelp);
         selected.setAlamat(alamat);
 
@@ -340,7 +317,7 @@ public class GuruController implements Initializable {
 
                 if (predicateGuruData.getNamaGuru().toLowerCase().contains(searchKey)) {
                     return true;
-                } else if (predicateGuruData.getNIP().toLowerCase().contains(searchKey)) {
+                } else if (predicateGuruData.getNip().toLowerCase().contains(searchKey)) {
                     return true;
                 } else if (predicateGuruData.getNoTelp().toLowerCase().contains(searchKey)) {
                     return true;

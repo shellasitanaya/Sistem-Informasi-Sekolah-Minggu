@@ -24,9 +24,9 @@ public class AnakDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
-                anak.setID_ANAK(rs.getInt("id"));
+                anak.setIdAnak(rs.getInt("id"));
                 anak.setNama(rs.getString("nama"));
-                anak.setNIS(rs.getString("nis"));
+                anak.setNis(rs.getString("nis"));
                 anak.setJenisKelamin(rs.getString("jenis_kelamin"));
                 anak.setNamaOrangTua(rs.getString("nama_ortu"));
                 anak.setAlamatOrangTua(rs.getString("alamat_ortu"));
@@ -49,7 +49,7 @@ public class AnakDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
-            statement.setString(2, anak.getNIS());
+            statement.setString(2, anak.getNis());
             statement.setString(3, anak.getJenisKelamin());
             statement.setString(4, anak.getNamaOrangTua());
             statement.setString(5, anak.getAlamatOrangTua());
@@ -70,12 +70,12 @@ public class AnakDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, anak.getNama());
-            statement.setString(2, anak.getNIS());
+            statement.setString(2, anak.getNis());
             statement.setString(3, anak.getJenisKelamin());
             statement.setString(4, anak.getNamaOrangTua());
             statement.setString(5, anak.getAlamatOrangTua());
             statement.setString(6, anak.getNoTelpOrangTua());
-            statement.setInt(7, anak.getID_ANAK());
+            statement.setInt(7, anak.getIdAnak());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing anak: " + e.getMessage());
@@ -91,7 +91,7 @@ public class AnakDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, anak.getID_ANAK());
+            statement.setInt(1, anak.getIdAnak());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting anak: " + e.getMessage());

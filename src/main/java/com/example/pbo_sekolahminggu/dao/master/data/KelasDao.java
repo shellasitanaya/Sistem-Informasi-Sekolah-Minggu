@@ -20,7 +20,7 @@ public class KelasDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kelas kelas = new Kelas();
-                kelas.setID_KELAS(rs.getInt("id"));
+                kelas.setIdKelas(rs.getInt("id"));
                 kelas.setNamaKelas(rs.getString("nama_kelas"));
                 listkelas.add(kelas);
             }
@@ -56,7 +56,7 @@ public class KelasDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, kelas.getNamaKelas());
-            statement.setInt(2, kelas.getID_KELAS());
+            statement.setInt(2, kelas.getIdKelas());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kelas: " + e.getMessage());
@@ -72,7 +72,7 @@ public class KelasDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kelas.getID_KELAS());
+            statement.setInt(1, kelas.getIdKelas());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kelas: " + e.getMessage());

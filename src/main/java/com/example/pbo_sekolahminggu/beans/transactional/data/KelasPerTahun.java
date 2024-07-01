@@ -1,10 +1,10 @@
 package com.example.pbo_sekolahminggu.beans.transactional.data;
 
 public class KelasPerTahun {
-    private int ID_KELAS_PER_TAHUN;
-    private int ID_KELAS, ID_TAHUN_AJARAN;
-    private String RuangKelas;
-    private String KelasParalel;
+    private int idKelasPerTahun;
+    private int idKelas, idTahunAjaran;
+    private String ruangKelas;
+    private String kelasParalel;
 
     //non-original-database attributes
     private String namaKelas;
@@ -17,28 +17,28 @@ public class KelasPerTahun {
     }
 
     // getter setter
-    public int getID_KELAS_PER_TAHUN() {
-        return ID_KELAS_PER_TAHUN;
+    public int getIdKelasPerTahun() {
+        return idKelasPerTahun;
     }
 
-    public void setID_KELAS_PER_TAHUN(int ID_KELAS_PER_TAHUN) {
-        this.ID_KELAS_PER_TAHUN = ID_KELAS_PER_TAHUN;
+    public void setIdKelasPerTahun(int idKelasPerTahun) {
+        this.idKelasPerTahun = idKelasPerTahun;
     }
 
     public String getRuangKelas() {
-        return RuangKelas;
+        return ruangKelas;
     }
 
     public void setRuangKelas(String ruangKelas) {
-        RuangKelas = ruangKelas;
+        this.ruangKelas = ruangKelas;
     }
 
     public String getKelasParalel() {
-        return KelasParalel;
+        return kelasParalel;
     }
 
     public void setKelasParalel(String kelasParalel) {
-        KelasParalel = kelasParalel;
+        this.kelasParalel = kelasParalel;
     }
 
     public String getNamaKelas() {
@@ -57,19 +57,19 @@ public class KelasPerTahun {
         this.tahunAjaran = tahunAjaran;
     }
 
-    public int getID_KELAS() {
-        return ID_KELAS;
+    public int getIdKelas() {
+        return idKelas;
     }
 
-    public void setID_KELAS(int ID_KELAS) {
-        this.ID_KELAS = ID_KELAS;
+    public void setIdKelas(int idKelas) {
+        this.idKelas = idKelas;
     }
 
-    public int getID_TAHUN_AJARAN() {
-        return ID_TAHUN_AJARAN;
+    public int getIdTahunAjaran() {
+        return idTahunAjaran;
     }
 
-    public void setID_TAHUN_AJARAN(int ID_TAHUN_AJARAN) {
-        this.ID_TAHUN_AJARAN = ID_TAHUN_AJARAN;
+    public void setIdTahunAjaran(int idTahunAjaran) {
+        this.idTahunAjaran = idTahunAjaran;
     }
 }

@@ -3,19 +3,19 @@ package com.example.pbo_sekolahminggu.beans.transactional.data;
 import java.sql.Date;
 
 public class KehadiranAnak {
-    private int ID_KEHADIRAN_ANAK;
-    private boolean Presensi = false;  //hadir/tidak default tidak hadir
+    private int idKehadiranAnak;
+    private boolean presensi = false;  //hadir/tidak default tidak hadir
     //foreign keys
-    private int id_histori_kelas_anak;
-    private int id_kebaktian;
+    private int idHistoriKelasAnak;
+    private int idKebaktian;
 
     //non-database-attributes
-    private String nama_anak;
-    private String NIS;
+    private String namaAnak;
+    private String nis;
     private String kelas;
-    private String tahun_ajaran;
+    private String tahunAjaran;
     private String kebaktian;
-    private Date tgl_kebaktian;
+    private Date tglKebaktian;
     private int maxKehadiran;
 
     // constructor
@@ -24,36 +24,36 @@ public class KehadiranAnak {
     }
 
     // getter setter
-    public int getId_histori_kelas_anak() {
-        return id_histori_kelas_anak;
+    public int getIdHistoriKelasAnak() {
+        return idHistoriKelasAnak;
     }
 
-    public void setId_histori_kelas_anak(int id_histori_kelas_anak) {
-        this.id_histori_kelas_anak = id_histori_kelas_anak;
+    public void setIdHistoriKelasAnak(int idHistoriKelasAnak) {
+        this.idHistoriKelasAnak = idHistoriKelasAnak;
     }
 
-    public int getId_kebaktian() {
-        return id_kebaktian;
+    public int getIdKebaktian() {
+        return idKebaktian;
     }
 
-    public void setId_kebaktian(int id_kebaktian) {
-        this.id_kebaktian = id_kebaktian;
+    public void setIdKebaktian(int idKebaktian) {
+        this.idKebaktian = idKebaktian;
     }
 
-    public String getNama_anak() {
-        return nama_anak;
+    public String getNamaAnak() {
+        return namaAnak;
     }
 
-    public void setNama_anak(String nama_anak) {
-        this.nama_anak = nama_anak;
+    public void setNamaAnak(String namaAnak) {
+        this.namaAnak = namaAnak;
     }
 
-    public String getNIS() {
-        return NIS;
+    public String getNis() {
+        return nis;
     }
 
-    public void setNIS(String NIS) {
-        this.NIS = NIS;
+    public void setNis(String nis) {
+        this.nis = nis;
     }
 
     public String getKelas() {
@@ -64,12 +64,12 @@ public class KehadiranAnak {
         this.kelas = kelas;
     }
 
-    public String getTahun_ajaran() {
-        return tahun_ajaran;
+    public String getTahunAjaran() {
+        return tahunAjaran;
     }
 
-    public void setTahun_ajaran(String tahun_ajaran) {
-        this.tahun_ajaran = tahun_ajaran;
+    public void setTahunAjaran(String tahunAjaran) {
+        this.tahunAjaran = tahunAjaran;
     }
 
     public String getKebaktian() {
@@ -80,28 +80,28 @@ public class KehadiranAnak {
         this.kebaktian = kebaktian;
     }
 
-    public Date getTgl_kebaktian() {
-        return tgl_kebaktian;
+    public Date getTglKebaktian() {
+        return tglKebaktian;
     }
 
-    public void setTgl_kebaktian(Date tgl_kebaktian) {
-        this.tgl_kebaktian = tgl_kebaktian;
+    public void setTglKebaktian(Date tglKebaktian) {
+        this.tglKebaktian = tglKebaktian;
     }
 
-    public int getID_KEHADIRAN_ANAK() {
-        return ID_KEHADIRAN_ANAK;
+    public int getIdKehadiranAnak() {
+        return idKehadiranAnak;
     }
 
-    public void setID_KEHADIRAN_ANAK(int ID_KEHADIRAN_ANAK) {
-        this.ID_KEHADIRAN_ANAK = ID_KEHADIRAN_ANAK;
+    public void setIdKehadiranAnak(int idKehadiranAnak) {
+        this.idKehadiranAnak = idKehadiranAnak;
     }
 
     public boolean isPresensi() {
-        return Presensi;
+        return presensi;
     }
 
     public void setPresensi(boolean presensi) {
-        Presensi = presensi;
+        this.presensi = presensi;
     }
 
     public int getMaxKehadiran() {

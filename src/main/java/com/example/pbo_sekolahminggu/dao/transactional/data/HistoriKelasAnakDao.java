@@ -43,13 +43,13 @@ public class HistoriKelasAnakDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 HistoriKelasAnak histAnak = new HistoriKelasAnak();
-                histAnak.setID_HISTORI_KELAS_ANAK(rs.getInt("id"));
-                histAnak.setNama_anak(rs.getString("nama"));
+                histAnak.setIdHistoriKelasAnak(rs.getInt("id"));
+                histAnak.setNamaAnak(rs.getString("nama"));
                 histAnak.setNis(rs.getString("nis"));
                 histAnak.setKelas(rs.getString("kelas"));
-                histAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
-                histAnak.setId_anak(rs.getInt("id_anak"));
-                histAnak.setId_kelas_per_tahun(rs.getInt("id_kelas_per_tahun"));
+                histAnak.setTahunAjaran(rs.getString("tahun_ajaran"));
+                histAnak.setIdAnak(rs.getInt("id_anak"));
+                histAnak.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
                 listHistoriKelasAnak.add(histAnak);
             }
         } catch (SQLException e) {
@@ -79,7 +79,7 @@ public class HistoriKelasAnakDao {
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kpt.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, kpt.getIdKelasPerTahun());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {
@@ -108,14 +108,14 @@ public class HistoriKelasAnakDao {
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
-                anak.setID_ANAK(rs.getInt("id"));
+                anak.setIdAnak(rs.getInt("id"));
                 anak.setNama(rs.getString("nama"));
-                anak.setNIS(rs.getString("nis"));
+                anak.setNis(rs.getString("nis"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {
@@ -138,9 +138,9 @@ public class HistoriKelasAnakDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
-                anak.setID_ANAK(rs.getInt("id"));
+                anak.setIdAnak(rs.getInt("id"));
                 anak.setNama(rs.getString("nama"));
-                anak.setNIS(rs.getString("nis"));
+                anak.setNis(rs.getString("nis"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {
@@ -156,8 +156,8 @@ public class HistoriKelasAnakDao {
         String query = "INSERT INTO tbl_histori_kelas_anak (id_anak, id_kelas_per_tahun) VALUES (?, ?)";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedStudent.getID_ANAK());
-            ps.setInt(2, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedStudent.getIdAnak());
+            ps.setInt(2, selectedClass.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -173,8 +173,8 @@ public class HistoriKelasAnakDao {
                 "WHERE id_anak = ? AND id_kelas_per_tahun = ?";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedStudent.getID_ANAK());
-            ps.setInt(2, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedStudent.getIdAnak());
+            ps.setInt(2, selectedClass.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -200,13 +200,13 @@ public class HistoriKelasAnakDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 HistoriKelasAnak histAnak = new HistoriKelasAnak();
-                histAnak.setID_HISTORI_KELAS_ANAK(rs.getInt("id"));
-                histAnak.setNama_anak(rs.getString("nama"));
+                histAnak.setIdHistoriKelasAnak(rs.getInt("id"));
+                histAnak.setNamaAnak(rs.getString("nama"));
                 histAnak.setNis(rs.getString("nis"));
                 histAnak.setKelas(rs.getString("kelas"));
-                histAnak.setTahun_ajaran(rs.getString("tahun_ajaran"));
-                histAnak.setId_anak(rs.getInt("id_anak"));
-                histAnak.setId_kelas_per_tahun(rs.getInt("id_kelas_per_tahun"));
+                histAnak.setTahunAjaran(rs.getString("tahun_ajaran"));
+                histAnak.setIdAnak(rs.getInt("id_anak"));
+                histAnak.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
                 listhistoriAnak.add(histAnak);
             }
         } catch (SQLException e) {

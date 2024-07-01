@@ -2,7 +2,7 @@
 
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -76,9 +76,6 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <ChoiceBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ChoiceBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" onMouseClicked="#filterDataKelas" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ChoiceBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" onMouseClicked="#filterDataKebaktian" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <Button fx:id="exportKehadiranAnakBtn" layoutX="29.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
@@ -95,5 +92,8 @@
             <String fx:value="shadow2" />
          </styleClass>
       </Button>
+      <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
    </children>
 </AnchorPane>

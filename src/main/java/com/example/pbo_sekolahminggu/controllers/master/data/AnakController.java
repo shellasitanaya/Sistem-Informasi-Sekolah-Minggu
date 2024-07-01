@@ -109,7 +109,7 @@ public class AnakController implements Initializable {
             if (newSelection != null) {
                 selectedAnak = newSelection;
                 namaAnakField.setText(selectedAnak.getNama());
-                nisAnakField.setText(selectedAnak.getNIS());
+                nisAnakField.setText(selectedAnak.getNis());
                 alamatOrangTuaField.setText(selectedAnak.getAlamatOrangTua());
                 namaOrangTuaField.setText(selectedAnak.getNamaOrangTua());
                 nomorTeleponField.setText(selectedAnak.getNoTelpOrangTua());
@@ -169,7 +169,7 @@ public class AnakController implements Initializable {
 
         Anak anak = new Anak();
         anak.setNama(nama);
-        anak.setNIS(nis);
+        anak.setNis(nis);
         anak.setJenisKelamin(jenisKelamin);
         anak.setNoTelpOrangTua(no_telp);
         anak.setNamaOrangTua(nama_orang_tua);
@@ -220,7 +220,7 @@ public class AnakController implements Initializable {
 
         // update selected anak object
         selectedAnak.setNama(nama);
-        selectedAnak.setNIS(nis);
+        selectedAnak.setNis(nis);
         selectedAnak.setJenisKelamin(jenisKelamin);
         selectedAnak.setAlamatOrangTua(alamat);
         selectedAnak.setNoTelpOrangTua(no_telp);
@@ -310,7 +310,7 @@ public class AnakController implements Initializable {
 
                 if (predicateAnakData.getNama().toLowerCase().contains(searchKey)) {
                     return true;
-                } else if (predicateAnakData.getNIS().toLowerCase().contains(searchKey)) {
+                } else if (predicateAnakData.getNis().toLowerCase().contains(searchKey)) {
                     return true;
                 } else if (predicateAnakData.getJenisKelamin().toLowerCase().contains(searchKey)) {
                     return true;
