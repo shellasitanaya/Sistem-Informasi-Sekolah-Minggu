@@ -71,6 +71,10 @@ public class KehadiranGuruController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+        tahunAjaranKehadiranGuruCb.setPromptText(" ");
+        kelasKehadiranGuruCb.setPromptText(" ");
+        kebaktianKehadiranGuruCb.setPromptText(" ");
+
         tahunAjaranKehadiranGuruCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
             public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {

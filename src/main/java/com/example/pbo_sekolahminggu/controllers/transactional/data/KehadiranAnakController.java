@@ -79,6 +79,10 @@ public class KehadiranAnakController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tahunAjaranKehadiranAnakCb.setPromptText(" ");
+        kelasKehadiranAnakCb.setPromptText(" ");
+        kebaktianKehadiranAnakCb.setPromptText(" ");
+
         dataKehadiranAnak = FXCollections.observableArrayList();
         dataTahunAjaran = FXCollections.observableArrayList();
         dataKelas = FXCollections.observableArrayList();

@@ -73,7 +73,8 @@ public class HistoriKelasAnakController implements Initializable {
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        kelasHistoriKelasCb.setPromptText(" ");
+        tahunAjaranHistoriKelasCb.setPromptText(" ");
         populateKelasTable();
 
         tahunAjaranHistoriKelasCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {

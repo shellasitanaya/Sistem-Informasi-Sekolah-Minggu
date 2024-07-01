@@ -69,6 +69,8 @@ public class HistoriMengajarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+        tahunAjaranHistoriMengajarCb.setPromptText(" ");
+        kelasHistoriMengajarCb.setPromptText(" ");
 
         tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override

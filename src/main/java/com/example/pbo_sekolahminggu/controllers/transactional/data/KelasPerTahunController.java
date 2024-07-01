@@ -64,6 +64,8 @@ public class KelasPerTahunController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        namaKelasPerTahunCb.setPromptText(" ");
+        tahunAjaranKelasPerTahunCb.setPromptText(" ");
         namaKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Kelas>() {
 
             @Override
