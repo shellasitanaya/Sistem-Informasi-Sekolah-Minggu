@@ -94,5 +94,10 @@
             <String fx:value="shadow2" />
          </styleClass>
       </Button>
+      <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
