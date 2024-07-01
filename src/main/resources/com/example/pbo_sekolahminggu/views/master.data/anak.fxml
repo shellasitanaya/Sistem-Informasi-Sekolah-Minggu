@@ -21,11 +21,11 @@
    <children>
       <TableView fx:id="anakTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idAnak" prefWidth="56.0" text="ID Anak" />
-            <TableColumn fx:id="namaAnak" prefWidth="163.0" text="Nama Anak" />
-            <TableColumn fx:id="nisAnak" prefWidth="97.0" text="NIS" />
-            <TableColumn fx:id="jenisKelaminAnak" prefWidth="92.0" text="Jenis Kelamin" />
-            <TableColumn fx:id="namaOrangTua" prefWidth="130.0" text="Nama Orang Tua" />
+            <TableColumn fx:id="idAnak" prefWidth="55.0" text="ID Anak" />
+            <TableColumn fx:id="namaAnak" prefWidth="145.0" text="Nama Anak" />
+            <TableColumn fx:id="nisAnak" prefWidth="115.0" text="NIS" />
+            <TableColumn fx:id="jenisKelaminAnak" prefWidth="85.0" text="Jenis Kelamin" />
+            <TableColumn fx:id="namaOrangTua" prefWidth="145.0" text="Nama Orang Tua" />
             <TableColumn fx:id="nomorTeleponOrangTua" prefWidth="120.0" text="Nomor Telepon" />
             <TableColumn fx:id="AlamatOrangTua" prefWidth="152.0" text="Alamat" />
          </columns>

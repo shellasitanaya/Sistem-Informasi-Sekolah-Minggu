@@ -19,10 +19,10 @@
    <children>
       <TableView fx:id="historiMengajarTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idhistori" prefWidth="81.0" text="ID Histori" />
-            <TableColumn fx:id="nama" prefWidth="297.0" text="Nama" />
-            <TableColumn fx:id="nip" prefWidth="141.0" text="NIP" />
-            <TableColumn fx:id="kelas" prefWidth="151.0" text="Kelas" />
+            <TableColumn fx:id="idhistori" text="ID Histori" />
+            <TableColumn fx:id="nama" prefWidth="300.0" text="Nama" />
+            <TableColumn fx:id="nip" prefWidth="140.0" text="NIP" />
+            <TableColumn fx:id="kelas" prefWidth="150.0" text="Kelas" />
             <TableColumn fx:id="tahunAjaran" prefWidth="140.0" text="Tahun Ajaran" />
          </columns>
       </TableView>
@@ -79,5 +79,10 @@
       </Button>
       <ComboBox fx:id="tahunAjaranHistoriMengajarCb" layoutX="134.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="kelasHistoriMengajarCb" layoutX="134.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <Label layoutX="27.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

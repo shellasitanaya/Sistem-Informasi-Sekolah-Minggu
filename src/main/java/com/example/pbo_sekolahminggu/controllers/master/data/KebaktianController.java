@@ -77,15 +77,15 @@ public class KebaktianController implements Initializable {
 
         // Inisialisasi table columns
         TableColumn<Kebaktian, Integer> idCol = new TableColumn<>("ID Kebaktian");
-        idCol.setMinWidth(100);
+        idCol.setMinWidth(90);
         idCol.setCellValueFactory(new PropertyValueFactory<>("ID_KEBAKTIAN"));
 
         TableColumn<Kebaktian, String> jenisCol = new TableColumn<>("Jenis Kebaktian");
-        jenisCol.setMinWidth(150);
+        jenisCol.setMinWidth(245);
         jenisCol.setCellValueFactory(new PropertyValueFactory<>("jenisKebaktian"));
 
         TableColumn<Kebaktian, Date> tanggalCol = new TableColumn<>("Tanggal");
-        tanggalCol.setMinWidth(150);
+        tanggalCol.setMinWidth(310);
         tanggalCol.setCellValueFactory(new PropertyValueFactory<>("tanggal"));
 
         kebaktianTbl.getColumns().addAll(idCol, jenisCol, tanggalCol);

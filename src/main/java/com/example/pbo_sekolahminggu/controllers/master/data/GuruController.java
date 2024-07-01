@@ -61,17 +61,17 @@ public class GuruController implements Initializable {
         // inisialisasi kolom
         // Membuat kolom untuk ID_GURU
         TableColumn<Guru, Integer> idCol = new TableColumn<>("ID Guru");
-        idCol.setMinWidth(100);
+        idCol.setMinWidth(55);
         idCol.setCellValueFactory(new PropertyValueFactory<>("ID_GURU"));
 
         // Membuat kolom untuk NamaGuru
         TableColumn<Guru, String> namaCol = new TableColumn<>("Nama Guru");
-        namaCol.setMinWidth(150);
+        namaCol.setMinWidth(235);
         namaCol.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
 
         // Membuat kolom untuk NIP
         TableColumn<Guru, String> nipCol = new TableColumn<>("NIP");
-        nipCol.setMinWidth(150);
+        nipCol.setMinWidth(105);
         nipCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
 
         // Membuat kolom untuk NoTelp
@@ -81,7 +81,7 @@ public class GuruController implements Initializable {
 
         // Membuat kolom untuk Alamat
         TableColumn<Guru, String> alamatCol = new TableColumn<>("Alamat");
-        alamatCol.setMinWidth(150);
+        alamatCol.setMinWidth(279);
         alamatCol.setCellValueFactory(new PropertyValueFactory<>("Alamat"));
 
         // Menambahkan kolom ke TableView

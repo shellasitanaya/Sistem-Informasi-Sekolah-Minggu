@@ -48,22 +48,22 @@ public class assignKehadiranGuruController implements Initializable {
         hadirKehadiranGuruTbl.getColumns().clear();
         //set the columns
         TableColumn<Guru, String> namaColHadir = new TableColumn<>("Nama");
-        namaColHadir.setMinWidth(100);
+        namaColHadir.setMinWidth(125);
         namaColHadir.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
 
         TableColumn<Guru, String> nisHadirCol = new TableColumn<>("NIP");
-        nisHadirCol.setMinWidth(60);
+        nisHadirCol.setMinWidth(95);
         nisHadirCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
 
         hadirKehadiranGuruTbl.getColumns().addAll(namaColHadir, nisHadirCol);
 
         belumHadirKehadiranGuruTbl.getColumns().clear();
         TableColumn<Guru, String> namaColTidak = new TableColumn<>("Nama");
-        namaColTidak.setMinWidth(100);
+        namaColTidak.setMinWidth(125);
         namaColTidak.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
 
         TableColumn<Guru, String> nisTidakCol = new TableColumn<>("NIP");
-        nisTidakCol.setMinWidth(60);
+        nisTidakCol.setMinWidth(95);
         nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
 
         belumHadirKehadiranGuruTbl.getColumns().addAll(namaColTidak, nisTidakCol);

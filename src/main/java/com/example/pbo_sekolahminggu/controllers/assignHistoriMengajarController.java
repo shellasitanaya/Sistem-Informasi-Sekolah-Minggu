@@ -47,22 +47,22 @@ public class assignHistoriMengajarController implements Initializable {
         addedGuruTbl.getColumns().clear();
         //set the columns
         TableColumn<Guru, String> namaColTerdaftar = new TableColumn<>("Nama");
-        namaColTerdaftar.setMinWidth(120);
+        namaColTerdaftar.setMinWidth(125);
         namaColTerdaftar.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         TableColumn<Guru, String> nipTerdaftarCol = new TableColumn<>("NIP");
-        nipTerdaftarCol.setMinWidth(100);
+        nipTerdaftarCol.setMinWidth(95);
         nipTerdaftarCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         addedGuruTbl.getColumns().addAll(namaColTerdaftar, nipTerdaftarCol);
 
         removedGuruTbl.getColumns().clear();
         TableColumn<Guru, String> namaColTidak = new TableColumn<>("Nama");
-        namaColTidak.setMinWidth(120);
+        namaColTidak.setMinWidth(125);
         namaColTidak.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         TableColumn<Guru, String> nipTidakCol = new TableColumn<>("NIP");
-        nipTidakCol.setMinWidth(100);
+        nipTidakCol.setMinWidth(95);
         nipTidakCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         removedGuruTbl.getColumns().addAll(namaColTidak, nipTidakCol);

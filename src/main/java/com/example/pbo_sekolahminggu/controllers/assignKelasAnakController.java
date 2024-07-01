@@ -49,22 +49,22 @@ public class assignKelasAnakController implements Initializable {
         anakDalamKelasHistoriKelasTbl.getColumns().clear();
         //set the columns
         TableColumn<Anak, String> namaColTerdaftar = new TableColumn<>("Nama");
-        namaColTerdaftar.setMinWidth(100);
+        namaColTerdaftar.setMinWidth(125);
         namaColTerdaftar.setCellValueFactory(new PropertyValueFactory<>("Nama"));
 
         TableColumn<Anak, String> nisTerdaftarCol = new TableColumn<>("NIS");
-        nisTerdaftarCol.setMinWidth(60);
+        nisTerdaftarCol.setMinWidth(95);
         nisTerdaftarCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
 
         anakDalamKelasHistoriKelasTbl.getColumns().addAll(namaColTerdaftar, nisTerdaftarCol);
 
         anakBerdasarkanTahunHistoriKelasTbl.getColumns().clear();
         TableColumn<Anak, String> namaColTidak = new TableColumn<>("Nama");
-        namaColTidak.setMinWidth(100);
+        namaColTidak.setMinWidth(125);
         namaColTidak.setCellValueFactory(new PropertyValueFactory<>("Nama"));
 
         TableColumn<Anak, String> nisTidakCol = new TableColumn<>("NIS");
-        nisTidakCol.setMinWidth(60);
+        nisTidakCol.setMinWidth(95);
         nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
 
         anakBerdasarkanTahunHistoriKelasTbl.getColumns().addAll(namaColTidak, nisTidakCol);

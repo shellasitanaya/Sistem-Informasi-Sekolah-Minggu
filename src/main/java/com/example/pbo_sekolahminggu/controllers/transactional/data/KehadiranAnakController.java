@@ -90,37 +90,37 @@ public class KehadiranAnakController implements Initializable {
         kehadiranAnakTbl.getColumns().clear();
         //column no
         TableColumn idCol = new TableColumn<>("ID Kehadiran");
-        idCol.setMinWidth(81);
+        idCol.setMinWidth(80);
         idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("ID_KEHADIRAN_ANAK"));  //yg ini harus sama dgn attribute di beans
 
         //column nama anak
         TableColumn namaAnakCol = new TableColumn("Nama");
-        namaAnakCol.setMinWidth(188);
+        namaAnakCol.setMinWidth(190);
         namaAnakCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("nama_anak"));
 
         TableColumn nisCOL = new TableColumn("NIS");
-        nisCOL.setMinWidth(128);
+        nisCOL.setMinWidth(130);
         nisCOL.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("NIS"));
 
         TableColumn namaKelasCol = new TableColumn("Kelas");
-        namaKelasCol.setMinWidth(127);
+        namaKelasCol.setMinWidth(130);
         namaKelasCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("kelas"));
 
         TableColumn kebaktianCol = new TableColumn("Kebaktian");
-        kebaktianCol.setMinWidth(88);
+        kebaktianCol.setMinWidth(90);
         kebaktianCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("kebaktian"));
 
         TableColumn tanggalCol = new TableColumn("Tanggal");
-        tanggalCol.setMinWidth(106);
+        tanggalCol.setMinWidth(100);
         tanggalCol.setCellValueFactory(
                 new PropertyValueFactory<KehadiranAnak, String>("tgl_kebaktian"));
 
         TableColumn presensiCol = new TableColumn("Presensi");
-        presensiCol.setMinWidth(92);
+        presensiCol.setMinWidth(90);
         presensiCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<KehadiranAnak, String>, ObservableValue<String>>() {
             @Override
             public javafx.beans.value.ObservableValue<String> call(TableColumn.CellDataFeatures<KehadiranAnak, String> cellData) {

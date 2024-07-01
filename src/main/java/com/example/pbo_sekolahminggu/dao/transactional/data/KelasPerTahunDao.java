@@ -1,5 +1,6 @@
 package com.example.pbo_sekolahminggu.dao.transactional.data;
 
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -48,6 +49,35 @@ public class KelasPerTahunDao {
             ConnectionManager.close(ps, rs);
         }
         return listkelasPerTahun;
+    }
+
+    public static String getNextParalel(Connection con, int idKelas, int idTahunAjaran) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String query = "SELECT \n" +
+                "    CASE \n" +
+                "        WHEN MAX(kelas_paralel) IS NULL THEN 'A'\n" +
+                "        ELSE CHR(ASCII(MAX(kelas_paralel)) + 1)\n" +
+                "    END AS next_value\n" +
+                "FROM tbl_kelas_per_tahun\n" +
+                "WHERE id_kelas = ? AND id_tahun_ajaran = ? and status_aktif=1;";
+
+        String ans = "";
+        try {
+            ps = con.prepareStatement(query);
+            ps.setInt(1, idKelas);
+            ps.setInt(2, idTahunAjaran);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ans = rs.getString("next_value");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return ans;
     }
 
     // EXPORT

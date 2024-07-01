@@ -1,5 +1,6 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
+import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
@@ -23,6 +24,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -106,11 +109,15 @@ public class HistoriKelasAnakController implements Initializable {
             }
             // Set cell value factory for each TableColumn
             idHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriKelasAnak())));
+            idHistori.setMinWidth(80);
             nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaAnak()));
+            nama.setMinWidth(300);
             nis.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
+            nis.setMinWidth(145);
             kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelas.setMinWidth(150);
             tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
-
+            tahunAjaran.setMinWidth(140);
 
             // Add columns to the TableView
             historiKelasTbl.getColumns().clear(); // Clear existing columns
@@ -131,6 +138,7 @@ public class HistoriKelasAnakController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
 
     public void fillTahunAjaranCb() throws SQLException {

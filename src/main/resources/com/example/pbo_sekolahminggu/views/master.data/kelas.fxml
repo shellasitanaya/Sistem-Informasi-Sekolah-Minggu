@@ -20,8 +20,8 @@
    <children>
       <TableView fx:id="kelasTbl" layoutX="26.0" layoutY="68.0" onMouseClicked="#handleRowClick" prefHeight="427.0" prefWidth="296.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idKelas" prefWidth="56.0" text="ID Kelas" />
-            <TableColumn fx:id="namaKelas" prefWidth="238.0" text="Nama Kelas" />
+            <TableColumn fx:id="idKelas" prefWidth="55.0" text="ID Kelas" />
+            <TableColumn fx:id="namaKelas" prefWidth="240.0" text="Nama Kelas" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">

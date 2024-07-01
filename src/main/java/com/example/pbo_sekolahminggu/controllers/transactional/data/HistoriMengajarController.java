@@ -105,10 +105,15 @@ public class HistoriMengajarController implements Initializable {
             }
             // Set cell value factory for each TableColumn
             idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            idhistori.setMinWidth(80);
             nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nama.setMinWidth(300);
             nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            nip.setMinWidth(140);
             kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelas.setMinWidth(150);
             tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            tahunAjaran.setMinWidth(140);
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns

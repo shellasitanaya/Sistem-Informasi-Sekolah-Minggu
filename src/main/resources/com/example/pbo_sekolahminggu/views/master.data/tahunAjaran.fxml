@@ -20,8 +20,8 @@
    <children>
       <TableView fx:id="tahunAjaranTbl" layoutX="27.0" layoutY="64.0" prefHeight="427.0" prefWidth="337.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idTahunAjaran" prefWidth="101.0" text="ID Tahun Ajaran" />
-            <TableColumn fx:id="tahunAjaran" prefWidth="234.0" text="Tahun Ajaran" />
+            <TableColumn fx:id="idTahunAjaran" prefWidth="100.0" text="ID Tahun Ajaran" />
+            <TableColumn fx:id="tahunAjaran" prefWidth="235.0" text="Tahun Ajaran" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">

@@ -74,31 +74,31 @@ public class AnakController implements Initializable {
 
         // Initialize table columns
         TableColumn<Anak, Integer> idCol = new TableColumn<>("ID Anak");
-        idCol.setMinWidth(100);
+        idCol.setMinWidth(55);
         idCol.setCellValueFactory(new PropertyValueFactory<>("ID_ANAK"));
 
         TableColumn<Anak, String> namaCol = new TableColumn<>("Nama Anak");
-        namaCol.setMinWidth(150);
+        namaCol.setMinWidth(145);
         namaCol.setCellValueFactory(new PropertyValueFactory<>("Nama"));
 
         TableColumn<Anak, String> nisCol = new TableColumn<>("NIS");
-        nisCol.setMinWidth(100);
+        nisCol.setMinWidth(115);
         nisCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
 
         TableColumn<Anak, String> jenisKelaminCol = new TableColumn<>("Jenis Kelamin");
-        jenisKelaminCol.setMinWidth(100);
+        jenisKelaminCol.setMinWidth(85);
         jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("JenisKelamin"));
 
         TableColumn<Anak, String> namaOrangTuaCol = new TableColumn<>("Nama Orang Tua");
-        namaOrangTuaCol.setMinWidth(150);
+        namaOrangTuaCol.setMinWidth(145);
         namaOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("namaOrangTua"));
 
         TableColumn<Anak, String> noTelpOrangTuaCol = new TableColumn<>("No Telp Orang Tua");
-        noTelpOrangTuaCol.setMinWidth(150);
+        noTelpOrangTuaCol.setMinWidth(120);
         noTelpOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("noTelpOrangTua"));
 
         TableColumn<Anak, String> alamatOrangTuaCol = new TableColumn<>("Alamat Orang Tua");
-        alamatOrangTuaCol.setMinWidth(200);
+        alamatOrangTuaCol.setMinWidth(152);
         alamatOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("alamatOrangTua"));
 
         anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol, namaOrangTuaCol, noTelpOrangTuaCol, alamatOrangTuaCol);

@@ -54,7 +54,7 @@ public class TahunAjaranController implements Initializable {
         idCol.setCellValueFactory(new PropertyValueFactory<>("ID_TAHUN_AJARAN"));
 
         TableColumn<TahunAjaran, String> tahunCol = new TableColumn<>("Tahun Ajaran");
-        tahunCol.setMinWidth(150);
+        tahunCol.setMinWidth(235);
         tahunCol.setCellValueFactory(new PropertyValueFactory<>("tahunAjaran"));
 
         tahunAjaranTbl.getColumns().addAll(idCol, tahunCol);

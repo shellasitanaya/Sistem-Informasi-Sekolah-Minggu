@@ -189,13 +189,19 @@ public class KehadiranGuruController implements Initializable {
 
             // Set cell value factory for each TableColumn
             idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranGuru())));
+            idKehadiranCol.setMinWidth(80);
             namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNama()));
+            namaCol.setMinWidth(190);
             nipCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            nipCol.setMinWidth(130);
             kelasCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelasCol.setMinWidth(130);
             kebaktianCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getJenisKebaktian()));
+            kebaktianCol.setMinWidth(90);
             tanggalCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTanggal())));
+            tanggalCol.setMinWidth(100);
             presensiCol.setCellValueFactory(cellData -> new SimpleStringProperty((cellData.getValue().isPresensi() ? "Hadir" : "Tidak Hadir")));
-
+            presensiCol.setMinWidth(90);
 
             // Add columns to the TableView
             kehadiranGuruTbl.getColumns().clear(); // Clear existing columns

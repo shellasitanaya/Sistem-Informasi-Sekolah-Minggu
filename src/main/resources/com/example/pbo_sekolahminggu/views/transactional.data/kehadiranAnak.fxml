@@ -21,13 +21,13 @@
    <children>
       <TableView fx:id="kehadiranAnakTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn prefWidth="81.0" text="ID Kehadiran" />
-            <TableColumn prefWidth="188.0" text="Nama" />
-            <TableColumn prefWidth="128.0" text="NIS" />
-            <TableColumn prefWidth="127.0" text="Kelas" />
-            <TableColumn prefWidth="88.0" text="Kebaktian" />
-            <TableColumn prefWidth="106.0" text="Tanggal" />
-            <TableColumn prefWidth="92.0" text="Presensi" />
+            <TableColumn text="ID Kehadiran" />
+            <TableColumn prefWidth="190.0" text="Nama" />
+            <TableColumn prefWidth="130.0" text="NIS" />
+            <TableColumn prefWidth="130.0" text="Kelas" />
+            <TableColumn prefWidth="90.0" text="Kebaktian" />
+            <TableColumn prefWidth="100.0" text="Tanggal" />
+            <TableColumn prefWidth="90.0" text="Presensi" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
@@ -95,5 +95,10 @@
       <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
       <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
       <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
