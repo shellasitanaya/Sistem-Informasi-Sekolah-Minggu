@@ -1,8 +1,6 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
-import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
@@ -137,7 +135,7 @@ public class assignHistoriMengajarController implements Initializable {
     private void removeFromClass() {
         Guru selectedGuru = addedGuruTbl.getSelectionModel().getSelectedItem();
         if (selectedGuru != null) {
-            System.out.println(selectedGuru.getID_GURU());
+            System.out.println(selectedGuru.getIdGuru());
             HistoriMengajarDao.removeFromClass(con, selectedGuru);
             //refresh table view
             refreshTable(con);

@@ -1,16 +1,16 @@
 package com.example.pbo_sekolahminggu.beans.transactional.data;
 
 public class HistoriKelasAnak {
-    private int ID_HISTORI_KELAS_ANAK;
+    private int idHistoriKelasAnak;
     //foreign keys
-    private int id_anak;
-    private int id_kelas_per_tahun;
+    private int idAnak;
+    private int idKelasPerTahun;
 
     //diluar tabel
-    private String nama_anak;
+    private String namaAnak;
     private String nis;
     private String kelas;
-    private String tahun_ajaran;
+    private String tahunAjaran;
     // constructor
     public HistoriKelasAnak(){
 
@@ -18,28 +18,28 @@ public class HistoriKelasAnak {
 
     // getter setter
 
-    public int getId_anak() {
-        return id_anak;
+    public int getIdAnak() {
+        return idAnak;
     }
 
-    public void setId_anak(int id_anak) {
-        this.id_anak = id_anak;
+    public void setIdAnak(int idAnak) {
+        this.idAnak = idAnak;
     }
 
-    public int getId_kelas_per_tahun() {
-        return id_kelas_per_tahun;
+    public int getIdKelasPerTahun() {
+        return idKelasPerTahun;
     }
 
-    public void setId_kelas_per_tahun(int id_kelas_per_tahun) {
-        this.id_kelas_per_tahun = id_kelas_per_tahun;
+    public void setIdKelasPerTahun(int idKelasPerTahun) {
+        this.idKelasPerTahun = idKelasPerTahun;
     }
 
-    public String getNama_anak() {
-        return nama_anak;
+    public String getNamaAnak() {
+        return namaAnak;
     }
 
-    public void setNama_anak(String nama_anak) {
-        this.nama_anak = nama_anak;
+    public void setNamaAnak(String namaAnak) {
+        this.namaAnak = namaAnak;
     }
 
     public String getNis() {
@@ -58,19 +58,19 @@ public class HistoriKelasAnak {
         this.kelas = kelas;
     }
 
-    public String getTahun_ajaran() {
-        return tahun_ajaran;
+    public String getTahunAjaran() {
+        return tahunAjaran;
     }
 
-    public void setTahun_ajaran(String tahun_ajaran) {
-        this.tahun_ajaran = tahun_ajaran;
+    public void setTahunAjaran(String tahunAjaran) {
+        this.tahunAjaran = tahunAjaran;
     }
 
-    public int getID_HISTORI_KELAS_ANAK() {
-        return ID_HISTORI_KELAS_ANAK;
+    public int getIdHistoriKelasAnak() {
+        return idHistoriKelasAnak;
     }
 
-    public void setID_HISTORI_KELAS_ANAK(int ID_HISTORI_KELAS_ANAK) {
-        this.ID_HISTORI_KELAS_ANAK = ID_HISTORI_KELAS_ANAK;
+    public void setIdHistoriKelasAnak(int idHistoriKelasAnak) {
+        this.idHistoriKelasAnak = idHistoriKelasAnak;
     }
 }

@@ -22,9 +22,9 @@ public class GuruDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
-                guru.setID_GURU(rs.getInt("id"));
+                guru.setIdGuru(rs.getInt("id"));
                 guru.setNamaGuru(rs.getString("nama"));
-                guru.setNIP(rs.getString("nip"));
+                guru.setNip(rs.getString("nip"));
                 guru.setNoTelp(rs.getString("no_telp"));
                 guru.setAlamat(rs.getString("alamat"));
                 listGuru.add(guru);
@@ -45,7 +45,7 @@ public class GuruDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, guru.getNamaGuru());
-            statement.setString(2, guru.getNIP());
+            statement.setString(2, guru.getNip());
             statement.setString(3, guru.getNoTelp());
             statement.setString(4, guru.getAlamat());
             statement.executeUpdate();
@@ -86,10 +86,10 @@ public class GuruDao {
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, guru.getNamaGuru());
-            statement.setString(2, guru.getNIP());
+            statement.setString(2, guru.getNip());
             statement.setString(3, guru.getNoTelp());
             statement.setString(4, guru.getAlamat());
-            statement.setInt(5, guru.getID_GURU());
+            statement.setInt(5, guru.getIdGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing guru: " + e.getMessage());
@@ -105,7 +105,7 @@ public class GuruDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, guru.getID_GURU());
+            statement.setInt(1, guru.getIdGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting guru: " + e.getMessage());
