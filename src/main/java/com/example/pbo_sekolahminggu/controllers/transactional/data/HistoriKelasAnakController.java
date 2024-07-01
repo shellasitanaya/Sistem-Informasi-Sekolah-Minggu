@@ -58,11 +58,11 @@ public class HistoriKelasAnakController implements Initializable {
     @FXML
     private TableView<HistoriKelasAnak> historiKelasTbl;
     @FXML
-    private ChoiceBox<KelasPerTahun> kelasHistoriKelasCb;
+    private ComboBox<KelasPerTahun> kelasHistoriKelasCb;
     @FXML
     private Button showHistoriKelas;
     @FXML
-    private ChoiceBox<com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran> tahunAjaranHistoriKelasCb;
+    private ComboBox<com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran> tahunAjaranHistoriKelasCb;
     @FXML
     private TableColumn<HistoriKelasAnak, String> IDHistori, Nama, NIS, Kelas, TahunAjaran;
     ObservableList<HistoriKelasAnak> dataKehadiranAnak ;
