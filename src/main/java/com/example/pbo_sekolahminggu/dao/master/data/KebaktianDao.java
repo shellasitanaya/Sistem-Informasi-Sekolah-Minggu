@@ -141,7 +141,7 @@ public class KebaktianDao {
                 "),\n" +
                 "TotalCounts AS (\n" +
                 "    SELECT\n" +
-                "        'Total' AS jenis_kebaktian,\n" +
+                "        '' AS jenis_kebaktian,\n" +
                 "        NULL::date AS tanggal,\n" +
                 "        'Total' AS kelas,\n" +
                 "        SUM(LakiLaki) AS LakiLaki,\n" +

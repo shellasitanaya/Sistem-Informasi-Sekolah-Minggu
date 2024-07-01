@@ -4,6 +4,10 @@ import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -26,6 +30,8 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -307,31 +313,44 @@ public class KebaktianController implements Initializable {
         PdfDocument pdfDoc = null;
         try {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
-            Document doc = new Document(pdfDoc);
+            Document doc = new Document(pdfDoc, PageSize.A4);
 
-            // Judul
-            Paragraph title = new Paragraph("Laporan Kehadiran Tiap Minggu Di Kelas");
-            title.setTextAlignment(TextAlignment.CENTER);
-            title.setBold();
-            doc.add(title);
+            // Membuat table untuk logo dan judul
+            Table headerTable = new Table(UnitValue.createPercentArray(new float[]{1, 5})).useAllAvailableWidth();
+            headerTable.setMarginBottom(10);
+
+            // Menambahkan logo
+            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/sekolahMingguLogo.png"));
+            logo.setWidth(UnitValue.createPercentValue(100));
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell().add(logo);
+            logoCell.setBorder(Border.NO_BORDER);
+            headerTable.addCell(logoCell);
+
+            // Menambahkan judul di sebelah logo
+            Paragraph title = new Paragraph("Laporan Kehadiran Tiap Minggu Di Kelas")
+                    .setTextAlignment(TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(20);
+            com.itextpdf.layout.element.Cell titleCell = new com.itextpdf.layout.element.Cell().add(title);
+            titleCell.setBorder(Border.NO_BORDER);
+            titleCell.setVerticalAlignment(com.itextpdf.layout.properties.VerticalAlignment.MIDDLE);
+            headerTable.addCell(titleCell);
+
+            doc.add(headerTable);
 
             // Membuat tabel dengan kolom yang sesuai
             Table table = new Table(UnitValue.createPercentArray(new float[]{20, 20, 20, 10, 10, 20})).useAllAvailableWidth();
 
-            // Logo header
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell(1, 6).add(logo);
-            logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
-
             // Header Tabel
             String[] headers = {"Jenis Kebaktian", "Tanggal", "Kelas", "Laki-laki", "Perempuan", "Total"};
+            Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
                 Paragraph headerParagraph = new Paragraph(header);
                 headerParagraph.setTextAlignment(TextAlignment.CENTER);
                 headerParagraph.setBold();
+                headerParagraph.setFontColor(ColorConstants.WHITE);
+                headerCell.setBackgroundColor(customColor);
                 headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
@@ -374,16 +393,47 @@ public class KebaktianController implements Initializable {
 
             // Judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
+            titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
+            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 5); // merge kolom 0-5 untuk judul
+            spreadsheet.addMergedRegion(mergedRegion);
             XSSFCell titleCell = titleRow.createCell(0);
             titleCell.setCellValue("Laporan Kehadiran Tiap Minggu Di Kelas");
+            CellStyle titleStyle = workbook.createCellStyle();
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            titleStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            titleStyle.setBorderBottom(BorderStyle.THIN); // Border bawah
+            titleStyle.setBorderTop(BorderStyle.THIN); // Border atas
+            titleStyle.setBorderLeft(BorderStyle.THIN); // Border kiri
+            titleStyle.setBorderRight(BorderStyle.THIN); // Border kanan
+            Font titleFont = workbook.createFont();
+            titleFont.setColor(IndexedColors.WHITE.getIndex()); // Warna teks
+            titleFont.setBold(true);
+            titleStyle.setFont(titleFont);
+            titleCell.setCellStyle(titleStyle);
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
             String[] headers = {"Jenis Kebaktian", "Tanggal", "Kelas", "Laki-laki", "Perempuan", "Total"};
             int cellCounter = 0;
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex()); // Warna latar belakang
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setBorderBottom(BorderStyle.THIN); // Border bawah
+            headerStyle.setBorderTop(BorderStyle.THIN); // Border atas
+            headerStyle.setBorderLeft(BorderStyle.THIN); // Border kiri
+            headerStyle.setBorderRight(BorderStyle.THIN); // Border kanan
+            Font headerFont = workbook.createFont();
+            headerFont.setColor(IndexedColors.BLACK.getIndex()); // Warna teks
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
                 cell.setCellValue(header);
+                spreadsheet.autoSizeColumn(cellCounter - 1);
             }
 
             // Export Data
