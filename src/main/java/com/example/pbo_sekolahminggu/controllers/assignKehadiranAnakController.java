@@ -60,22 +60,22 @@ public class assignKehadiranAnakController implements Initializable {
         //set the columns
         TableColumn<Anak, String> namaColHadir = new TableColumn<>("Nama");
         namaColHadir.setMinWidth(125);
-        namaColHadir.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaColHadir.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisHadirCol = new TableColumn<>("NIS");
         nisHadirCol.setMinWidth(95);
-        nisHadirCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisHadirCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         hadirKehadiranAnakTbl.getColumns().addAll(namaColHadir, nisHadirCol);
 
         belumHadirKehadiranAnakTbl.getColumns().clear();
         TableColumn<Anak, String> namaColTidak = new TableColumn<>("Nama");
         namaColTidak.setMinWidth(125);
-        namaColTidak.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaColTidak.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisTidakCol = new TableColumn<>("NIS");
         nisTidakCol.setMinWidth(95);
-        nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         belumHadirKehadiranAnakTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
