@@ -1,8 +1,10 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
@@ -23,6 +25,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -62,13 +66,18 @@ public class HistoriMengajarController implements Initializable {
     ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
     ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
+    @FXML
+    private TextField historiMengajarSearchField;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
+    ObservableList<HistoriMengajar> listHistoriMengajar = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+        tahunAjaranHistoriMengajarCb.setPromptText(" ");
+        kelasHistoriMengajarCb.setPromptText(" ");
 
         tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
@@ -88,6 +97,55 @@ public class HistoriMengajarController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listHistoriMengajar = FXCollections.
+                    observableList(HistoriMengajarDao.getAll(con));
+            for (HistoriMengajar historiMengajar: listHistoriMengajar) {
+                System.out.println(historiMengajar);
+            }
+            historiMengajarTbl.setItems(listHistoriMengajar);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<HistoriMengajar> filter = new FilteredList<>(listHistoriMengajar, e -> true);
+
+        historiMengajarSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNip().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<HistoriMengajar> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(historiMengajarTbl.comparatorProperty());
+        historiMengajarTbl.setItems(sortList);
     }
 
     @FXML

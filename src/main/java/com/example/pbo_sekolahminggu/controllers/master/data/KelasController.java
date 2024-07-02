@@ -66,6 +66,7 @@ public class KelasController implements Initializable {
         }
     }
 
+    //CRUD
     @FXML
     public void create() {
         if (!checkInputAman()) { //masih ada input kosong
@@ -75,8 +76,8 @@ public class KelasController implements Initializable {
             try {
                 con = ConnectionManager.getConnection();
                 Kelas kelas = new Kelas();
-                kelas.setNamaKelas(namaKelasField.getText());
-                KelasDao.save(con, kelas);
+                kelas.setNamaKelas(namaKelasField.getText().trim());
+                KelasDao.create(con, kelas);
                 refreshTable(con);
                 dialogBox("Data kelas berhasil ditambah!");
                 clear(); //clear all the textfield
@@ -114,7 +115,7 @@ public class KelasController implements Initializable {
             Kelas kelas = selectedKelas;
             Connection con = null;
             try {
-                kelas.setNamaKelas(namaKelasField.getText());
+                kelas.setNamaKelas(namaKelasField.getText().trim());
                 con = ConnectionManager.getConnection();
                 KelasDao.update(con, kelas);
                 refreshTable(con);
@@ -131,6 +132,7 @@ public class KelasController implements Initializable {
         }
     }
 
+    //Other methods
     @FXML
     public void clear() {
         namaKelasField.clear();

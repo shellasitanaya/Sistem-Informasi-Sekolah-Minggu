@@ -91,9 +91,10 @@ public class TahunAjaranController implements Initializable {
         alert.showAndWait();
     }
 
+    //CRUD
     @FXML
     public void create() {
-        String tahun = tahunAjaranField.getText();
+        String tahun = tahunAjaranField.getText().trim();
 
         if (tahun.isEmpty()) {
             showErrorMessage("Harap isi tahun ajaran.");
@@ -133,7 +134,7 @@ public class TahunAjaranController implements Initializable {
             return;
         }
 
-        String tahunAjaran = tahunAjaranField.getText();
+        String tahunAjaran = tahunAjaranField.getText().trim();
 
         if (tahunAjaran.isEmpty()) {
             showErrorMessage("Harap isi tahun ajaran.");
@@ -164,13 +165,6 @@ public class TahunAjaranController implements Initializable {
         }
     }
 
-    private void updateTahunAjaranInList(TahunAjaran updatedTahunAjaran) {
-        int index = listTahunAjaran.indexOf(selectedTahunAjaran);
-        if (index != -1) {
-            listTahunAjaran.set(index, updatedTahunAjaran);
-        }
-    }
-
     @FXML
     public void delete() {
         if (tahunAjaranTbl.getSelectionModel().getSelectedItems().size() != 0) {
@@ -193,6 +187,13 @@ public class TahunAjaranController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setContentText("Tidak ada data yang dipilih !");
             alert.show();
+        }
+    }
+
+    private void updateTahunAjaranInList(TahunAjaran updatedTahunAjaran) {
+        int index = listTahunAjaran.indexOf(selectedTahunAjaran);
+        if (index != -1) {
+            listTahunAjaran.set(index, updatedTahunAjaran);
         }
     }
 

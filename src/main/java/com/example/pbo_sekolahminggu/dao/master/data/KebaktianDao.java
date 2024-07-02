@@ -69,7 +69,7 @@ public class KebaktianDao {
     // CREATE
     public static void create (Connection con, Kebaktian kebaktian) {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (?, ?)";
+        String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (INITCAP(?), ?)";
 
         try {
             statement = con.prepareStatement(query);
@@ -86,7 +86,7 @@ public class KebaktianDao {
     // EDIT
     public static void update(Connection con, Kebaktian kebaktian) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_kebaktian SET jenis_kebaktian = ?, tanggal = ? WHERE id = ?";
+        String query = "UPDATE tbl_kebaktian SET jenis_kebaktian = INITCAP(?), tanggal = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);

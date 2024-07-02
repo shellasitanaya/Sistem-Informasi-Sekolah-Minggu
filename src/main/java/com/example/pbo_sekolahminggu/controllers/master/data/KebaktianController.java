@@ -123,9 +123,10 @@ public class KebaktianController implements Initializable {
         alert.showAndWait();
     }
 
+    //CRUD
     @FXML
     public void create() {
-        String jenis = jenisKebaktianField.getText();
+        String jenis = jenisKebaktianField.getText().trim();
         Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
 
         if (jenis.isEmpty() || tanggal == null) {
@@ -167,7 +168,7 @@ public class KebaktianController implements Initializable {
             return;
         }
 
-        String jenis = jenisKebaktianField.getText();
+        String jenis = jenisKebaktianField.getText().trim();
         Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
 
         if (jenis.isEmpty() || tanggal == null) {
@@ -185,7 +186,7 @@ public class KebaktianController implements Initializable {
 
             updateKebaktianInList(selected);
 
-            kebaktianTbl.refresh();
+            refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Kebaktian berhasil diupdate!");
@@ -202,13 +203,6 @@ public class KebaktianController implements Initializable {
         }
     }
 
-
-    private void updateKebaktianInList(Kebaktian updatedKebaktian) {
-        int index = listKebaktian.indexOf(selectedKebaktian);
-        if (index != -1) {
-            listKebaktian.set(index, updatedKebaktian);
-        }
-    }
 
     @FXML
     public void delete() {
@@ -235,6 +229,16 @@ public class KebaktianController implements Initializable {
             alert.show();
         }
     }
+
+
+
+    private void updateKebaktianInList(Kebaktian updatedKebaktian) {
+        int index = listKebaktian.indexOf(selectedKebaktian);
+        if (index != -1) {
+            listKebaktian.set(index, updatedKebaktian);
+        }
+    }
+
 
     @FXML
     public void clear() {

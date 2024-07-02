@@ -151,13 +151,15 @@ public class AnakController implements Initializable {
         alert.showAndWait();
     }
 
+
+    //CRUD
     @FXML
     public void create() {
-        String nama = namaAnakField.getText();
-        String nis = nisAnakField.getText();
-        String alamat = alamatOrangTuaField.getText();
-        String nama_orang_tua = namaOrangTuaField.getText();
-        String no_telp = nomorTeleponField.getText();
+        String nama = namaAnakField.getText().trim();
+        String nis = nisAnakField.getText().trim();
+        String alamat = alamatOrangTuaField.getText().trim();
+        String nama_orang_tua = namaOrangTuaField.getText().trim();
+        String no_telp = nomorTeleponField.getText().trim();
 
         RadioButton selectedGender = (RadioButton) radioButtonGroup.getSelectedToggle();
         String jenisKelamin = selectedGender != null ? (selectedGender.getText().equalsIgnoreCase("Male") ? "male" : "female") : "";
@@ -205,12 +207,12 @@ public class AnakController implements Initializable {
             return;
         }
 
-        String nama = namaAnakField.getText();
-        String nis = nisAnakField.getText();
+        String nama = namaAnakField.getText().trim();
+        String nis = nisAnakField.getText().trim();
         String jenisKelamin = lakiAnakBtn.isSelected() ? "male" : "female";
-        String alamat = alamatOrangTuaField.getText();
-        String nama_ortu = namaOrangTuaField.getText();
-        String no_telp = nomorTeleponField.getText();
+        String alamat = alamatOrangTuaField.getText().trim();
+        String nama_ortu = namaOrangTuaField.getText().trim();
+        String no_telp = nomorTeleponField.getText().trim();
 
         if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || nama_ortu.isEmpty() || no_telp.isEmpty()
                 || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
@@ -235,7 +237,7 @@ public class AnakController implements Initializable {
             updateAnakInList(selectedAnak);
 
             // Refresh table view
-            anakTbl.refresh();
+            refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Anak berhasil diupdate!");
@@ -251,12 +253,6 @@ public class AnakController implements Initializable {
         }
     }
 
-    private void updateAnakInList(Anak updatedAnak) {
-        int index = listAnak.indexOf(updatedAnak); // cari index selected di listAnak
-        if (index != -1) { // cek kalo selected ada di list
-            listAnak.set(index, updatedAnak); // update list
-        }
-    }
 
     @FXML
     public void delete() {
@@ -283,6 +279,13 @@ public class AnakController implements Initializable {
             alert.show();
         }
 
+    }
+
+    private void updateAnakInList(Anak updatedAnak) {
+        int index = listAnak.indexOf(updatedAnak); // cari index selected di listAnak
+        if (index != -1) { // cek kalo selected ada di list
+            listAnak.set(index, updatedAnak); // update list
+        }
     }
 
     @FXML

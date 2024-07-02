@@ -31,7 +31,7 @@
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
          <children>
-            <TextField fx:id="historiKelasSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="historiKelasSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#Search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />

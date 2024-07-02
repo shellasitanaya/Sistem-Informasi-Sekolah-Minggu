@@ -147,10 +147,10 @@ public class GuruController implements Initializable {
     // CREATE
     @FXML
     public void create() {
-        String nama= namaGuruField.getText();
-        String nip = nipGuruField.getText();
-        String noTelp = noTelpGuruField.getText();
-        String alamat = alamatGuruField.getText();
+        String nama= namaGuruField.getText().trim();
+        String nip = nipGuruField.getText().trim();
+        String noTelp = noTelpGuruField.getText().trim();
+        String alamat = alamatGuruField.getText().trim();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty()|| alamat.isEmpty()) {
@@ -212,10 +212,10 @@ public class GuruController implements Initializable {
             return;
         }
 
-        String nama = namaGuruField.getText();
-        String nip = nipGuruField.getText();
-        String noTelp = noTelpGuruField.getText();
-        String alamat = alamatGuruField.getText();
+        String nama = namaGuruField.getText().trim();
+        String nip = nipGuruField.getText().trim();
+        String noTelp = noTelpGuruField.getText().trim();
+        String alamat = alamatGuruField.getText().trim();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty() || alamat.isEmpty()) {
@@ -238,7 +238,7 @@ public class GuruController implements Initializable {
             // update observable list
             updateGuruInList(selected);
 
-            guruTbl.refresh();
+            refreshData();
             // Menampilkan pesan sukses
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Guru berhasil diupdate!");
@@ -257,12 +257,6 @@ public class GuruController implements Initializable {
     }
 
 
-    private void updateGuruInList(Guru updatedGuru) {
-        int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
-        if (index != -1) { //cek kalo selected ada di list
-            listGuru.set(index, updatedGuru); // update list
-        }
-    }
 
     // DELETE
     @FXML
@@ -301,6 +295,15 @@ public class GuruController implements Initializable {
         selectedGuru = null;
 
     }
+
+    private void updateGuruInList(Guru updatedGuru) {
+        int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
+        if (index != -1) { //cek kalo selected ada di list
+            listGuru.set(index, updatedGuru); // update list
+        }
+    }
+
+
     public void Search() {
 
         FilteredList<Guru> filter = new FilteredList<>(listGuru, e -> true);

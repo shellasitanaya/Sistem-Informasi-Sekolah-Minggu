@@ -86,9 +86,9 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Label>
-      <Pane layoutX="24.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
+      <Pane layoutX="27.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
          <children>
-            <TextField fx:id="kehadiranAnakSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="historiMengajarSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#Search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />
