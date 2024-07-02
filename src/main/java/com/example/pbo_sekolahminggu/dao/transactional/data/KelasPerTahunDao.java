@@ -1,6 +1,5 @@
 package com.example.pbo_sekolahminggu.dao.transactional.data;
 
-import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -81,7 +80,7 @@ public class KelasPerTahunDao {
     }
 
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, TahunAjaran tahun) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
@@ -102,7 +101,7 @@ public class KelasPerTahunDao {
         Map<String, Object[]> listMengajar = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kpt.getIdKelasPerTahun());
+            ps.setInt(1, tahun.getIdTahunAjaran());
             rs = ps.executeQuery();
 
             int i = 1;

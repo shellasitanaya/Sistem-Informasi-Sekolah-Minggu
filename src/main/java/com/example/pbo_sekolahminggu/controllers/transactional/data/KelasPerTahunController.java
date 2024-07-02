@@ -465,8 +465,8 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToPdf(File file) {
-        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
-        if (selectedKelas == null) {
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
             alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
             return;
         }
@@ -488,7 +488,7 @@ public class KelasPerTahunController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedKelas.getTahunAjaran())
+            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran())
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(20);
@@ -515,7 +515,7 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Data Table
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedTahun);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
@@ -549,8 +549,8 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToExcel(File file) {
-        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
-        if (selectedKelas == null) {
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
             alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
             return;
         }
@@ -570,7 +570,7 @@ public class KelasPerTahunController implements Initializable {
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            String judul = "Laporan Kelas dan Jumlah Murid Pada " + selectedKelas.getTahunAjaran();
+            String judul = "Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran();
             titleCell.setCellValue(judul);
             CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
             spreadsheet.addMergedRegion(mergedRegion);
@@ -629,7 +629,7 @@ public class KelasPerTahunController implements Initializable {
             dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
