@@ -1,6 +1,7 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
+import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
@@ -21,6 +22,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -378,6 +381,44 @@ public class KehadiranAnakController implements Initializable {
             empty = false;
         }
         return empty;
+    }
+
+    public void search() {
+
+        FilteredList<KehadiranAnak> filter = new FilteredList<>(dataKehadiranAnak, e -> true);
+
+        kehadiranAnakSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateKelasData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateKelasData.getNamaAnak().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateKelasData.getNis().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateKelasData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateKelasData.getKebaktian().toLowerCase().contains(searchKey)) {
+                    return true;
+                }else if (predicateKelasData.getTglKebaktian().toString().contains(searchKey)) {
+                    return true;
+                }else if ((predicateKelasData.isPresensi() ? "Hadir" : "Tidak Hadir").toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KehadiranAnak> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kehadiranAnakTbl.comparatorProperty());
+        kehadiranAnakTbl.setItems(sortList);
     }
 
     private void loadMenuAssignKehadiranAnak() {

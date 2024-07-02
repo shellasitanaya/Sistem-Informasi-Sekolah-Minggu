@@ -216,7 +216,7 @@ public class KehadiranGuruDao {
                 kehadiranGuru.setNip(rs.getString("nip"));
                 kehadiranGuru.setKelas(rs.getString("kelas"));
                 kehadiranGuru.setTahunAjaran(rs.getString("tahun_ajaran"));
-                kehadiranGuru.setKebaktian(rs.getString("jenis_kebaktian"));
+                kehadiranGuru.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kehadiranGuru.setTglKebaktian(rs.getDate("tanggal"));
                 kehadiranGuru.setPresensi(rs.getBoolean("presensi"));
                 listkehadiranGuru.add(kehadiranGuru);

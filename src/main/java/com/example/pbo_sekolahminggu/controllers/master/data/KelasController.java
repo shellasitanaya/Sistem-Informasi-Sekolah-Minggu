@@ -1,10 +1,13 @@
 package com.example.pbo_sekolahminggu.controllers.master.data;
 
+import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -142,6 +145,34 @@ public class KelasController implements Initializable {
     private void handleRowClick() {
         selectedKelas = kelasTbl.getSelectionModel().getSelectedItem();
         namaKelasField.setText(selectedKelas.getNamaKelas());
+    }
+
+    public void search() {
+
+        FilteredList<Kelas> filter = new FilteredList<>(dataKelas, e -> true);
+
+        kelasSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateKelasData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateKelasData.getNamaKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<Kelas> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kelasTbl.comparatorProperty());
+        kelasTbl.setItems(sortList);
     }
 
     //refresh view tabel biar terlihat perubahan
