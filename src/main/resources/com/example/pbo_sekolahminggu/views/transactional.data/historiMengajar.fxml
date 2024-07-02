@@ -78,6 +78,6 @@
          </styleClass>
       </Button>
       <ComboBox fx:id="tahunAjaranHistoriMengajarCb" layoutX="134.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ComboBox fx:id="kelasHistoriMengajarCb" layoutX="134.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="kelasHistoriMengajarCb" layoutX="134.0" layoutY="376.0" onMouseClicked="#checkTahunAjaran" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
    </children>
 </AnchorPane>

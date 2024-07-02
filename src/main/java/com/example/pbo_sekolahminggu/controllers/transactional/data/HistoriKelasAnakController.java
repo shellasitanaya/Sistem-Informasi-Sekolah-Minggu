@@ -93,6 +93,7 @@ public class HistoriKelasAnakController implements Initializable {
 
     @FXML
     public void showFilter(){  //buat filter data pas teken show
+        if (checkKolomError()) return;
         try {
             //selected nama kelas
             KelasPerTahun selectedKelas = (KelasPerTahun) kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
@@ -103,6 +104,7 @@ public class HistoriKelasAnakController implements Initializable {
 
             if (listHistoryKelasAnak.isEmpty()) {
                 alertWarning("Belum ada anak yang terdaftar di kelas ini!");
+                return;
             }
             // Set cell value factory for each TableColumn
             idHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriKelasAnak())));
@@ -128,7 +130,7 @@ public class HistoriKelasAnakController implements Initializable {
                 }
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -165,7 +167,7 @@ public class HistoriKelasAnakController implements Initializable {
     public void filterDataKelas() {
         TahunAjaran tahunSelected = tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
         if (tahunSelected == null) {
-            System.out.println("No TahunAjaran selected!");
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
             return;
         }
 
@@ -276,6 +278,7 @@ public class HistoriKelasAnakController implements Initializable {
     //fxml function
     @FXML
     public void editAssign() {
+        if (checkKolomError()) return;
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -292,7 +295,13 @@ public class HistoriKelasAnakController implements Initializable {
         }
     }
 
-
+    @FXML
+    public void checkTahunAjaran() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null) {
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
+        }
+    }
 
     //function to change the window
     private void loadMenuAssignKelasAnak() {
@@ -312,16 +321,29 @@ public class HistoriKelasAnakController implements Initializable {
     }
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
+    private boolean checkKolomError() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
+        KelasPerTahun kelasSelected = kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null || kelasSelected == null) {
+            alertWarning("Harap pilih isi kolom.");
+            return true;
+        }
+        return false;
+    }
+
     //EXPORT--------------------
     @FXML
     public void export() {
+        if (checkKolomError()) {
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");

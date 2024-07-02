@@ -124,7 +124,7 @@ public class KehadiranGuruDao {
         return listkehadiranGuru;
     }
 
-    public static ArrayList<KehadiranGuru> get(Connection con, int idKebaktian) {
+    public static ArrayList<KehadiranGuru> get(Connection con, int idKebaktian, int idKelas) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT\n" +
@@ -149,11 +149,13 @@ public class KehadiranGuruDao {
                 "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian=?\nORDER BY kg.id";
+                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian = ? AND kpt.id = ? \n" +
+                "ORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             ps.setInt(1, idKebaktian);
+            ps.setInt(2, idKelas);
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranGuru kehadiranGuru = new KehadiranGuru();
@@ -201,7 +203,7 @@ public class KehadiranGuruDao {
                 "WHERE\n" +
                 "    hka.id_kelas_per_tahun = ?\n" +
                 "    AND ka.id_kebaktian = ?\n" +
-                "    AND ka.status_aktif = 1;\n";
+                "    AND ka.status_aktif = 1\n";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

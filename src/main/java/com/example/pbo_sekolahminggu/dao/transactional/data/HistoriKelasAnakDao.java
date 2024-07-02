@@ -36,7 +36,7 @@ public class HistoriKelasAnakDao {
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
                 "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE anak.status_aktif = 1\n";
+                "WHERE anak.status_aktif = 1 ORDER BY histAnak.id\n";
         ArrayList<HistoriKelasAnak> listHistoriKelasAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -130,11 +130,13 @@ public class HistoriKelasAnakDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT * FROM tbl_anak\n" +
-                "WHERE status_aktif = 1";
+                "WHERE id NOT IN (SELECT a.id FROM tbl_anak a\n" +
+                "\t\t\t\tJOIN tbl_histori_kelas_anak hka on a.id = hka.id_anak\n" +
+                "\t\t\t\tWHERE hka.id_kelas_per_tahun = ?) AND status_aktif = 1";
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();

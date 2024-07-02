@@ -85,6 +85,7 @@ public class assignKelasAnakController implements Initializable {
                 con.rollback();
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -101,6 +102,7 @@ public class assignKelasAnakController implements Initializable {
                 con.commit();
             }
             System.out.println("Changes saved.");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -143,7 +145,7 @@ public class assignKelasAnakController implements Initializable {
             //refresh table view
             refreshTable(con);
         } else {
-            alertWarning("Silahkan pilih anak yang akan dijadikan akan dihapus");
+            alertWarning("Silahkan pilih anak yang akan dihapus");
         }
     }
 
@@ -161,6 +163,12 @@ public class assignKelasAnakController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning!");
         alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
     }

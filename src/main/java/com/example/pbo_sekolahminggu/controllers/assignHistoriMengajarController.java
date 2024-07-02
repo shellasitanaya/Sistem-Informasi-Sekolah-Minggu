@@ -83,6 +83,7 @@ public class assignHistoriMengajarController implements Initializable {
                 con.rollback();
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -98,7 +99,8 @@ public class assignHistoriMengajarController implements Initializable {
             if (con != null) {
                 con.commit();
             }
-            System.out.println("Changes saved.");
+            System.out.println("Changes saved");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -140,7 +142,7 @@ public class assignHistoriMengajarController implements Initializable {
             //refresh table view
             refreshTable(con);
         } else {
-            alertWarning("Silahkan pilih guru yang akan dijadikan akan dihapus");
+            alertWarning("Silahkan pilih guru yang akan dihapus");
         }
     }
 
@@ -155,9 +157,15 @@ public class assignHistoriMengajarController implements Initializable {
     }
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
     }

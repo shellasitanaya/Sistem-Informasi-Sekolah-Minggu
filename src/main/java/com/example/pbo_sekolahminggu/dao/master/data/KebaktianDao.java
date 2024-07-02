@@ -17,7 +17,7 @@ public class KebaktianDao {
     public static ArrayList<Kebaktian> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_kebaktian where status_aktif = 1";
+        String query = "select * from tbl_kebaktian where status_aktif = 1 ORDER BY id ASC";
         ArrayList<Kebaktian> listkebaktian = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

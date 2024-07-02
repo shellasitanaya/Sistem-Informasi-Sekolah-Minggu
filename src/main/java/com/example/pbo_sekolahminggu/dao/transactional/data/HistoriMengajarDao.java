@@ -142,10 +142,14 @@ public class HistoriMengajarDao {
     public static ArrayList<Guru> getAllGuruTidakKelas(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "SELECT * FROM tbl_guru WHERE status_aktif = 1";
+        String query = "SELECT * FROM tbl_guru\n" +
+        "WHERE id NOT IN (SELECT g.id FROM tbl_guru g\n" +
+                "\t\t\t\tJOIN tbl_histori_mengajar hm on g.id = hm.id_guru\n" +
+                "\t\t\t\tWHERE hm.id_kelas_per_tahun = ?) AND status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();

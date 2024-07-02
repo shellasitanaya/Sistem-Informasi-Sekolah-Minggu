@@ -78,7 +78,7 @@ public class KebaktianController implements Initializable {
         // Inisialisasi table columns
         TableColumn<Kebaktian, Integer> idCol = new TableColumn<>("ID Kebaktian");
         idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_KEBAKTIAN"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idKebaktian"));
 
         TableColumn<Kebaktian, String> jenisCol = new TableColumn<>("Jenis Kebaktian");
         jenisCol.setMinWidth(150);
@@ -126,12 +126,15 @@ public class KebaktianController implements Initializable {
     @FXML
     public void create() {
         String jenis = jenisKebaktianField.getText();
-        Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
+        LocalDate tanggalLocalDate = tanggalKebaktianPicker.getValue();
 
-        if (jenis.isEmpty() || tanggal == null) {
+        if (jenis.isEmpty() || tanggalLocalDate == null) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
+        Date tanggal = Date.valueOf(tanggalLocalDate);
+
+
 
         Kebaktian kebaktian = new Kebaktian();
         kebaktian.setJenisKebaktian(jenis);
@@ -163,14 +166,14 @@ public class KebaktianController implements Initializable {
     public void update() {
         Kebaktian selected = kebaktianTbl.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
             return;
         }
 
         String jenis = jenisKebaktianField.getText();
         Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
 
-        if (jenis.isEmpty() || tanggal == null) {
+        if (jenis.isEmpty() || tanggalKebaktianPicker.getValue() == null) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
@@ -188,13 +191,13 @@ public class KebaktianController implements Initializable {
             kebaktianTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Kebaktian berhasil diupdate!");
+            alert.setContentText("Data Kebaktian berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data kebaktian: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data kebaktian: " + e.getMessage());
             alert.show();
 
         } finally {
@@ -219,7 +222,7 @@ public class KebaktianController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 KebaktianDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -230,9 +233,7 @@ public class KebaktianController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 
@@ -283,6 +284,10 @@ public class KebaktianController implements Initializable {
     // EXPORTT
     @FXML
     public void export() {
+        if (jenisKebaktianField.getText().trim().isEmpty() || tanggalKebaktianPicker.getValue() == null) {
+            showErrorMessage("Harap isi semua kolom.");
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");

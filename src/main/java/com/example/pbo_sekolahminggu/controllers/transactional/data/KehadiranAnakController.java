@@ -91,18 +91,18 @@ public class KehadiranAnakController implements Initializable {
         //column no
         TableColumn idCol = new TableColumn<>("ID Kehadiran");
         idCol.setMinWidth(81);
-        idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("ID_KEHADIRAN_ANAK"));  //yg ini harus sama dgn attribute di beans
+        idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("idKehadiranAnak"));  //yg ini harus sama dgn attribute di beans
 
         //column nama anak
         TableColumn namaAnakCol = new TableColumn("Nama");
         namaAnakCol.setMinWidth(188);
         namaAnakCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("nama_anak"));
+                new PropertyValueFactory<KehadiranAnak, String>("namaAnak"));
 
         TableColumn nisCOL = new TableColumn("NIS");
         nisCOL.setMinWidth(128);
         nisCOL.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("NIS"));
+                new PropertyValueFactory<KehadiranAnak, String>("nis"));
 
         TableColumn namaKelasCol = new TableColumn("Kelas");
         namaKelasCol.setMinWidth(127);
@@ -117,7 +117,7 @@ public class KehadiranAnakController implements Initializable {
         TableColumn tanggalCol = new TableColumn("Tanggal");
         tanggalCol.setMinWidth(106);
         tanggalCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("tgl_kebaktian"));
+                new PropertyValueFactory<KehadiranAnak, String>("tglKebaktian"));
 
         TableColumn presensiCol = new TableColumn("Presensi");
         presensiCol.setMinWidth(92);
@@ -199,6 +199,7 @@ public class KehadiranAnakController implements Initializable {
             //get the table data
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con));
             kehadiranAnakTbl.setItems(dataKehadiranAnak);
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -210,38 +211,18 @@ public class KehadiranAnakController implements Initializable {
 
     @FXML
     public void show() {
+        //cek input kosong atau tidak
+        if (checkComboBox()) return;
+
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
             refreshTable(con);
-            if (refreshTable(con)) {
-                alertWarning("Belum ada data kehadiran!");
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            ConnectionManager.close(con);
-        }
-    }
-
-    @FXML
-    public void edit() {
-        Connection con = null;
-        try {
-            con = ConnectionManager.getConnection();
-            KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
-            Kebaktian selectedKebaktian = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
-            KehadiranAnakDao.setSelectedKelas(selectedKelas);
-            KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
-
-            // Get the data kehadiran
-            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKebaktian));
-
-            if (dataKehadiranAnak.isEmpty()) {
+            if (refreshTable(con)) {  //klo data kehadiran untuk kelas dan kebaktian yang dipilih, kosonk
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Konfirmasi pengisian data kehadiran");
                 alert.setHeaderText(null);
-                alert.setContentText("Tidak ada data kehadiran anak yang ditemukan. Isi data kehadiran kelas ini?");
+                alert.setContentText("Tidak ada data kehadiran anak yang ditemukan. Isi data kehadiran anak di kelas dan kebaktian ini?");
 
                 // Add buttons to the alert
                 ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -254,8 +235,41 @@ public class KehadiranAnakController implements Initializable {
 
                 // Handle the user's response
                 if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    //set the data to be passed
+                    KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
+                    Kebaktian selectedKebaktian = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
+                    KehadiranAnakDao.setSelectedKelas(selectedKelas);
+                    KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
+
                     KehadiranAnakDao.populateTblKehadiranAnak(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
-                } else return;
+                    loadMenuAssignKehadiranAnak(); //move to the next window
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+
+    @FXML
+    public void edit() {
+        if (checkComboBox()) return; //check if one of the combobox is null
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
+            Kebaktian selectedKebaktian = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
+            KehadiranAnakDao.setSelectedKelas(selectedKelas);
+            KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
+
+            // Get the data kehadiran
+            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKebaktian));
+
+            if (dataKehadiranAnak.isEmpty()) {
+                alertWarning("Data kehadiran yang terpilih belum tersedia!");
+                return;
             }
             loadMenuAssignKehadiranAnak();
         } catch (SQLException e) {
@@ -396,27 +410,28 @@ public class KehadiranAnakController implements Initializable {
         }
     }
 
-    //    ini untuk dialog button
-    private void dialogBox(String message) {
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().add(okButtonType);
-        dialog.showAndWait();
-    }
-
     //function kalo misalnya ada textfield yang kosong, atau kelas yang mau didelete/diedit blm dipilih
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
+    private boolean checkComboBox() {
+        if (kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem() == null || kelasKehadiranAnakCb.getSelectionModel().getSelectedItem() == null ||
+                tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem() == null) {
+            alertWarning("Harap pilih semua kolom.");
+            return true;
+        }
+        return false;
+    }
+
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (checkComboBox()) return;
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
