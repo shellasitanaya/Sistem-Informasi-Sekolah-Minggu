@@ -255,10 +255,6 @@ public class KehadiranGuruController implements Initializable {
 
     public void filterDataKelas() {
         TahunAjaran tahunSelected = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
-        if (tahunSelected == null) {
-            System.out.println("No TahunAjaran selected!");
-            return;
-        }
 
         Connection con = null;
         try {
@@ -305,56 +301,29 @@ public class KehadiranGuruController implements Initializable {
     }
 
     public void edit() {
+        System.out.println("halo");
+        if (checkComboBox()) return;  //check if one of the combobox is null
+        System.out.println("halo2");
+        Connection con = null;
         try {
-            conn = ConnectionManager.getConnection();
-
+            con = ConnectionManager.getConnection();
             KelasPerTahun selectedKelas = kelasKehadiranGuruCb.getSelectionModel().getSelectedItem();
             Kebaktian selectedKebaktian = kebaktianKehadiranGuruCb.getSelectionModel().getSelectedItem();
             KehadiranGuruDao.setSelectedKelas(selectedKelas);
             KehadiranGuruDao.setSelectedKebaktian(selectedKebaktian);
 
             //get the data kehadiran to check if it's empty or not
-            dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(conn, selectedKelas, selectedKebaktian));
-
+            dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(con, selectedKelas, selectedKebaktian));
+            System.out.println(dataKehadiranGuru);
             if (dataKehadiranGuru.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Konfirmasi pengisian data kehadiran");
-                alert.setHeaderText(null);
-                alert.setContentText("Tidak ada data kehadiran guru yang ditemukan. Isi data kehadiran kelas ini?");
-
-                // Add buttons to the alert
-                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
-                alert.getButtonTypes().setAll(cancelButton, confirmButton);
-
-                // Show the alert and wait for the response
-                Connection finalCon = conn;
-                Optional<ButtonType> pilihan = alert.showAndWait();
-
-                // Handle the user's response
-                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
-                    KehadiranGuruDao.populateTblKehadiranGuru(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
-                } else return;
+                alertWarning("Data kehadiran yang terpilih belum tersedia!");
+                return;
             }
             loadMenuAssignKehadiranGuru();
         } catch (SQLException e) {
             e.printStackTrace();
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
         } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    ConnectionManager.close(conn);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            ConnectionManager.close(con);
         }
     }
 
@@ -376,6 +345,8 @@ public class KehadiranGuruController implements Initializable {
 
     public void showFilter(){
         try {
+            conn = ConnectionManager.getConnection();
+            if (checkComboBox()) return;
             //selected nama kelas
             KelasPerTahun selectedKelas = (KelasPerTahun) kelasKehadiranGuruCb.getSelectionModel().getSelectedItem();
             //selected tahun ajaran
@@ -384,13 +355,33 @@ public class KehadiranGuruController implements Initializable {
             Kebaktian selectedKebaktian = (Kebaktian) kebaktianKehadiranGuruCb.getSelectionModel(). getSelectedItem();
 
 
-
             // Get the ArrayList of Guru objects from the database
-            ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getIdKebaktian());
+            ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getIdKebaktian(), selectedKelas.getIdKelasPerTahun());
 
             if (listKehadiranGuru.isEmpty()) {
-                alertWarning("Belum ada data kehadiran guru!");
-                return;
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Konfirmasi pengisian data kehadiran");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data kehadiran guru yang ditemukan. Isi data kehadiran guru di kelas dan kebaktian ini?");
+
+                // Add buttons to the alert
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(cancelButton, confirmButton);
+
+                // Show the alert and wait for the response
+                Connection finalCon = conn;
+                Optional<ButtonType> pilihan = alert.showAndWait();
+
+                // Handle the user's response
+                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    //set the data to be passed
+                    KehadiranGuruDao.setSelectedKelas(selectedKelas);
+                    KehadiranGuruDao.setSelectedKebaktian(selectedKebaktian);
+
+                    KehadiranGuruDao.populateTblKehadiranGuru(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                    loadMenuAssignKehadiranGuru(); //move to the next window
+                } else return;
             }
             // Set cell value factory for each TableColumn
             idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranGuru())));
@@ -470,11 +461,20 @@ public class KehadiranGuruController implements Initializable {
 
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private boolean checkComboBox() {
+        if (kebaktianKehadiranGuruCb.getSelectionModel().getSelectedItem() == null || tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem() == null ||
+                kelasKehadiranGuruCb.getSelectionModel().getSelectedItem() == null) {
+            alertWarning("Harap pilih semua kolom.");
+            return true;
+        }
+        return false;
     }
 
 
@@ -488,6 +488,7 @@ public class KehadiranGuruController implements Initializable {
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (checkComboBox()) return;
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");

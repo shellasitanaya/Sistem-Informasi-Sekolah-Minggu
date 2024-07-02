@@ -46,11 +46,9 @@ public class assignKehadiranAnakController implements Initializable {
 
     private ObservableList<Anak> dataAnakHadir;
     private ObservableList<Anak> dataAnakTidakHadir;
-    private static Connection con = null;
     private Connection conHere = null;
-
-    private static boolean populate = false;
     private static final Logger logger = Logger.getLogger(assignKehadiranAnakController.class.getName());
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dataAnakHadir = FXCollections.observableArrayList();
@@ -99,6 +97,7 @@ public class assignKehadiranAnakController implements Initializable {
                 logger.info("Secondary connection rollback executed.");
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error during rollback", e);
         } finally {
@@ -113,9 +112,10 @@ public class assignKehadiranAnakController implements Initializable {
         try {
             if (conHere != null) {
                 conHere.commit();
-                logger.info("Secondary connection commit executed.");
+                logger.info("Connection commit executed.");
             }
-            System.out.println("Changes saved.");
+            System.out.println("Changes saved");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error during commit", e);
         } finally {
@@ -129,7 +129,7 @@ public class assignKehadiranAnakController implements Initializable {
             if (conHere != null && !conHere.isClosed()) {
                 conHere.setAutoCommit(true);
                 conHere.close();
-                logger.info("Secondary connection closed.");
+                logger.info("Connection closed.");
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error closing connections", e);
@@ -167,19 +167,21 @@ public class assignKehadiranAnakController implements Initializable {
         //refresh data anak HADIR
         dataAnakHadir = FXCollections.observableArrayList(KehadiranAnakDao.getAllAnakHadir(con));
         hadirKehadiranAnakTbl.setItems(dataAnakHadir);
-        System.out.println(dataAnakHadir);
 
         //refresh data anak TIDAK HADIR
         dataAnakTidakHadir = FXCollections.observableArrayList(KehadiranAnakDao.getAllAnakTidakHadir(con));
         belumHadirKehadiranAnakTbl.setItems(dataAnakTidakHadir);
-        System.out.println("tidak hadir:");
-        System.out.println(dataAnakTidakHadir);
     }
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
     }

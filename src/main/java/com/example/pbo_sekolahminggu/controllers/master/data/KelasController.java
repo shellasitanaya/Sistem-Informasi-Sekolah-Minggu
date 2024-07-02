@@ -50,7 +50,7 @@ public class KelasController implements Initializable {
         TableColumn namaKelasCol = new TableColumn("Nama Kelas");
         namaKelasCol.setMinWidth(240);
         namaKelasCol.setCellValueFactory(
-                new PropertyValueFactory<Kelas, String>("NamaKelas"));
+                new PropertyValueFactory<Kelas, String>("namaKelas"));
 
 
         kelasTbl.getColumns().addAll(idCol, namaKelasCol);
@@ -70,7 +70,7 @@ public class KelasController implements Initializable {
     @FXML
     public void create() {
         if (!checkInputAman()) { //masih ada input kosong
-            alertWarning("Data masih ada yang kosong!");
+            alertWarning("Harap isi data kelas.");
         } else {
             Connection con = null;
             try {
@@ -79,10 +79,12 @@ public class KelasController implements Initializable {
                 kelas.setNamaKelas(namaKelasField.getText().trim());
                 KelasDao.create(con, kelas);
                 refreshTable(con);
+                //alert
                 dialogBox("Data kelas berhasil ditambah!");
+
                 clear(); //clear all the textfield
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                alertWarning("Terjadi kesalahan saat menambah data kelas: " + e.getMessage());
             } finally {
                 ConnectionManager.close(con);
             }
@@ -106,11 +108,15 @@ public class KelasController implements Initializable {
             clear();//clear all the textfield
             selectedKelas = null;
         } else {
-            alertWarning("Silahkan pilih kelas yang mau dihapus.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
     @FXML
     public void update() {
+        if (namaKelasField.getText().trim().isEmpty()) {
+            alertWarning("Harap isi nama kelas terlebih dahulu.");
+            return;
+        }
         if (selectedKelas != null) {
             Kelas kelas = selectedKelas;
             Connection con = null;
@@ -121,14 +127,14 @@ public class KelasController implements Initializable {
                 refreshTable(con);
                 dialogBox("Data kelas berhasil diperbaharui!");
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                alertWarning("Terjadi kesalahan saat memperbaharui data kelas: " + e.getMessage());
             } finally {
                 ConnectionManager.close(con);
             }
             clear();//clear all the textfield
             selectedKelas = null;
         } else {
-            alertWarning("Silahkan pilih kelas yang mau diperbaharui.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 
@@ -185,17 +191,15 @@ public class KelasController implements Initializable {
 
 //    ini untuk dialog button
     private void dialogBox(String message) {
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().add(okButtonType);
-        dialog.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     //function kalo misalnya ada textfield yang kosong, atau kelas yang mau didelete/diedit blm dipilih
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

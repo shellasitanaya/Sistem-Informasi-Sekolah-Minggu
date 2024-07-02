@@ -62,27 +62,27 @@ public class GuruController implements Initializable {
         // Membuat kolom untuk ID_GURU
         TableColumn<Guru, Integer> idCol = new TableColumn<>("ID Guru");
         idCol.setMinWidth(55);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_GURU"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idGuru"));
 
         // Membuat kolom untuk NamaGuru
         TableColumn<Guru, String> namaCol = new TableColumn<>("Nama Guru");
         namaCol.setMinWidth(235);
-        namaCol.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
+        namaCol.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         // Membuat kolom untuk NIP
         TableColumn<Guru, String> nipCol = new TableColumn<>("NIP");
         nipCol.setMinWidth(105);
-        nipCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
+        nipCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         // Membuat kolom untuk NoTelp
         TableColumn<Guru, String> noTelpCol = new TableColumn<>("Nomor Telpon");
         noTelpCol.setMinWidth(150);
-        noTelpCol.setCellValueFactory(new PropertyValueFactory<>("NoTelp"));
+        noTelpCol.setCellValueFactory(new PropertyValueFactory<>("noTelp"));
 
         // Membuat kolom untuk Alamat
         TableColumn<Guru, String> alamatCol = new TableColumn<>("Alamat");
         alamatCol.setMinWidth(279);
-        alamatCol.setCellValueFactory(new PropertyValueFactory<>("Alamat"));
+        alamatCol.setCellValueFactory(new PropertyValueFactory<>("alamat"));
 
         // Menambahkan kolom ke TableView
         guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
@@ -208,7 +208,7 @@ public class GuruController implements Initializable {
         Guru selected = guruTbl.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            showErrorMessage("Pilih baris/data guru yang ingin diperbaharui.");
             return;
         }
 
@@ -241,7 +241,7 @@ public class GuruController implements Initializable {
             refreshData();
             // Menampilkan pesan sukses
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Guru berhasil diupdate!");
+            alert.setContentText("Data Guru berhasil diperbaharui!");
             alert.show();
 
             clear();
@@ -249,7 +249,7 @@ public class GuruController implements Initializable {
         } catch (SQLException e) {
             // Menampilkan pesan error jika terjadi kesalahan
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data guru: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data guru: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
@@ -268,7 +268,7 @@ public class GuruController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 GuruDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data Guru berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -279,9 +279,7 @@ public class GuruController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 

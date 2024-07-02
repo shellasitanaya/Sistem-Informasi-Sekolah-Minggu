@@ -75,19 +75,19 @@ public class AnakController implements Initializable {
         // Initialize table columns
         TableColumn<Anak, Integer> idCol = new TableColumn<>("ID Anak");
         idCol.setMinWidth(55);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_ANAK"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idAnak"));
 
         TableColumn<Anak, String> namaCol = new TableColumn<>("Nama Anak");
         namaCol.setMinWidth(145);
-        namaCol.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisCol = new TableColumn<>("NIS");
         nisCol.setMinWidth(115);
-        nisCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         TableColumn<Anak, String> jenisKelaminCol = new TableColumn<>("Jenis Kelamin");
         jenisKelaminCol.setMinWidth(85);
-        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("JenisKelamin"));
+        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("jenisKelamin"));
 
         TableColumn<Anak, String> namaOrangTuaCol = new TableColumn<>("Nama Orang Tua");
         namaOrangTuaCol.setMinWidth(145);
@@ -191,9 +191,7 @@ public class AnakController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data anak: " + e.getMessage());
-            alert.show();
+
         } finally {
             ConnectionManager.close(con);
         }
@@ -203,7 +201,7 @@ public class AnakController implements Initializable {
     public void update() {
         Anak selectedAnak = anakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak == null) {
-            showErrorMessage("Pilih data anak yang ingin diupdate.");
+            showErrorMessage("Pilih baris/data anak yang ingin diperbaharui.");
             return;
         }
 
@@ -240,13 +238,13 @@ public class AnakController implements Initializable {
             refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Anak berhasil diupdate!");
+            alert.setContentText("Data Anak berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data anak: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data anak: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
@@ -256,14 +254,14 @@ public class AnakController implements Initializable {
 
     @FXML
     public void delete() {
-        if (anakTbl.getSelectionModel().getSelectedItems().size() != 0) {
+        if (!anakTbl.getSelectionModel().getSelectedItems().isEmpty()) {
             Anak selected = anakTbl.getSelectionModel().getSelectedItem();
             Connection connection = null;
             try {
                 connection = ConnectionManager.getConnection();
                 AnakDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data Anak berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -274,9 +272,7 @@ public class AnakController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
 
     }

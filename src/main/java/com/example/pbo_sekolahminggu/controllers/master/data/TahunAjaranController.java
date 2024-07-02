@@ -51,7 +51,7 @@ public class TahunAjaranController implements Initializable {
         // inisialisasi table columns
         TableColumn<TahunAjaran, Integer> idCol = new TableColumn<>("ID Tahun Ajaran");
         idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_TAHUN_AJARAN"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idTahunAjaran"));
 
         TableColumn<TahunAjaran, String> tahunCol = new TableColumn<>("Tahun Ajaran");
         tahunCol.setMinWidth(235);
@@ -130,7 +130,7 @@ public class TahunAjaranController implements Initializable {
         TahunAjaran selected = tahunAjaranTbl.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showErrorMessage("Pilih tahun ajaran yang ingin diupdate.");
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
             return;
         }
 
@@ -152,13 +152,13 @@ public class TahunAjaranController implements Initializable {
             tahunAjaranTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Tahun Ajaran berhasil diupdate!");
+            alert.setContentText("Data Tahun Ajaran berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data tahun ajaran: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memeperbaharui data tahun ajaran: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
@@ -174,7 +174,7 @@ public class TahunAjaranController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 TahunAjaranDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -184,9 +184,7 @@ public class TahunAjaranController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 

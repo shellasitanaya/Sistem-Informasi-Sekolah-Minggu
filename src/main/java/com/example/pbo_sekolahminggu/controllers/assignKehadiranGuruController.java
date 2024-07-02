@@ -30,13 +30,11 @@ public class assignKehadiranGuruController implements Initializable {
     TableView<Guru> hadirKehadiranGuruTbl;
     @FXML
     TableView<Guru> belumHadirKehadiranGuruTbl;
-    private static Connection con = null;
     @FXML
     private AnchorPane assignKehadiranGuruAncPane;
     private Connection conHere = null;
     private ObservableList<Guru> dataGuruHadir;
     private ObservableList<Guru> dataGuruTidakHadir;
-    private static boolean populate = false;
     private static final Logger logger = Logger.getLogger(assignKehadiranGuruController.class.getName());
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -75,21 +73,18 @@ public class assignKehadiranGuruController implements Initializable {
             logger.log(Level.SEVERE, "Error setting auto-commit to false", e);
         }
 
-        refreshTable(con);
+        refreshTable(conHere);
     }
 
     @FXML
     public void cancel() {
         try {
-            if (con != null) {
-                con.rollback();
-                logger.info("Main connection rollback executed.");
-            }
             if (conHere != null) {
                 conHere.rollback();
                 logger.info("Secondary connection rollback executed.");
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error during rollback", e);
         } finally {
@@ -102,15 +97,12 @@ public class assignKehadiranGuruController implements Initializable {
     @FXML
     public void save() {
         try {
-            if (con != null) {
-                con.commit();
-                logger.info("Main connection commit executed.");
-            }
             if (conHere != null) {
                 conHere.commit();
-                logger.info("Secondary connection commit executed.");
+                logger.info("Connection commit executed.");
             }
             System.out.println("Changes saved.");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error during commit", e);
         } finally {
@@ -121,21 +113,15 @@ public class assignKehadiranGuruController implements Initializable {
 
     private void closeConnections() {
         try {
-            if (con != null && !con.isClosed()) {
-                con.setAutoCommit(true);
-                con.close();
-                logger.info("Main connection closed.");
-            }
             if (conHere != null && !conHere.isClosed()) {
                 conHere.setAutoCommit(true);
                 conHere.close();
-                logger.info("Secondary connection closed.");
+                logger.info("Connection closed.");
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error closing connections", e);
         }
     }
-
     // UNTUK UPDATE KEHADIRAN
     @FXML
     private void addToHadir() {
@@ -164,13 +150,18 @@ public class assignKehadiranGuruController implements Initializable {
     }
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     private void loadMenuKehadiranGuru() {
         loadFXML("/com/example/pbo_sekolahminggu/views/transactional.data/kehadiranGuru.fxml");
