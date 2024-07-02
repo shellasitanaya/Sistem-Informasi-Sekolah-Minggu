@@ -76,7 +76,7 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <Button fx:id="exportKehadiranAnakBtn" layoutX="29.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportKehadiranAnakBtn" layoutX="29.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -84,13 +84,13 @@
             </image>
          </ImageView>
          </graphic>
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
          <styleClass>
             <String fx:value="btn_export" />
             <String fx:value="shadow2" />
          </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
       </Button>
       <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
       <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
@@ -98,6 +98,11 @@
       <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
          <font>
             <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="140.0" layoutY="523.0" text="Laporan Kehadiran Tiap Minggu di Kelas Pada Tahun Ajaran">
+         <font>
+            <Font name="System Bold" size="12.0" />
          </font>
       </Label>
    </children>

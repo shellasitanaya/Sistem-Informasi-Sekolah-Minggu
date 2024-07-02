@@ -114,7 +114,14 @@
 	-fx-alignment: center;
 	-fx-text-fill:white
 }
-
+.table-row-cell:filled:hover {
+	-fx-background-color: #FDB91F;
+	-fx-text-fill: white;
+}
+.table-row-cell:selected .table-cell {
+  	-fx-background-color: #032d4d;
+  	-fx-text-fill : white;
+}
 .textfield{
     -fx-background-color: linear-gradient (to bottom, #efefef, #eee);
     -fx-border-color: linear-gradient(to bottom right, #276acf, #032d4d);
