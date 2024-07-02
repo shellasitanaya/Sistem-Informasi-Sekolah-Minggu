@@ -472,7 +472,7 @@ public class KehadiranGuruController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            Paragraph title = new Paragraph("Laporan Kehadiran Guru Berdasarkan Tahun Ajaran")
+            Paragraph title = new Paragraph("Laporan Kehadiran Guru Berdasarkan Tahun Ajaran " + selectedTahun.getTahunAjaran())
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(20);
@@ -485,10 +485,10 @@ public class KehadiranGuruController implements Initializable {
 
 
             // Membuat tabel dengan kolom yang sesuai
-            Table table = new Table(UnitValue.createPercentArray(new float[]{40, 40, 20})).useAllAvailableWidth();
+            Table table = new Table(UnitValue.createPercentArray(new float[]{60, 40})).useAllAvailableWidth();
 
             // Header Tabel
-            String[] headers = {"Nama Guru", "Tahun Ajaran", "Total Kehadiran"};
+            String[] headers = {"Nama Guru", "Total Kehadiran"};
             Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
@@ -507,10 +507,9 @@ public class KehadiranGuruController implements Initializable {
 
             // Mengisi tabel dengan data
             for (Object[] rowData : data.values()) {
-                // Pastikan data yang diambil sesuai dengan urutan kolom yang diharapkan
+                //  data yang diambil sesuai dengan urutan kolom yang dimau
                 String namaGuru = rowData[0].toString();
-                String tahunAjaran = rowData[1].toString();
-                String totalKehadiran = rowData[2].toString();
+                String totalKehadiran = rowData[1].toString();
 
                 // Data Nama Guru
                 com.itextpdf.layout.element.Cell namaGuruCell = new com.itextpdf.layout.element.Cell();
@@ -518,13 +517,6 @@ public class KehadiranGuruController implements Initializable {
                 namaGuruParagraph.setTextAlignment(TextAlignment.CENTER);
                 namaGuruCell.add(namaGuruParagraph);
                 table.addCell(namaGuruCell);
-
-                // Data Tahun Ajaran
-                com.itextpdf.layout.element.Cell tahunAjaranCell = new com.itextpdf.layout.element.Cell();
-                Paragraph tahunAjaranParagraph = new Paragraph(tahunAjaran);
-                tahunAjaranParagraph.setTextAlignment(TextAlignment.CENTER);
-                tahunAjaranCell.add(tahunAjaranParagraph);
-                table.addCell(tahunAjaranCell);
 
                 // Data Total Kehadiran
                 com.itextpdf.layout.element.Cell totalKehadiranCell = new com.itextpdf.layout.element.Cell();
@@ -567,9 +559,9 @@ public class KehadiranGuruController implements Initializable {
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            String judul = "Laporan Kehadiran Guru Berdasarkan Tahun Ajaran";
+            String judul = "Laporan Kehadiran Guru Berdasarkan Tahun Ajaran " + selectedTahun.getTahunAjaran();
             titleCell.setCellValue(judul);
-            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
+            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 1); // merge kolom untuk judul
             spreadsheet.addMergedRegion(mergedRegion);
 
             CellStyle titleStyle = workbook.createCellStyle();
@@ -606,7 +598,7 @@ public class KehadiranGuruController implements Initializable {
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            String[] headers = {"Nama Guru", "Tahun Ajaran", "Total Kehadiran"};
+            String[] headers = {"Nama Guru", "Total Kehadiran"};
             int cellCounter = 0;
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
@@ -635,12 +627,12 @@ public class KehadiranGuruController implements Initializable {
                 for (int i = 0; i < objectArr.length; i++) {
                     XSSFCell cell = row.createCell(i);
                     cell.setCellValue(String.valueOf(objectArr[i]));
-                    cell.setCellStyle(dataStyle); // Terapkan style untuk data di sini
+                    cell.setCellStyle(dataStyle); //  style untuk data di sini
                     spreadsheet.autoSizeColumn(i);
                 }
             }
 
-            int[] columnWidths = {5500, 4000, 4000};
+            int[] columnWidths = {9500, 5500};
             for (int i = 0; i < columnWidths.length; i++) {
                 spreadsheet.setColumnWidth(i, columnWidths[i]);
             }
