@@ -132,12 +132,13 @@ public class KebaktianController implements Initializable {
     @FXML
     public void create() {
         String jenis = jenisKebaktianField.getText();
-        Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
+        LocalDate tanggalLocalDate = tanggalKebaktianPicker.getValue();
 
-        if (jenis.isEmpty() || tanggal == null) {
+        if (jenis.isEmpty() || tanggalLocalDate == null) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
+        Date tanggal = Date.valueOf(tanggalLocalDate);
 
         Kebaktian kebaktian = new Kebaktian();
         kebaktian.setJenisKebaktian(jenis);

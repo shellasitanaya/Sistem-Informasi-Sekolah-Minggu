@@ -235,7 +235,7 @@ public class AnakController implements Initializable {
             updateAnakInList(selectedAnak);
 
             // Refresh table view
-            anakTbl.refresh();
+            refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Data Anak berhasil diupdate!");

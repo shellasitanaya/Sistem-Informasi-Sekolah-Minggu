@@ -135,7 +135,7 @@ public class KebaktianDao {
                 "    JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
                 "    JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "    WHERE \n" +
-                "        kbk.id = 2\n" +
+                "        kbk.id = ?\n" +
                 "    GROUP BY \n" +
                 "        kbk.jenis_kebaktian, k.nama_kelas, kpt.kelas_paralel, kbk.tanggal\n" +
                 "),\n" +

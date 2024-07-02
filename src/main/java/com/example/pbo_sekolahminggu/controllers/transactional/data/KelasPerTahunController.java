@@ -359,8 +359,8 @@ public class KelasPerTahunController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil" )
-                    // mau tambahin ini? +  " " + selectedTahun.getTahunAjaran()
+            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil " + selectedKelas.getTahunAjaran())
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(20);
@@ -387,7 +387,6 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Data Table
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
             Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
@@ -422,7 +421,7 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToExcel(File file) {
-        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas Per Tahun");
 
@@ -438,7 +437,7 @@ public class KelasPerTahunController implements Initializable {
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            String judul = "Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil";
+            String judul = "Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil " + selectedKelas.getTahunAjaran();
             titleCell.setCellValue(judul);
             CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
             spreadsheet.addMergedRegion(mergedRegion);
@@ -497,7 +496,6 @@ public class KelasPerTahunController implements Initializable {
             dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
             Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
             Set<String> keyid = data.keySet();
 
