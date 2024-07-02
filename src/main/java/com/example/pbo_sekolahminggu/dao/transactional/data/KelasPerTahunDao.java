@@ -125,7 +125,7 @@ public class KelasPerTahunDao {
 
 
     // SAVE
-    public static void save(Connection con, KelasPerTahun kelasPerTahun) {
+    public static void save(Connection con, KelasPerTahun kelasPerTahun) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_kelas_per_tahun(id_kelas, id_tahun_ajaran, ruang_kelas, kelas_paralel) VALUES (?, ?, ?, ?)";
 
@@ -136,8 +136,6 @@ public class KelasPerTahunDao {
             statement.setString(3, kelasPerTahun.getRuangKelas());
             statement.setString(4, kelasPerTahun.getKelasParalel());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kelasPerTahun: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }

@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.dao.master.data.AnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -191,7 +192,14 @@ public class AnakController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-
+            Platform.runLater(() -> {
+                // Show an alert for SQL exception
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data anak dengan NIS yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }

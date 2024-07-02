@@ -23,6 +23,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -207,7 +208,13 @@ public class KelasPerTahunController implements Initializable {
             alert.show();
 //            skinCareDao.resetSequence(con);
         } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the exception
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data kelas per tahun yang sama.");
+                alert.showAndWait();
+            });
         }
     }
 

@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -159,9 +160,13 @@ public class KebaktianController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data kebaktian: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data kebaktian di tanggal dan jenis yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }
@@ -315,6 +320,7 @@ public class KebaktianController implements Initializable {
     }
 
     private void exportToPdf(File file) {
+        Kebaktian selectedKebaktian = kebaktianTbl.getSelectionModel().getSelectedItem();
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -387,6 +393,7 @@ public class KebaktianController implements Initializable {
     }
 
     private void exportToExcel(File file) {
+        Kebaktian selectedKebaktian = kebaktianTbl.getSelectionModel().getSelectedItem();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Kebaktian Data");
 

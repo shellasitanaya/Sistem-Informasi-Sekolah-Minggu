@@ -4,6 +4,7 @@ import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -84,7 +85,13 @@ public class KelasController implements Initializable {
 
                 clear(); //clear all the textfield
             } catch (SQLException e) {
-                alertWarning("Terjadi kesalahan saat menambah data kelas: " + e.getMessage());
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Database Error");
+                    alert.setHeaderText("Tidak berhasil menyimpan data!");
+                    alert.setContentText("Terdapat data kelas dengan nama yang sama.");
+                    alert.showAndWait();
+                });
             } finally {
                 ConnectionManager.close(con);
             }

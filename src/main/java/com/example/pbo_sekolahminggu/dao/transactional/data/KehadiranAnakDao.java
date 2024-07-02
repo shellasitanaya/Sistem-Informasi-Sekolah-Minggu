@@ -89,7 +89,6 @@ public class KehadiranAnakDao {
             ps = con.prepareStatement(query);
             ps.setInt(1, kelas.getIdKelasPerTahun());
             ps.setInt(2, kbk.getIdKebaktian());
-
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranAnak kehadiranAnak = new KehadiranAnak();

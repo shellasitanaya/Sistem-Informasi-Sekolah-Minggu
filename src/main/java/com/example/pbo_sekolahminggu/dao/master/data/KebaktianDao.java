@@ -67,7 +67,7 @@ public class KebaktianDao {
     }
 
     // CREATE
-    public static void create (Connection con, Kebaktian kebaktian) {
+    public static void create (Connection con, Kebaktian kebaktian) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (INITCAP(?), ?)";
 
@@ -76,8 +76,6 @@ public class KebaktianDao {
             statement.setString(1, kebaktian.getJenisKebaktian());
             statement.setDate(2, kebaktian.getTanggal());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kebaktian: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -141,8 +139,8 @@ public class KebaktianDao {
                 "),\n" +
                 "TotalCounts AS (\n" +
                 "    SELECT\n" +
-                "        '' AS jenis_kebaktian,\n" +
-                "        NULL::date AS tanggal,\n" +
+                "        '',\n" +
+                "        '',\n" +
                 "        'Total' AS kelas,\n" +
                 "        SUM(LakiLaki) AS LakiLaki,\n" +
                 "        SUM(Perempuan) AS Perempuan,\n" +
