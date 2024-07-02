@@ -25,7 +25,6 @@ public class KehadiranGuruDao {
         ResultSet rs = null;
         String query = "SELECT " +
                 "    g.nama AS nama_guru, " +
-                "    ta.tahun_ajaran, " +
                 "    COUNT(*) AS total_kehadiran " +
                 "FROM " +
                 "    tbl_kehadiran_guru kg " +
@@ -55,10 +54,9 @@ public class KehadiranGuruDao {
             rs = ps.executeQuery();
             int i = 1;
             while(rs.next()) {
-                Object[] object = new Object[3];
+                Object[] object = new Object[2];
                 object[0] = rs.getString("nama_guru");
-                object[1] = rs.getString("tahun_ajaran");
-                object[2] = rs.getInt("total_kehadiran");
+                object[1] = rs.getInt("total_kehadiran");
                 listData.put(String.valueOf(i), object);
                 i++;
             }
