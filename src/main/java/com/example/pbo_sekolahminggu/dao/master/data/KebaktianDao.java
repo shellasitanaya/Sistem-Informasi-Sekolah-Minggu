@@ -117,7 +117,7 @@ public class KebaktianDao {
         }
     }
 
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, Kebaktian kbk) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "WITH DetailedCounts AS (\n" +
@@ -161,6 +161,7 @@ public class KebaktianDao {
         Map<String, Object[]> listKebaktian = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, kbk.getID_KEBAKTIAN());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {

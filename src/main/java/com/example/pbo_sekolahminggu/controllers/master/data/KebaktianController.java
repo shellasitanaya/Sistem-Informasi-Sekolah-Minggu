@@ -220,11 +220,11 @@ public class KebaktianController implements Initializable {
     @FXML
     public void delete() {
         if (kebaktianTbl.getSelectionModel().getSelectedItems().size() != 0) {
-            Kebaktian selected = kebaktianTbl.getSelectionModel().getSelectedItem();
+            Kebaktian selectedKebaktian = kebaktianTbl.getSelectionModel().getSelectedItem();
             Connection connection = null;
             try {
                 connection = ConnectionManager.getConnection();
-                KebaktianDao.delete(connection, selected);
+                KebaktianDao.delete(connection, selectedKebaktian);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Data berhasil dihapus !");
                 alert.show();
@@ -358,7 +358,7 @@ public class KebaktianController implements Initializable {
 
             // Mengambil data dari DAO
             Connection con = ConnectionManager.getConnection();
-            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con, selectedKebaktian);
 
             // Mengisi tabel dengan data
             for (Object[] rowData : data.values()) {
@@ -455,7 +455,7 @@ public class KebaktianController implements Initializable {
             dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
-            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con);
+            Map<String, Object[]> data = KebaktianDao.getAllArrayObject(con, selectedKebaktian);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
