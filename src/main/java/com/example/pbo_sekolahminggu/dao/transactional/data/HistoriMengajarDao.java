@@ -248,7 +248,7 @@ public class HistoriMengajarDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT \n" +
-                "    g.id AS id_guru,\n" +
+                "    g.nip AS nip,\n" +
                 "    g.nama AS nama_guru,\n" +
                 "    COUNT(hm.id) AS jumlah_mengajar\n" +
                 "FROM \n" +
@@ -266,7 +266,7 @@ public class HistoriMengajarDao {
             int i = 1;
             while(rs.next()) {
                 Object[] object = new Object[3];
-                object[0] = rs.getInt("id_guru");
+                object[0] = rs.getString("nip");
                 object[1] = rs.getString("nama_guru");
                 object[2] = rs.getInt("jumlah_mengajar");
 
