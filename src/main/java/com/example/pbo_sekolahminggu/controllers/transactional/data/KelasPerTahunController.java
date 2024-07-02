@@ -434,50 +434,67 @@ public class KelasPerTahunController implements Initializable {
             int rowid = 0;
 
             // Judul
+            // Mengatur style untuk judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
-            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 6);
-            spreadsheet.addMergedRegion(mergedRegion);
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil");
-            // tambahin ini? " " + selectedTahun.getTahunAjaran())
+            String judul = "Laporan Kelas dan Jumlah Murid Diurutkan dari Paling Besar Ke Paling Kecil";
+            titleCell.setCellValue(judul);
+            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
+            spreadsheet.addMergedRegion(mergedRegion);
+
             CellStyle titleStyle = workbook.createCellStyle();
             titleStyle.setAlignment(HorizontalAlignment.CENTER);
             titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             titleStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
             titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            titleStyle.setBorderBottom(BorderStyle.THIN); // Border bawah
-            titleStyle.setBorderTop(BorderStyle.THIN); // Border atas
-            titleStyle.setBorderLeft(BorderStyle.THIN); // Border kiri
-            titleStyle.setBorderRight(BorderStyle.THIN); // Border kanan
             Font titleFont = workbook.createFont();
-            titleFont.setColor(IndexedColors.WHITE.getIndex()); // Warna teks
+            titleFont.setColor(IndexedColors.WHITE.getIndex());
             titleFont.setBold(true);
             titleStyle.setFont(titleFont);
+            // Set border untuk judul
+            titleStyle.setBorderBottom(BorderStyle.THIN);
+            titleStyle.setBorderTop(BorderStyle.THIN);
+            titleStyle.setBorderLeft(BorderStyle.THIN);
+            titleStyle.setBorderRight(BorderStyle.THIN);
             titleCell.setCellStyle(titleStyle);
+
+            // Mengatur style untuk header
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            Font headerFont = workbook.createFont();
+            headerFont.setColor(IndexedColors.BLACK.getIndex());
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            // Set border untuk header
+            headerStyle.setBorderBottom(BorderStyle.THIN);
+            headerStyle.setBorderTop(BorderStyle.THIN);
+            headerStyle.setBorderLeft(BorderStyle.THIN);
+            headerStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
             String[] headers = {"Nama Kelas", "Kelas Paralel", "Jumlah Murid"};
             int cellCounter = 0;
-            CellStyle headerStyle = workbook.createCellStyle();
-            headerStyle.setAlignment(HorizontalAlignment.CENTER);
-            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex()); // Warna latar belakang
-            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            headerStyle.setBorderBottom(BorderStyle.THIN); // Border bawah
-            headerStyle.setBorderTop(BorderStyle.THIN); // Border atas
-            headerStyle.setBorderLeft(BorderStyle.THIN); // Border kiri
-            headerStyle.setBorderRight(BorderStyle.THIN); // Border kanan
-            Font headerFont = workbook.createFont();
-            headerFont.setColor(IndexedColors.BLACK.getIndex()); // Warna teks
-            headerFont.setBold(true);
-            headerStyle.setFont(headerFont);
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
                 cell.setCellValue(header);
+                cell.setCellStyle(headerStyle);
                 spreadsheet.autoSizeColumn(cellCounter - 1);
             }
+
+            // Mengatur style untuk data
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            // Set border untuk data
+            dataStyle.setBorderBottom(BorderStyle.THIN);
+            dataStyle.setBorderTop(BorderStyle.THIN);
+            dataStyle.setBorderLeft(BorderStyle.THIN);
+            dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
             KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
@@ -488,19 +505,18 @@ public class KelasPerTahunController implements Initializable {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
 
-                // Pastikan hanya mengambil Nama Kelas, Kelas Paralel, dan Jumlah Murid
-                XSSFCell cellNamaKelas = row.createCell(0);
-                cellNamaKelas.setCellValue(String.valueOf(objectArr[0]));
+                for (int i = 0; i < objectArr.length; i++) {
+                    XSSFCell cell = row.createCell(i);
+                    cell.setCellValue(String.valueOf(objectArr[i]));
+                    cell.setCellStyle(dataStyle); // Terapkan style untuk data di sini
+                    spreadsheet.autoSizeColumn(i);
+                }
+            }
 
-                XSSFCell cellKelasParalel = row.createCell(1);
-                cellKelasParalel.setCellValue(String.valueOf(objectArr[1]));
+            int[] columnWidths = {8000, 6500, 6500};
 
-                XSSFCell cellJumlahMurid = row.createCell(2);
-                cellJumlahMurid.setCellValue(String.valueOf(objectArr[2]));
-
-                spreadsheet.autoSizeColumn(0);
-                spreadsheet.autoSizeColumn(1);
-                spreadsheet.autoSizeColumn(2);
+            for (int i = 0; i < columnWidths.length; i++) {
+                spreadsheet.setColumnWidth(i, columnWidths[i]);
             }
 
             out = new FileOutputStream(file);
