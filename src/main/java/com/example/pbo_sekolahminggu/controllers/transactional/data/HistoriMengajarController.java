@@ -392,7 +392,7 @@ public class HistoriMengajarController implements Initializable {
             doc.add(headerTable);
             Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
 
-            String[] headers = {"ID Guru", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
             Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
@@ -410,14 +410,14 @@ public class HistoriMengajarController implements Initializable {
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
-                System.out.println("ID Guru: " + row[0]);
+                System.out.println("NIP: " + row[0]);
                 System.out.println("Nama Guru: " + row[1]);
                 System.out.println("Jumlah Mengajar: " + row[2]);
 
-                Paragraph idParagraph = new Paragraph(String.valueOf(row[0]));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                Cell idCell = new Cell().add(idParagraph);
-                table.addCell(idCell);
+                Paragraph nipParagraph = new Paragraph(String.valueOf(row[0]));
+                nipParagraph.setTextAlignment(TextAlignment.CENTER);
+                Cell nipCell = new Cell().add(nipParagraph);
+                table.addCell(nipCell);
 
                 Paragraph namaParagraph = new Paragraph(String.valueOf(row[1]));
                 Cell namaCell = new Cell().add(namaParagraph);
@@ -492,7 +492,7 @@ public class HistoriMengajarController implements Initializable {
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            String[] headers = {"ID Guru", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
             int cellCounter = 0;
 
             for (String header : headers) {
@@ -528,7 +528,7 @@ public class HistoriMengajarController implements Initializable {
                 }
             }
 
-            int[] columnWidths = {4000, 5500, 5000};
+            int[] columnWidths = {5000, 5500, 4500};
 
             for (int i = 0; i < columnWidths.length; i++) {
                 spreadsheet.setColumnWidth(i, columnWidths[i]);

@@ -21,13 +21,13 @@
    <children>
       <TableView fx:id="kehadiranAnakTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn text="ID Kehadiran" />
-            <TableColumn prefWidth="190.0" text="Nama" />
-            <TableColumn prefWidth="130.0" text="NIS" />
-            <TableColumn prefWidth="130.0" text="Kelas" />
-            <TableColumn prefWidth="90.0" text="Kebaktian" />
-            <TableColumn prefWidth="100.0" text="Tanggal" />
-            <TableColumn prefWidth="90.0" text="Presensi" />
+            <TableColumn fx:id="idKehadiranCol" text="ID Kehadiran" />
+            <TableColumn fx:id="namaCol" prefWidth="190.0" text="Nama" />
+            <TableColumn fx:id="nisCol" prefWidth="130.0" text="NIS" />
+            <TableColumn fx:id="kelasCol" prefWidth="130.0" text="Kelas" />
+            <TableColumn fx:id="kebaktianCol" prefWidth="90.0" text="Kebaktian" />
+            <TableColumn fx:id="tanggalCol" prefWidth="100.0" text="Tanggal" />
+            <TableColumn fx:id="presensiCol" prefWidth="90.0" text="Presensi" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
@@ -92,9 +92,9 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
          <font>
             <Font name="System Italic" size="12.0" />

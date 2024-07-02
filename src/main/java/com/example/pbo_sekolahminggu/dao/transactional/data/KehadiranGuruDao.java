@@ -23,28 +23,31 @@ public class KehadiranGuruDao {
     public static Map<String, Object[]> getAllArrayObject(Connection con, TahunAjaran tahun) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "SELECT " +
-                "    g.nama AS nama_guru, " +
-                "    COUNT(*) AS total_kehadiran " +
-                "FROM " +
-                "    tbl_kehadiran_guru kg " +
-                "JOIN " +
-                "    tbl_histori_mengajar h ON kg.id_histori_mengajar = h.id " +
-                "JOIN " +
-                "    tbl_kebaktian k ON kg.id_kebaktian = k.id " +
-                "JOIN " +
-                "    tbl_guru g ON h.id_guru = g.id " +
-                "JOIN " +
-                "    tbl_kelas_per_tahun kpt ON h.id_kelas_per_tahun = kpt.id " +
-                "JOIN " +
-                "    tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id " +
-                "WHERE " +
-                "    kg.presensi = true " +
-                "    AND kpt.id_tahun_ajaran = ? " +
-                "GROUP BY " +
-                "    g.nama, ta.tahun_ajaran " +
-                "ORDER BY " +
-                "    ta.tahun_ajaran, g.nama";
+        String query = "SELECT\n" +
+                "    g.nama AS nama_guru,\n" +
+                "    g.nip AS nip,\n" +
+                "    COUNT(*) AS total_kehadiran\n" +
+                "FROM\n" +
+                "    tbl_kehadiran_guru kg\n" +
+                "JOIN\n" +
+                "    tbl_histori_mengajar h ON kg.id_histori_mengajar = h.id\n" +
+                "JOIN\n" +
+                "    tbl_kebaktian k ON kg.id_kebaktian = k.id\n" +
+                "JOIN\n" +
+                "    tbl_guru g ON h.id_guru = g.id\n" +
+                "JOIN\n" +
+                "    tbl_kelas_per_tahun kpt ON h.id_kelas_per_tahun = kpt.id\n" +
+                "JOIN\n" +
+                "    tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
+                "WHERE\n" +
+                "    kg.presensi = true\n" +
+                "    AND kpt.id_tahun_ajaran = ?\n" +
+                "GROUP BY\n" +
+                "    g.nama, g.nip\n" +
+                "ORDER BY\n" +
+                "    g.nama, g.nip;\n" +
+                "\n" +
+                "\n";
 
         Map<String, Object[]> listData = new TreeMap<>();
 
@@ -54,9 +57,10 @@ public class KehadiranGuruDao {
             rs = ps.executeQuery();
             int i = 1;
             while(rs.next()) {
-                Object[] object = new Object[2];
+                Object[] object = new Object[3];
                 object[0] = rs.getString("nama_guru");
-                object[1] = rs.getInt("total_kehadiran");
+                object[1] = rs.getString("nip");
+                object[2] = rs.getInt("total_kehadiran");
                 listData.put(String.valueOf(i), object);
                 i++;
             }
