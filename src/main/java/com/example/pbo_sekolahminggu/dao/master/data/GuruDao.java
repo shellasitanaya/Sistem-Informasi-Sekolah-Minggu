@@ -2,6 +2,8 @@ package com.example.pbo_sekolahminggu.dao.master.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public class GuruDao {
     }
 
     // CREATE
-    public static void create (Connection con, Guru guru) {
+    public static void create (Connection con, Guru guru) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES (?, ?, ?, ?)";
 
@@ -49,8 +51,6 @@ public class GuruDao {
             statement.setString(3, guru.getNoTelp());
             statement.setString(4, guru.getAlamat());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving guru: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }

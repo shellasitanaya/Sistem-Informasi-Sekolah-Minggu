@@ -67,7 +67,7 @@ public class KebaktianDao {
     }
 
     // CREATE
-    public static void create (Connection con, Kebaktian kebaktian) {
+    public static void create (Connection con, Kebaktian kebaktian) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (?, ?)";
 
@@ -76,8 +76,6 @@ public class KebaktianDao {
             statement.setString(1, kebaktian.getJenisKebaktian());
             statement.setDate(2, kebaktian.getTanggal());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kebaktian: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -117,7 +115,7 @@ public class KebaktianDao {
         }
     }
 
-    public static Map<String, Object[]> getAllArrayObject(Connection con) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, Kebaktian kbk) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "WITH DetailedCounts AS (\n" +
@@ -135,14 +133,14 @@ public class KebaktianDao {
                 "    JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
                 "    JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "    WHERE \n" +
-                "        kbk.id = 2\n" +
+                "        kbk.id = ? \n" +
                 "    GROUP BY \n" +
                 "        kbk.jenis_kebaktian, k.nama_kelas, kpt.kelas_paralel, kbk.tanggal\n" +
                 "),\n" +
                 "TotalCounts AS (\n" +
                 "    SELECT\n" +
-                "        'Total' AS jenis_kebaktian,\n" +
-                "        NULL::date AS tanggal,\n" +
+                "        '',\n" +
+                "        '',\n" +
                 "        'Total' AS kelas,\n" +
                 "        SUM(LakiLaki) AS LakiLaki,\n" +
                 "        SUM(Perempuan) AS Perempuan,\n" +
@@ -161,6 +159,7 @@ public class KebaktianDao {
         Map<String, Object[]> listKebaktian = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, kbk.getIdKebaktian());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {

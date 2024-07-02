@@ -103,14 +103,10 @@ public class KehadiranGuruController implements Initializable {
 //        });
     }
 
-
     public void filterDataKebaktian() {
         TahunAjaran tahunSelected = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
-        if (tahunSelected == null) {
-            alertWarning("Silahkan pilih tahun ajaran terlebih dahulu.");
-            return;
-        }
-
+        if (!isTahunAjaranSelected()) return;
+        System.out.println(tahunSelected);
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -236,7 +232,7 @@ public class KehadiranGuruController implements Initializable {
 
     public void filterDataKelas() {
         TahunAjaran tahunSelected = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
-
+        if (!isTahunAjaranSelected()) return;
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -282,9 +278,8 @@ public class KehadiranGuruController implements Initializable {
     }
 
     public void edit() {
-        System.out.println("halo");
         if (checkComboBox()) return;  //check if one of the combobox is null
-        System.out.println("halo2");
+
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -297,8 +292,29 @@ public class KehadiranGuruController implements Initializable {
             dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(con, selectedKelas, selectedKebaktian));
             System.out.println(dataKehadiranGuru);
             if (dataKehadiranGuru.isEmpty()) {
-                alertWarning("Data kehadiran yang terpilih belum tersedia!");
-                return;
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Konfirmasi pengisian data kehadiran");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data kehadiran guru yang ditemukan. Isi data kehadiran guru di kelas dan kebaktian ini?");
+
+                // Add buttons to the alert
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(cancelButton, confirmButton);
+
+                // Show the alert and wait for the response
+                Connection finalCon = con;
+                Optional<ButtonType> pilihan = alert.showAndWait();
+
+                // Handle the user's response
+                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    //set the data to be passed
+                    KehadiranGuruDao.setSelectedKelas(selectedKelas);
+                    KehadiranGuruDao.setSelectedKebaktian(selectedKebaktian);
+
+                    KehadiranGuruDao.populateTblKehadiranGuru(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                    loadMenuAssignKehadiranGuru(); //move to the next window
+                } else return;
             }
             loadMenuAssignKehadiranGuru();
         } catch (SQLException e) {
@@ -405,12 +421,20 @@ public class KehadiranGuruController implements Initializable {
     private boolean checkComboBox() {
         if (kebaktianKehadiranGuruCb.getSelectionModel().getSelectedItem() == null || tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem() == null ||
                 kelasKehadiranGuruCb.getSelectionModel().getSelectedItem() == null) {
-            alertWarning("Harap pilih semua kolom.");
+            alertWarning("Harap isi semua kolom.");
             return true;
         }
         return false;
     }
 
+    public boolean isTahunAjaranSelected() {
+        TahunAjaran tahunSelected = tahunAjaranKehadiranGuruCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null) {
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
+            return false;
+        }
+        return true;
+    }
 
     public void clear(){
         tahunAjaranKehadiranGuruCb.getSelectionModel().clearSelection();

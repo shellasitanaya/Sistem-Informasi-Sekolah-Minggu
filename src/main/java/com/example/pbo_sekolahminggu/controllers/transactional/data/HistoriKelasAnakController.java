@@ -332,7 +332,7 @@ public class HistoriKelasAnakController implements Initializable {
         TahunAjaran tahunSelected = tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
         KelasPerTahun kelasSelected = kelasHistoriKelasCb.getSelectionModel().getSelectedItem();
         if (tahunSelected == null || kelasSelected == null) {
-            alertWarning("Harap pilih isi kolom.");
+            alertWarning("Harap isi semua kolom.");
             return true;
         }
         return false;

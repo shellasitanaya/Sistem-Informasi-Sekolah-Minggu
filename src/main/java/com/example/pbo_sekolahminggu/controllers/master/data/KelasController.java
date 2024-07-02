@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -73,7 +74,7 @@ public class KelasController implements Initializable {
                 con = ConnectionManager.getConnection();
                 Kelas kelas = new Kelas();
                 kelas.setNamaKelas(namaKelasField.getText());
-                KelasDao.save(con, kelas);
+                KelasDao.create(con, kelas);
                 //refresh the table view
                 refreshTable(con);
                 //alert
@@ -81,7 +82,13 @@ public class KelasController implements Initializable {
 
                 clear(); //clear all the textfield
             } catch (SQLException e) {
-                alertWarning("Terjadi kesalahan saat menambah data kelas: " + e.getMessage());
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Database Error");
+                    alert.setHeaderText("Tidak berhasil menyimpan data!");
+                    alert.setContentText("Terdapat data kelas dengan nama yang sama.");
+                    alert.showAndWait();
+                });
             } finally {
                 ConnectionManager.close(con);
             }

@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.dao.master.data.GuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -193,10 +194,13 @@ public class GuruController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            // menampilkan pesan error
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data guru: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data anak dengan NIP yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }

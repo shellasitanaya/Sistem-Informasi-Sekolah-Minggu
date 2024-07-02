@@ -268,8 +268,29 @@ public class KehadiranAnakController implements Initializable {
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKebaktian));
 
             if (dataKehadiranAnak.isEmpty()) {
-                alertWarning("Data kehadiran yang terpilih belum tersedia!");
-                return;
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Konfirmasi pengisian data kehadiran");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data kehadiran anak yang ditemukan. Isi data kehadiran anak di kelas dan kebaktian ini?");
+
+                // Add buttons to the alert
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(cancelButton, confirmButton);
+
+                // Show the alert and wait for the response
+                Connection finalCon = con;
+                Optional<ButtonType> pilihan = alert.showAndWait();
+
+                // Handle the user's response
+                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
+                    //set the data to be passed
+                    KehadiranAnakDao.setSelectedKelas(selectedKelas);
+                    KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
+
+                    KehadiranAnakDao.populateTblKehadiranAnak(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
+                    loadMenuAssignKehadiranAnak(); //move to the next window
+                } else return;
             }
             loadMenuAssignKehadiranAnak();
         } catch (SQLException e) {
@@ -422,7 +443,7 @@ public class KehadiranAnakController implements Initializable {
     private boolean checkComboBox() {
         if (kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem() == null || kelasKehadiranAnakCb.getSelectionModel().getSelectedItem() == null ||
                 tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem() == null) {
-            alertWarning("Harap pilih semua kolom.");
+            alertWarning("Harap isi semua kolom.");
             return true;
         }
         return false;
@@ -460,7 +481,7 @@ public class KehadiranAnakController implements Initializable {
             Document doc = new Document(pdfDoc);
 
             // Judul
-            Paragraph title = new Paragraph("Laporan Kehadiran Anak di Kelas");
+            Paragraph title = new Paragraph("Laporan Kehadiran Anak di setiap kelas - Tahun Ajaran " + selectedTahun.getTahunAjaran());
             title.setTextAlignment(TextAlignment.CENTER);
             title.setBold();
             doc.add(title);

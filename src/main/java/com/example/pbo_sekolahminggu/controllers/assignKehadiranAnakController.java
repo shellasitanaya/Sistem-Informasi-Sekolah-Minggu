@@ -94,7 +94,7 @@ public class assignKehadiranAnakController implements Initializable {
         try {
             if (conHere != null) {
                 conHere.rollback();
-                logger.info("Secondary connection rollback executed.");
+                logger.info("Connection rollback executed.");
             }
             System.out.println("Changes cancelled");
             dialogBox("Perubahan data dibatalkan.");
@@ -141,7 +141,6 @@ public class assignKehadiranAnakController implements Initializable {
     private void addToHadir() {
         Anak selectedAnak = belumHadirKehadiranAnakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getIdAnak());
             KehadiranAnakDao.updateHadir(conHere, selectedAnak);
             //refresh table view
             refreshTable(conHere);
@@ -154,7 +153,6 @@ public class assignKehadiranAnakController implements Initializable {
     private void removeToTidakHadir() {
         Anak selectedAnak = hadirKehadiranAnakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getIdAnak());
             KehadiranAnakDao.updateTidakHadir(conHere, selectedAnak);
             //refresh table view
             refreshTable(conHere);
