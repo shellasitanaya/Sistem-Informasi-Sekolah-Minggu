@@ -320,7 +320,6 @@ public class KebaktianController implements Initializable {
     }
 
     private void exportToPdf(File file) {
-        Kebaktian selectedKebaktian = kebaktianTbl.getSelectionModel().getSelectedItem();
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {

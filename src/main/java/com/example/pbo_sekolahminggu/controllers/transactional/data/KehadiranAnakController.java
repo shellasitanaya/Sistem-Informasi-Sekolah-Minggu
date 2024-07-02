@@ -5,11 +5,13 @@ import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -27,6 +29,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,6 +64,8 @@ import java.util.*;
 
 public class KehadiranAnakController implements Initializable {
     @FXML
+    TableColumn<KehadiranAnak, String> idKehadiranCol, namaCol, nisCol, kelasCol, kebaktianCol, tanggalCol, presensiCol;
+    @FXML
     private Button editKehadiranAnakBtn;
     @FXML
     private Button showKehadiranAnakBtn;
@@ -80,163 +85,74 @@ public class KehadiranAnakController implements Initializable {
     ObservableList<KehadiranAnak> listKehadiranAnak = FXCollections.observableArrayList() ;
 
     ObservableList<KehadiranAnak> dataKehadiranAnak ;
-    ObservableList<TahunAjaran> dataTahunAjaran;
-    ObservableList<KelasPerTahun> dataKelas;
-    ObservableList<Kebaktian> dataKebaktian;
+
+    ObservableList<TahunAjaran> dataTahunAjaran = FXCollections.observableArrayList();;
+    ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();;
+    ObservableList<Kebaktian> dataKebaktian = FXCollections.observableArrayList();;
     private Connection conn;
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void setConn(Connection conn) {
-        this.conn = conn;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        tahunAjaranKehadiranAnakCb.setPromptText(" ");
-        kelasKehadiranAnakCb.setPromptText(" ");
-        kebaktianKehadiranAnakCb.setPromptText(" ");
-
-        dataKehadiranAnak = FXCollections.observableArrayList();
-        dataTahunAjaran = FXCollections.observableArrayList();
-        dataKelas = FXCollections.observableArrayList();
-        dataKebaktian = FXCollections.observableArrayList();
-        kehadiranAnakTbl.getSelectionModel().setSelectionMode(
-                SelectionMode.SINGLE
-        );
-
-        kehadiranAnakTbl.getColumns().clear();
-
-        //column no
-        TableColumn idCol = new TableColumn<>("ID Kehadiran");
-        idCol.setMinWidth(80);
-        idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("idKehadiranAnak"));  //yg ini harus sama dgn attribute di beans
-
-        //column nama anak
-        TableColumn namaAnakCol = new TableColumn("Nama");
-        namaAnakCol.setMinWidth(190);
-        namaAnakCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("namaAnak"));
-
-        TableColumn nisCOL = new TableColumn("NIS");
-        nisCOL.setMinWidth(130);
-        nisCOL.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("nis"));
-
-        TableColumn namaKelasCol = new TableColumn("Kelas");
-        namaKelasCol.setMinWidth(130);
-        namaKelasCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("kelas"));
-
-        TableColumn kebaktianCol = new TableColumn("Kebaktian");
-        kebaktianCol.setMinWidth(90);
-        kebaktianCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("kebaktian"));
-
-        TableColumn tanggalCol = new TableColumn("Tanggal");
-        tanggalCol.setMinWidth(100);
-        tanggalCol.setCellValueFactory(
-                new PropertyValueFactory<KehadiranAnak, String>("tglKebaktian"));
-
-        TableColumn presensiCol = new TableColumn("Presensi");
-        presensiCol.setMinWidth(90);
-        presensiCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<KehadiranAnak, String>, ObservableValue<String>>() {
+        populateKelasTable();
+        tahunAjaranKehadiranAnakCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
-            public javafx.beans.value.ObservableValue<String> call(TableColumn.CellDataFeatures<KehadiranAnak, String> cellData) {
-                return new SimpleStringProperty(cellData.getValue().isPresensi() ? "Hadir" : "Tidak Hadir");
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    filterDataKelas();
+                    filterDataKebaktian();
+                    kelasKehadiranAnakCb.getSelectionModel().clearSelection();
+                    kebaktianKehadiranAnakCb.getSelectionModel().clearSelection();
+                }
             }
         });
-        kehadiranAnakTbl.getColumns().addAll(idCol, namaAnakCol, nisCOL, namaKelasCol, kebaktianCol, tanggalCol, presensiCol);
-
-        Connection con = null;
+        //get the table data
         try {
-            con = ConnectionManager.getConnection();
-            dataTahunAjaran.addAll(TahunAjaranDao.getAll(con));
-            //populate the tahun ajaran choice box
+            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(ConnectionManager.getConnection()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        kehadiranAnakTbl.setItems(dataKehadiranAnak);
+
+        try {
+            fillTahunAjaranCb();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+//
+    }
+
+    public void fillTahunAjaranCb() throws SQLException {
+        try {
+            // Populate tahunAjaranList from database
+            dataTahunAjaran.addAll(TahunAjaranDao.getAll(ConnectionManager.getConnection()));
+
+            // Set items and converter for ChoiceBox
             tahunAjaranKehadiranAnakCb.setItems(dataTahunAjaran);
+
+            // Set up StringConverter
             tahunAjaranKehadiranAnakCb.setConverter(new StringConverter<TahunAjaran>() {
                 @Override
                 public String toString(TahunAjaran object) {
-                    return object.getTahunAjaran();
+                    return object != null ? object.getTahunAjaran() : "";
                 }
 
                 @Override
                 public TahunAjaran fromString(String string) {
-                    return ((ObservableList<TahunAjaran>) tahunAjaranKehadiranAnakCb.getItems()).stream()
-                            .filter(selectedKelas -> string.equals(selectedKelas.getTahunAjaran()))
-                            .findAny()
-                            .orElse(null);
+                    return dataTahunAjaran.stream()
+                            .filter(ta -> ta.getTahunAjaran().equals(string))
+                            .findFirst()
+                            .orElse(null); // Return null if not found (though you should ideally handle this case better)
                 }
             });
-//            tahunAjaranKehadiranAnakCb.getSelectionModel().select(0);
-
-            TahunAjaran tahunSelected = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
-
-            //data kelas
-            dataKelas.addAll(KelasPerTahunDao.getAll(con));
-            kelasKehadiranAnakCb.setItems(dataKelas);
-
-            kelasKehadiranAnakCb.setConverter(new StringConverter<KelasPerTahun>() {
-                @Override
-                public String toString(KelasPerTahun object) {
-                    String paralel;
-                    if (object.getKelasParalel() == null)  {
-                        paralel = "";
-                    } else paralel = " " + object.getKelasParalel();
-                    return object.getNamaKelas() + paralel;
-                }
-
-                @Override
-                public KelasPerTahun fromString(String string) {
-                    return ((ObservableList<KelasPerTahun>)kelasKehadiranAnakCb.getItems()).stream()
-                            .filter(selectedKelas -> string.equals(selectedKelas.getNamaKelas()))
-                            .findAny()
-                            .orElse(null);
-                }
-            });
-//            kelasKehadiranAnakCb.getSelectionModel().select(0);
-
-            //data dropdown kebaktian
-            dataKebaktian.addAll(KebaktianDao.getAll((con)));
-            kebaktianKehadiranAnakCb.setItems(dataKebaktian);
-            kebaktianKehadiranAnakCb.setConverter(new StringConverter<Kebaktian>() {
-                @Override
-                public String toString(Kebaktian object) {
-                    return object.getJenisKebaktian() + " (" + object.getTanggal() + ")";
-                }
-
-                @Override
-                public Kebaktian fromString(String string) {
-                    return ((ObservableList<Kebaktian>)kebaktianKehadiranAnakCb.getItems()).stream()
-                            .filter(selectedKebaktian -> string.equals(selectedKebaktian.getJenisKebaktian()))
-                            .findAny()
-                            .orElse(null);
-                }
-            });
-//            kebaktianKehadiranAnakCb.getSelectionModel().select(0);
-
-            //get the table data
-            dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con));
-            kehadiranAnakTbl.setItems(dataKehadiranAnak);
-
-            listKehadiranAnak = FXCollections.
-                    observableList(KehadiranAnakDao.getAll(con));
-            for (KehadiranAnak kehadiranAnak: listKehadiranAnak) {
-                System.out.println(kehadiranAnak);
-            }
-            kehadiranAnakTbl.setItems(listKehadiranAnak);
-
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            ConnectionManager.close(con);
+            throw new RuntimeException("Error populating tahun ajaran list", e);
         }
-
-
-//        tahunAjaranKehadiranAnakCb.setValue(null);
     }
+
+
     public void Search() {
 
         FilteredList<KehadiranAnak> filter = new FilteredList<>(listKehadiranAnak, e -> true);
@@ -278,44 +194,51 @@ public class KehadiranAnakController implements Initializable {
 
     @FXML
     public void show() {
-        //cek input kosong atau tidak
-        if (checkComboBox()) return;
-
-        Connection con = null;
         try {
-            con = ConnectionManager.getConnection();
-            refreshTable(con);
-            if (refreshTable(con)) {  //klo data kehadiran untuk kelas dan kebaktian yang dipilih, kosonk
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Konfirmasi pengisian data kehadiran");
-                alert.setHeaderText(null);
-                alert.setContentText("Tidak ada data kehadiran anak yang ditemukan. Isi data kehadiran anak di kelas dan kebaktian ini?");
+            conn = ConnectionManager.getConnection();
+            if (checkComboBox()) return;
+            //selected nama kelas
+            KelasPerTahun selectedKelas = (KelasPerTahun) kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
+            //selected tahun ajaran
+            TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
+            //selected kebaktian
+            Kebaktian selectedKebaktian = (Kebaktian) kebaktianKehadiranAnakCb.getSelectionModel(). getSelectedItem();
 
-                // Add buttons to the alert
-                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
-                alert.getButtonTypes().setAll(cancelButton, confirmButton);
 
-                // Show the alert and wait for the response
-                Connection finalCon = con;
-                Optional<ButtonType> pilihan = alert.showAndWait();
+            // Get the ArrayList of Guru objects from the database
+            ArrayList<KehadiranAnak> listKehadiranAnak= KehadiranAnakDao.getAllFiltered(ConnectionManager.getConnection(), selectedKelas, selectedKebaktian);
 
-                // Handle the user's response
-                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
-                    //set the data to be passed
-                    KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
-                    Kebaktian selectedKebaktian = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
-                    KehadiranAnakDao.setSelectedKelas(selectedKelas);
-                    KehadiranAnakDao.setSelectedKebaktian(selectedKebaktian);
-
-                    KehadiranAnakDao.populateTblKehadiranAnak(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
-                    loadMenuAssignKehadiranAnak(); //move to the next window
-                }
+            if (listKehadiranAnak.isEmpty()) {
+                alertWarning("Data kehadiran anak tidak tersedia!");
+                return;
             }
+            // Set cell value factory for each TableColumn
+            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranAnak())));
+            namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaAnak()));
+            nisCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
+            kelasCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kebaktianCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKebaktian()));
+            tanggalCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTglKebaktian())));
+            presensiCol.setCellValueFactory(cellData -> new SimpleStringProperty((cellData.getValue().isPresensi() ? "Hadir" : "Tidak Hadir")));
+
+
+            // Add columns to the TableView
+            kehadiranAnakTbl.getColumns().clear(); // Clear existing columns
+            kehadiranAnakTbl.getColumns().addAll(idKehadiranCol, namaCol, nisCol, kelasCol, kebaktianCol, tanggalCol, presensiCol);
+
+            // Set the data to the TableView
+            kehadiranAnakTbl.getItems().clear(); // Clear existing data
+            kehadiranAnakTbl.getItems().addAll(listKehadiranAnak);
+
+            // Add listener for selection change
+            kehadiranAnakTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    // Handle the event when a row is clicked
+                    System.out.println("Row clicked: " + newSelection);
+                }
+            });
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            ConnectionManager.close(con);
+            e.printStackTrace();
         }
     }
 
@@ -367,32 +290,27 @@ public class KehadiranAnakController implements Initializable {
         }
     }
 
-    @FXML
     public void filterDataKelas() {
         TahunAjaran tahunSelected = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
-        if (tahunSelected == null) {
-            alertWarning("Silahkan pilih tahun ajaran terlebih dahulu.");
-            return;
-        }
-
+        if (!isTahunAjaranSelected()) return;
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
-            //filtered data of kelas per tahun
+
             ArrayList<KelasPerTahun> filteredClasses = KelasPerTahunDao.getFilteredClasses(con, tahunSelected);
 
             // Convert to ObservableList and update dataKelas
             ObservableList<KelasPerTahun> observableClasses = FXCollections.observableArrayList(filteredClasses);
+            dataKelas.setAll(observableClasses);
 
             // Update ChoiceBox items
-            kelasKehadiranAnakCb.setItems(observableClasses);
+            kelasKehadiranAnakCb.setItems(dataKelas);
 
             // Set StringConverter if needed
             kelasKehadiranAnakCb.setConverter(new StringConverter<KelasPerTahun>() {
                 @Override
                 public String toString(KelasPerTahun object) {
                     String paralel = (object.getKelasParalel() == null) ? "" : " " + object.getKelasParalel();
-
                     return object.getNamaKelas() + paralel;
                 }
 
@@ -416,7 +334,7 @@ public class KehadiranAnakController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-        kelasKehadiranAnakCb.show();
+//        kelasKehadiranGuruCb.show();
     }
 
     @FXML
@@ -468,18 +386,10 @@ public class KehadiranAnakController implements Initializable {
         kebaktianKehadiranAnakCb.show();
     }
 
-    //refresh view tabel biar terlihat perubahan
-    private boolean refreshTable(Connection con) {
-        boolean empty = true;
-        KelasPerTahun selectedKelas = kelasKehadiranAnakCb.getSelectionModel().getSelectedItem();
-        Kebaktian selectedKbk = kebaktianKehadiranAnakCb.getSelectionModel().getSelectedItem();
-        //get the table data
-        dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKbk));
-        if (!dataKehadiranAnak.isEmpty()) {
-            kehadiranAnakTbl.setItems(dataKehadiranAnak);
-            empty = false;
-        }
-        return empty;
+    public void clear() {
+        tahunAjaranKehadiranAnakCb.getSelectionModel().clearSelection();
+        kelasKehadiranAnakCb.getSelectionModel().clearSelection();
+        kebaktianKehadiranAnakCb.getSelectionModel().clearSelection();
     }
 
     public void search() {
@@ -552,6 +462,15 @@ public class KehadiranAnakController implements Initializable {
             return true;
         }
         return false;
+    }
+
+    public boolean isTahunAjaranSelected() {
+        TahunAjaran tahunSelected = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null) {
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
+            return false;
+        }
+        return true;
     }
 
     // --------------------------------------------------
@@ -777,7 +696,39 @@ public class KehadiranAnakController implements Initializable {
         }
     }
 
+    public void populateKelasTable() {
 
+        try {
+            // Get the ArrayList of Guru objects from the database
+            ArrayList<KehadiranAnak> listKehadiranAnak = KehadiranAnakDao.getAll(ConnectionManager.getConnection());
+
+            // Set cell value factory for each TableColumn
+            idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranAnak())));
+            idKehadiranCol.setMinWidth(80);
+            namaCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaAnak()));
+            namaCol.setMinWidth(190);
+            nisCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNis()));
+            nisCol.setMinWidth(130);
+            kelasCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelasCol.setMinWidth(130);
+            kebaktianCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKebaktian()));
+            kebaktianCol.setMinWidth(90);
+            tanggalCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTglKebaktian())));
+            tanggalCol.setMinWidth(100);
+            presensiCol.setCellValueFactory(cellData -> new SimpleStringProperty((cellData.getValue().isPresensi() ? "Hadir" : "Tidak Hadir")));
+            presensiCol.setMinWidth(90);
+
+            // Add columns to the TableView
+            kehadiranAnakTbl.getColumns().clear(); // Clear existing columns
+            kehadiranAnakTbl.getColumns().addAll(idKehadiranCol, namaCol, nisCol, kelasCol, kebaktianCol, tanggalCol, presensiCol);
+
+            // Set the data to the TableView
+            kehadiranAnakTbl.getItems().clear(); // Clear existing data
+            kehadiranAnakTbl.getItems().addAll(listKehadiranAnak);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

@@ -317,7 +317,7 @@ public class KehadiranGuruController implements Initializable {
 
             //get the data kehadiran to check if it's empty or not
             dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(con, selectedKelas, selectedKebaktian));
-            System.out.println(dataKehadiranGuru);
+
             if (dataKehadiranGuru.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Konfirmasi pengisian data kehadiran");
@@ -383,29 +383,8 @@ public class KehadiranGuruController implements Initializable {
             ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getIdKebaktian(), selectedKelas.getIdKelasPerTahun());
 
             if (listKehadiranGuru.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Konfirmasi pengisian data kehadiran");
-                alert.setHeaderText(null);
-                alert.setContentText("Tidak ada data kehadiran guru yang ditemukan. Isi data kehadiran guru di kelas dan kebaktian ini?");
-
-                // Add buttons to the alert
-                ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-                ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
-                alert.getButtonTypes().setAll(cancelButton, confirmButton);
-
-                // Show the alert and wait for the response
-                Connection finalCon = conn;
-                Optional<ButtonType> pilihan = alert.showAndWait();
-
-                // Handle the user's response
-                if (pilihan.isPresent() && pilihan.get() == confirmButton) {
-                    //set the data to be passed
-                    KehadiranGuruDao.setSelectedKelas(selectedKelas);
-                    KehadiranGuruDao.setSelectedKebaktian(selectedKebaktian);
-
-                    KehadiranGuruDao.populateTblKehadiranGuru(finalCon); // untuk mengisi kehadiran anak jika untuk kelas dan kebaktian yang terpilih, belum ada datanya
-                    loadMenuAssignKehadiranGuru(); //move to the next window
-                } else return;
+                alertWarning("Data kehadiran guru tidak tersedia!");
+                return;
             }
             // Set cell value factory for each TableColumn
             idKehadiranCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKehadiranGuru())));
