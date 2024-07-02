@@ -3,16 +3,10 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
-import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.beans.transactional.data.*;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.*;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.Color;
@@ -207,9 +201,17 @@ public class KehadiranAnakController implements Initializable {
 
             // Get the ArrayList of Guru objects from the database
             ArrayList<KehadiranAnak> listKehadiranAnak= KehadiranAnakDao.getAllFiltered(ConnectionManager.getConnection(), selectedKelas, selectedKebaktian);
-
+            ArrayList<HistoriKelasAnak> listKelasAnak = HistoriKelasAnakDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
+            if (listKelasAnak.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data anak yang terdaftar dalam kelas pada tahun ajaran ini. Data kehadiran tidak bisa diedit.");
+                alert.showAndWait();
+                return;
+            }
             if (listKehadiranAnak.isEmpty()) {
-                alertWarning("Data kehadiran anak tidak tersedia!");
+                alertWarning("Data kehadiran anak tidak tersedia! Silahkan edit kehadiran terlebih dahulu.");
                 return;
             }
             // Set cell value factory for each TableColumn
@@ -256,7 +258,15 @@ public class KehadiranAnakController implements Initializable {
 
             // Get the data kehadiran
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAllFiltered(con, selectedKelas, selectedKebaktian));
-
+            ArrayList<HistoriKelasAnak> listKelasAnak = HistoriKelasAnakDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
+            if (listKelasAnak.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data anak yang terdaftar dalam kelas pada tahun ajaran ini. Data kehadiran tidak bisa diedit.");
+                alert.showAndWait();
+                return;
+            }
             if (dataKehadiranAnak.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Konfirmasi pengisian data kehadiran");

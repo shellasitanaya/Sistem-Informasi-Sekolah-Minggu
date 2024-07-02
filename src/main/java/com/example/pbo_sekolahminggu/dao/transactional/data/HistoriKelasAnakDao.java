@@ -36,7 +36,7 @@ public class HistoriKelasAnakDao {
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
                 "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE anak.status_aktif = 1 ORDER BY histAnak.id\n";
+                "WHERE anak.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND t.status_aktif = 1 ORDER BY histAnak.id\n";
         ArrayList<HistoriKelasAnak> listHistoriKelasAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -194,7 +194,7 @@ public class HistoriKelasAnakDao {
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
                 "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE kpt.id = ? and anak.status_aktif = 1";
+                "WHERE kpt.id = ? and anak.status_aktif = 1 AND kpt.status_aktif = 1 AND t.status_aktif = 1 AND k.status_aktif = 1";
         ArrayList<HistoriKelasAnak> listhistoriAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

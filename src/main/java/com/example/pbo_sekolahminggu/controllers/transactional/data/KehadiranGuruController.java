@@ -2,11 +2,11 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
-import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.beans.transactional.data.*;
 import com.example.pbo_sekolahminggu.dao.master.data.KebaktianDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -317,7 +317,15 @@ public class KehadiranGuruController implements Initializable {
 
             //get the data kehadiran to check if it's empty or not
             dataKehadiranGuru = FXCollections.observableArrayList(KehadiranGuruDao.getSpecial(con, selectedKelas, selectedKebaktian));
-
+            ArrayList<HistoriMengajar> listKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
+            if (listKelasGuru.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data anak yang terdaftar dalam kelas pada tahun ajaran ini. Data kehadiran tidak bisa diedit.");
+                alert.showAndWait();
+                return;
+            }
             if (dataKehadiranGuru.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Konfirmasi pengisian data kehadiran");
@@ -381,9 +389,17 @@ public class KehadiranGuruController implements Initializable {
 
             // Get the ArrayList of Guru objects from the database
             ArrayList<KehadiranGuru> listKehadiranGuru = KehadiranGuruDao.get(ConnectionManager.getConnection(), selectedKebaktian.getIdKebaktian(), selectedKelas.getIdKelasPerTahun());
-
+            ArrayList<HistoriMengajar> listKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
+            if (listKelasGuru.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                alert.setContentText("Tidak ada data anak yang terdaftar dalam kelas pada tahun ajaran ini. Data kehadiran tidak bisa diedit.");
+                alert.showAndWait();
+                return;
+            }
             if (listKehadiranGuru.isEmpty()) {
-                alertWarning("Data kehadiran guru tidak tersedia!");
+                alertWarning("Data kehadiran guru tidak tersedia! Silahkan edit kehadiran terlebih dahulu.");
                 return;
             }
             // Set cell value factory for each TableColumn

@@ -30,10 +30,10 @@ public class HistoriMengajarDao {
 
         String query = "SELECT \n" +
                 "thm.id,\n" +
-                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
-                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
+                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.status_aktif = 1 AND k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
+                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.status_aktif = 1 AND ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
                 "--foreign keys\n" +
                 "id_guru,\n" +
                 "id_kelas_per_tahun\n" +
@@ -85,7 +85,7 @@ public class HistoriMengajarDao {
                 "LEFT JOIN tbl_kelas_per_tahun kpt ON thm.id_kelas_per_tahun = kpt.id\n" +
                 "LEFT JOIN tbl_kelas k ON kpt.id_kelas = k.id\n" +
                 "LEFT JOIN tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
-                "WHERE thm.status_aktif = 1 AND kpt.id=?\n" +
+                "WHERE thm.status_aktif = 1 AND kpt.id=? AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1\n" +
                 "ORDER BY thm.id";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
@@ -117,7 +117,7 @@ public class HistoriMengajarDao {
         ResultSet rs = null;
         String query = "SELECT a.* FROM tbl_guru a\n" +
                 "                JOIN tbl_histori_mengajar hm on a.id = hm.id_guru\n" +
-                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1";
+                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1 AND hm.status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

@@ -3,6 +3,8 @@ package com.example.pbo_sekolahminggu.dao.transactional.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -98,7 +100,7 @@ public class KehadiranGuruDao {
                 "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 \nORDER BY kg.id";
+                "WHERE kg.status_aktif = 1 AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND keb.status_aktif = 1 \nORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -151,7 +153,8 @@ public class KehadiranGuruDao {
                 "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian = ? AND kpt.id = ? \n" +
+                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian = ? AND kpt.id = ?" +
+                " AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND keb.status_aktif = 1\n" +
                 "ORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
@@ -205,7 +208,8 @@ public class KehadiranGuruDao {
                 "WHERE\n" +
                 "    hka.id_kelas_per_tahun = ?\n" +
                 "    AND ka.id_kebaktian = ?\n" +
-                "    AND ka.status_aktif = 1\n";
+                "    AND ka.status_aktif = 1\n" +
+                "    AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1 AND kbk.status_aktif = 1";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -292,7 +296,7 @@ public class KehadiranGuruDao {
         String query = "INSERT INTO tbl_kehadiran_guru (id_histori_mengajar, id_kebaktian)\n" +
                 "                SELECT hka.id, ? \n" +
                 "                FROM tbl_histori_mengajar hka\n" +
-                "                WHERE hka.id_kelas_per_tahun = ?";
+                "                WHERE hka.id_kelas_per_tahun = ? and hka.status_aktif = 1";
         try {
             ps = con.prepareStatement(query);
             ps.setInt(1, selectedKebaktian.getIdKebaktian());
