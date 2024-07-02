@@ -78,7 +78,7 @@
       <ComboBox fx:id="tahunAjaranKehadiranGuruCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="kelasKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="kebaktianKehadiranGuruCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <Button fx:id="exportKehadiranGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportKehadiranGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -94,9 +94,14 @@
             <String fx:value="shadow2" />
          </styleClass>
       </Button>
-      <Label layoutX="26.0" layoutY="487.0" text="isi input field &quot;Tahun Ajaran&quot; sebelum melakukan export!" textFill="RED">
+      <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
          <font>
             <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="138.0" layoutY="523.0" text="Laporan Kehadiran Guru Berdasarkan Tahun Ajaran">
+         <font>
+            <Font name="System Bold" size="12.0" />
          </font>
       </Label>
    </children>

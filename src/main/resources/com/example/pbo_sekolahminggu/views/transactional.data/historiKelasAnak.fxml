@@ -75,7 +75,7 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <Button fx:id="exportHistoriKelasBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportHistoriKelasBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -96,6 +96,11 @@
       <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
          <font>
             <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="138.0" layoutY="523.0" text="Laporan Kehadiran Total Dalam Satu Tahun">
+         <font>
+            <Font name="System Bold" size="12.0" />
          </font>
       </Label>
    </children>
