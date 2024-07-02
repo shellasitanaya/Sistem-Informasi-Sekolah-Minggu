@@ -154,7 +154,7 @@ public class KehadiranGuruController implements Initializable {
             });
             // Optionally, select an item in the ChoiceBox
             if (!dataKebaktian.isEmpty()) {
-                kelasKehadiranGuruCb.getSelectionModel().selectFirst();
+                kebaktianKehadiranGuruCb.getSelectionModel().selectFirst();
             }
 
             System.out.println("Filtered kebaktian loaded successfully.");
@@ -226,28 +226,28 @@ public class KehadiranGuruController implements Initializable {
             kehadiranGuruTbl.getItems().addAll(listKehadiranGuru);
 
             // Add listener for selection change
-            kehadiranGuruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    // Handle the event when a row is clicked
-                    System.out.println("Row clicked: " + newSelection);
-                }
-                KehadiranGuru selectedKehadiranGuru = kehadiranGuruTbl.getSelectionModel().getSelectedItem();
-                KelasPerTahun newKelas = kelasKehadiranGuruCb.getItems().stream()
-                        .filter(kelas -> kelas.getIdKelasPerTahun() == selectedKehadiranGuru.getIdKelasPerTahun())
-                        .findFirst()
-                        .orElse(null);
-                kelasKehadiranGuruCb.getSelectionModel().select(newKelas);
-                TahunAjaran newTahunAjaran = tahunAjaranKehadiranGuruCb.getItems().stream()
-                        .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedKehadiranGuru.getIdTahunAjaran())
-                        .findFirst()
-                        .orElse(null);
-                tahunAjaranKehadiranGuruCb.getSelectionModel().select(newTahunAjaran);
-                Kebaktian newKebaktian = kebaktianKehadiranGuruCb.getItems().stream()
-                        .filter(kebaktian -> kebaktian.getIdKebaktian() == selectedKehadiranGuru.getIdKebaktian())
-                        .findFirst()
-                        .orElse(null);
-                kebaktianKehadiranGuruCb.getSelectionModel().select(newKebaktian);
-            });
+//            kehadiranGuruTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+//                if (newSelection != null) {
+//                    // Handle the event when a row is clicked
+//                    System.out.println("Row clicked: " + newSelection);
+//                }
+//                KehadiranGuru selectedKehadiranGuru = kehadiranGuruTbl.getSelectionModel().getSelectedItem();
+//                KelasPerTahun newKelas = kelasKehadiranGuruCb.getItems().stream()
+//                        .filter(kelas -> kelas.getIdKelasPerTahun() == selectedKehadiranGuru.getIdKelasPerTahun())
+//                        .findFirst()
+//                        .orElse(null);
+//                kelasKehadiranGuruCb.getSelectionModel().select(newKelas);
+//                TahunAjaran newTahunAjaran = tahunAjaranKehadiranGuruCb.getItems().stream()
+//                        .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedKehadiranGuru.getIdTahunAjaran())
+//                        .findFirst()
+//                        .orElse(null);
+//                tahunAjaranKehadiranGuruCb.getSelectionModel().select(newTahunAjaran);
+//                Kebaktian newKebaktian = kebaktianKehadiranGuruCb.getItems().stream()
+//                        .filter(kebaktian -> kebaktian.getIdKebaktian() == selectedKehadiranGuru.getIdKebaktian())
+//                        .findFirst()
+//                        .orElse(null);
+//                kebaktianKehadiranGuruCb.getSelectionModel().select(newKebaktian);
+//            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -287,9 +287,9 @@ public class KehadiranGuruController implements Initializable {
             });
 
             // Optionally, select an item in the ChoiceBox
-//            if (!dataKelas.isEmpty()) {
-//                kelasKehadiranGuruCb.getSelectionModel().selectFirst();
-//            }
+            if (!dataKelas.isEmpty()) {
+                kelasKehadiranGuruCb.getSelectionModel().selectFirst();
+            }
 
             System.out.println("Filtered classes loaded successfully.");
         } catch (SQLException e) {
@@ -297,7 +297,7 @@ public class KehadiranGuruController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-//        kelasHistoriMengajarCb.show();
+//        kelasKehadiranGuruCb.show();
     }
 
     public void edit() {

@@ -44,7 +44,7 @@ public class KelasController implements Initializable {
         //column no
         TableColumn idCol = new TableColumn<>("No");
         idCol.setMinWidth(55);
-        idCol.setCellValueFactory(new PropertyValueFactory<Kelas, Integer>("ID_KELAS"));  //yg ini harus sama dgn attribute di beans
+        idCol.setCellValueFactory(new PropertyValueFactory<Kelas, Integer>("idKelas"));  //yg ini harus sama dgn attribute di beans
 
         //column nama pengajar
         TableColumn namaKelasCol = new TableColumn("Nama Kelas");

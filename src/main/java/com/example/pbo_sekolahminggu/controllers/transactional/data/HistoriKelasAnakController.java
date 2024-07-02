@@ -308,28 +308,28 @@ public class HistoriKelasAnakController implements Initializable {
             historiKelasTbl.getItems().addAll(listHistoryMengajar);
 
             // Add listener for selection change
-            historiKelasTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    // Handle the event when a row is clicked
-                    System.out.println("Row clicked: " + newSelection);
-
-//                    //selected kelasPerTahun
-//                    KelasPerTahun selectedKelasPerTahun = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
-//                    //selected tahun ajaran
-//                    TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
-                    HistoriKelasAnak selectedHistoriAnak = historiKelasTbl.getSelectionModel().getSelectedItem();
-                    KelasPerTahun newKelas = kelasHistoriKelasCb.getItems().stream()
-                            .filter(kelas -> kelas.getIdKelasPerTahun() == selectedHistoriAnak.getIdHistoriKelasAnak())
-                            .findFirst()
-                            .orElse(null);
-                    kelasHistoriKelasCb.getSelectionModel().select(newKelas);
-                    TahunAjaran newTahunAjaran = tahunAjaranHistoriKelasCb.getItems().stream()
-                            .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedHistoriAnak.getIdHistoriKelasAnak())
-                            .findFirst()
-                            .orElse(null);
-                    tahunAjaranHistoriKelasCb.getSelectionModel().select(newTahunAjaran);
-                }
-            });
+//            historiKelasTbl.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+//                if (newSelection != null) {
+//                    // Handle the event when a row is clicked
+//                    System.out.println("Row clicked: " + newSelection);
+//
+////                    //selected kelasPerTahun
+////                    KelasPerTahun selectedKelasPerTahun = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
+////                    //selected tahun ajaran
+////                    TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+//                    HistoriKelasAnak selectedHistoriAnak = historiKelasTbl.getSelectionModel().getSelectedItem();
+//                    KelasPerTahun newKelas = kelasHistoriKelasCb.getItems().stream()
+//                            .filter(kelas -> kelas.getIdKelasPerTahun() == selectedHistoriAnak.getIdHistoriKelasAnak())
+//                            .findFirst()
+//                            .orElse(null);
+//                    kelasHistoriKelasCb.getSelectionModel().select(newKelas);
+//                    TahunAjaran newTahunAjaran = tahunAjaranHistoriKelasCb.getItems().stream()
+//                            .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedHistoriAnak.getIdHistoriKelasAnak())
+//                            .findFirst()
+//                            .orElse(null);
+//                    tahunAjaranHistoriKelasCb.getSelectionModel().select(newTahunAjaran);
+//                }
+//            });
         } catch (SQLException e) {
             e.printStackTrace();
         }

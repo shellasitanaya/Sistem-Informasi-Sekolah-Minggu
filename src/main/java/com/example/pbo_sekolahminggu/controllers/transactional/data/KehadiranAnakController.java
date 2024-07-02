@@ -99,10 +99,11 @@ public class KehadiranAnakController implements Initializable {
         );
 
         kehadiranAnakTbl.getColumns().clear();
+
         //column no
         TableColumn idCol = new TableColumn<>("ID Kehadiran");
         idCol.setMinWidth(80);
-        idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("ID_KEHADIRAN_ANAK"));  //yg ini harus sama dgn attribute di beans
+        idCol.setCellValueFactory(new PropertyValueFactory<KehadiranAnak, Integer>("idKehadiranAnak"));  //yg ini harus sama dgn attribute di beans
 
         //column nama anak
         TableColumn namaAnakCol = new TableColumn("Nama");
@@ -160,7 +161,7 @@ public class KehadiranAnakController implements Initializable {
                             .orElse(null);
                 }
             });
-            tahunAjaranKehadiranAnakCb.getSelectionModel().select(0);
+//            tahunAjaranKehadiranAnakCb.getSelectionModel().select(0);
 
             TahunAjaran tahunSelected = tahunAjaranKehadiranAnakCb.getSelectionModel().getSelectedItem();
 
@@ -186,7 +187,7 @@ public class KehadiranAnakController implements Initializable {
                             .orElse(null);
                 }
             });
-            kelasKehadiranAnakCb.getSelectionModel().select(0);
+//            kelasKehadiranAnakCb.getSelectionModel().select(0);
 
             //data dropdown kebaktian
             dataKebaktian.addAll(KebaktianDao.getAll((con)));
@@ -205,7 +206,7 @@ public class KehadiranAnakController implements Initializable {
                             .orElse(null);
                 }
             });
-            kebaktianKehadiranAnakCb.getSelectionModel().select(0);
+//            kebaktianKehadiranAnakCb.getSelectionModel().select(0);
 
             //get the table data
             dataKehadiranAnak = FXCollections.observableArrayList(KehadiranAnakDao.getAll(con));
