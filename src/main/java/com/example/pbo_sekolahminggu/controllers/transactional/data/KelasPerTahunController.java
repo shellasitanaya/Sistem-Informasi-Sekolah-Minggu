@@ -2,12 +2,17 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -18,14 +23,21 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -55,13 +67,56 @@ public class KelasPerTahunController implements Initializable {
     @FXML
     ComboBox<TahunAjaran> tahunAjaranKelasPerTahunCb;
     @FXML
+    private TextField kelasPerTahunSearchField;
+    @FXML
     TextField namaPararelKelasPerTahunField, namaRuangKelasPerTahunField;
 
     ObservableList<Kelas> namaKelasList = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
+    ObservableList<KelasPerTahun> listKelasPerTahun = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        namaKelasPerTahunCb.setPromptText(" ");
+        tahunAjaranKelasPerTahunCb.setPromptText(" ");
+        namaKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Kelas>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Kelas> observableValue, Kelas kelas, Kelas t1) {
+
+            }
+
+            public void changedInKelasPerTahun(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(tahunAjaranKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+        tahunAjaranKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+            @Override
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(namaKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+
         try {
             fillKelasCb();
             fillTahunAjaranCb();
@@ -69,10 +124,60 @@ public class KelasPerTahunController implements Initializable {
             throw new RuntimeException(e);
         }
         populateKelasTable();
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listKelasPerTahun = FXCollections.
+                    observableList(KelasPerTahunDao.getAll(con));
+            for (KelasPerTahun kelasPerTahun: listKelasPerTahun) {
+                System.out.println(kelasPerTahun);
+            }
+            kelasPerTahunTbl.setItems(listKelasPerTahun);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<KelasPerTahun> filter = new FilteredList<>(listKelasPerTahun, e -> true);
+
+        kelasPerTahunSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getRuangKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getKelasParalel().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getNamaKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KelasPerTahun> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kelasPerTahunTbl.comparatorProperty());
+        kelasPerTahunTbl.setItems(sortList);
     }
 
     public void addKelasPerTahun(){
         if(!isInputValid()){
+            alertWarning("Harap isi semua kolom.");
             return;
         }
         KelasPerTahun kelasPerTahun = new KelasPerTahun();
@@ -103,11 +208,21 @@ public class KelasPerTahunController implements Initializable {
             alert.show();
 //            skinCareDao.resetSequence(con);
         } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the exception
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data kelas per tahun yang sama.");
+                alert.showAndWait();
+            });
         }
     }
 
     public void delete(){
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
 
@@ -128,11 +243,15 @@ public class KelasPerTahunController implements Initializable {
             }
         } else {
             // No row is selected
-            System.out.println("No row selected.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 //
     public void edit() {
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelasPerTahun  = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
 
@@ -173,7 +292,7 @@ public class KelasPerTahunController implements Initializable {
             }
         } else {
             // No row is selected
-            System.out.println("No row selected.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 
@@ -241,10 +360,15 @@ public class KelasPerTahunController implements Initializable {
 
             // Set cell value factory for each TableColumn
             idKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKelasPerTahun())));
+            idKelasPerTahun.setMinWidth(115);
             namaKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaKelas()));
+            namaKelasPerTahun.setMinWidth(165);
             namaPararelKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelasParalel()));
+            namaPararelKelasPerTahun.setMinWidth(155);
             tahunAjaranKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            tahunAjaranKelasPerTahun.setMinWidth(185);
             namaRuangKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRuangKelas()));
+            namaRuangKelasPerTahun.setMinWidth(190);
 
             // Add columns to the TableView
             kelasPerTahunTbl.getColumns().clear(); // Clear existing columns
@@ -287,25 +411,28 @@ public class KelasPerTahunController implements Initializable {
     }
 
     public boolean isInputValid(){
-        if(!namaRuangKelasPerTahunField.getText().equals("") && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null){
-            return true;
-        }
+//        if(!namaRuangKelasPerTahunField.getText().trim().isEmpty() &&
+//                !namaPararelKelasPerTahunField.getText().trim().isEmpty() && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null){
+//            return true;
+//        }
+        return !namaRuangKelasPerTahunField.getText().trim().isEmpty() &&
+                !namaPararelKelasPerTahunField.getText().trim().isEmpty() && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null;
 
-        if(namaKelasPerTahunCb.getValue() == null){
-            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
-        }else if(namaRuangKelasPerTahunField.getText().equals("")){
-            alertWarning("Ruang Kelas masih kosong! Mohon isi.");
-        }else if(tahunAjaranKelasPerTahunCb.getValue() == null){
-            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
-        }
-
-        return false;
+//        if(namaKelasPerTahunCb.getValue() == null){
+//            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
+//        }else if(namaRuangKelasPerTahunField.getText().trim().isEmpty()){
+//            alertWarning("Ruang Kelas masih kosong! Mohon isi.");
+//        }else if(tahunAjaranKelasPerTahunCb.getValue() == null){
+//            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
+//        }else if(namaPararelKelasPerTahunField.getText().trim().isEmpty()) {
+//            alertWarning("Kelas Paralel masih kosong! Mohon isi.");
+//        }
     }
 
     //function kalo misalnya ada textfield yang kosong, atau kelas yang mau didelete/diedit blm dipilih
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -314,6 +441,10 @@ public class KelasPerTahunController implements Initializable {
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
@@ -334,44 +465,57 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToPdf(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            // Judul
-            Paragraph title = new Paragraph("Laporan Data Kelas");
-            title.setTextAlignment(TextAlignment.CENTER);
-            title.setBold();
-            doc.add(title);
+            // Membuat table untuk logo dan judul
+            Table headerTable = new Table(UnitValue.createPercentArray(new float[]{1, 5})).useAllAvailableWidth();
+            headerTable.setMarginBottom(10);
+
+            // Menambahkan logo
+            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/sekolahMingguLogo.png"));
+            logo.setWidth(UnitValue.createPercentValue(100));
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell().add(logo);
+            logoCell.setBorder(Border.NO_BORDER);
+            headerTable.addCell(logoCell);
+
+            // Menambahkan judul di sebelah logo
+            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran())
+                    .setTextAlignment(TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(20);
+            com.itextpdf.layout.element.Cell titleCell = new com.itextpdf.layout.element.Cell().add(title);
+            titleCell.setBorder(Border.NO_BORDER);
+            titleCell.setVerticalAlignment(com.itextpdf.layout.properties.VerticalAlignment.MIDDLE);
+            headerTable.addCell(titleCell);
+
+            doc.add(headerTable);
 
             Table table = new Table(UnitValue.createPercentArray(new float[] {20, 40, 40})).useAllAvailableWidth();
 
-            // Logo header (Ubah sesuai kebutuhan)
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            Cell logoCell = new Cell(1, 2).add(logo);
-            logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
-
-            Cell emptyCell = new Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
-
             String[] headers = {"Nama Kelas", "Kelas Paralel", "Jumlah Murid"};
+            Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
-                Cell headerCell = new Cell();
-                Paragraph headerText = new Paragraph(header);
-                headerText.setTextAlignment(TextAlignment.CENTER);
-                headerText.setBold();
-                headerCell.add(headerText);
+                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerParagraph.setFontColor(ColorConstants.WHITE);
+                headerCell.setBackgroundColor(customColor);
+                headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
 
             // Data Table
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedTahun);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
@@ -405,8 +549,14 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToExcel(File file) {
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
+        // Data Table
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas");
+        XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas Per Tahun");
 
         FileOutputStream out = null;
         Connection con = null;
@@ -416,9 +566,46 @@ public class KelasPerTahunController implements Initializable {
             int rowid = 0;
 
             // Judul
+            // Mengatur style untuk judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
+            titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Data Kelas");
+            String judul = "Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran();
+            titleCell.setCellValue(judul);
+            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
+            spreadsheet.addMergedRegion(mergedRegion);
+
+            CellStyle titleStyle = workbook.createCellStyle();
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            titleStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            Font titleFont = workbook.createFont();
+            titleFont.setColor(IndexedColors.WHITE.getIndex());
+            titleFont.setBold(true);
+            titleStyle.setFont(titleFont);
+            // Set border untuk judul
+            titleStyle.setBorderBottom(BorderStyle.THIN);
+            titleStyle.setBorderTop(BorderStyle.THIN);
+            titleStyle.setBorderLeft(BorderStyle.THIN);
+            titleStyle.setBorderRight(BorderStyle.THIN);
+            titleCell.setCellStyle(titleStyle);
+
+            // Mengatur style untuk header
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            Font headerFont = workbook.createFont();
+            headerFont.setColor(IndexedColors.BLACK.getIndex());
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            // Set border untuk header
+            headerStyle.setBorderBottom(BorderStyle.THIN);
+            headerStyle.setBorderTop(BorderStyle.THIN);
+            headerStyle.setBorderLeft(BorderStyle.THIN);
+            headerStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
@@ -427,32 +614,40 @@ public class KelasPerTahunController implements Initializable {
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
                 cell.setCellValue(header);
-
+                cell.setCellStyle(headerStyle);
                 spreadsheet.autoSizeColumn(cellCounter - 1);
             }
 
+            // Mengatur style untuk data
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            // Set border untuk data
+            dataStyle.setBorderBottom(BorderStyle.THIN);
+            dataStyle.setBorderTop(BorderStyle.THIN);
+            dataStyle.setBorderLeft(BorderStyle.THIN);
+            dataStyle.setBorderRight(BorderStyle.THIN);
+
             // Export Data
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
 
-                // Pastikan hanya mengambil Nama Kelas, Kelas Paralel, dan Jumlah Murid
-                XSSFCell cellNamaKelas = row.createCell(0);
-                cellNamaKelas.setCellValue(String.valueOf(objectArr[0]));
+                for (int i = 0; i < objectArr.length; i++) {
+                    XSSFCell cell = row.createCell(i);
+                    cell.setCellValue(String.valueOf(objectArr[i]));
+                    cell.setCellStyle(dataStyle); // Terapkan style untuk data di sini
+                    spreadsheet.autoSizeColumn(i);
+                }
+            }
 
-                XSSFCell cellKelasParalel = row.createCell(1);
-                cellKelasParalel.setCellValue(String.valueOf(objectArr[1]));
+            int[] columnWidths = {6500, 5500, 5500};
 
-                XSSFCell cellJumlahMurid = row.createCell(2);
-                cellJumlahMurid.setCellValue(String.valueOf(objectArr[2]));
-
-                spreadsheet.autoSizeColumn(0);
-                spreadsheet.autoSizeColumn(1);
-                spreadsheet.autoSizeColumn(2);
+            for (int i = 0; i < columnWidths.length; i++) {
+                spreadsheet.setColumnWidth(i, columnWidths[i]);
             }
 
             out = new FileOutputStream(file);

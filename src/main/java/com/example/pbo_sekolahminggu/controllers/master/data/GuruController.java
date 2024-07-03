@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.dao.master.data.GuruDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -61,28 +62,28 @@ public class GuruController implements Initializable {
         // inisialisasi kolom
         // Membuat kolom untuk ID_GURU
         TableColumn<Guru, Integer> idCol = new TableColumn<>("ID Guru");
-        idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_GURU"));
+        idCol.setMinWidth(55);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idGuru"));
 
         // Membuat kolom untuk NamaGuru
         TableColumn<Guru, String> namaCol = new TableColumn<>("Nama Guru");
-        namaCol.setMinWidth(150);
-        namaCol.setCellValueFactory(new PropertyValueFactory<>("NamaGuru"));
+        namaCol.setMinWidth(235);
+        namaCol.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         // Membuat kolom untuk NIP
         TableColumn<Guru, String> nipCol = new TableColumn<>("NIP");
-        nipCol.setMinWidth(150);
-        nipCol.setCellValueFactory(new PropertyValueFactory<>("NIP"));
+        nipCol.setMinWidth(105);
+        nipCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         // Membuat kolom untuk NoTelp
         TableColumn<Guru, String> noTelpCol = new TableColumn<>("Nomor Telpon");
         noTelpCol.setMinWidth(150);
-        noTelpCol.setCellValueFactory(new PropertyValueFactory<>("NoTelp"));
+        noTelpCol.setCellValueFactory(new PropertyValueFactory<>("noTelp"));
 
         // Membuat kolom untuk Alamat
         TableColumn<Guru, String> alamatCol = new TableColumn<>("Alamat");
-        alamatCol.setMinWidth(150);
-        alamatCol.setCellValueFactory(new PropertyValueFactory<>("Alamat"));
+        alamatCol.setMinWidth(279);
+        alamatCol.setCellValueFactory(new PropertyValueFactory<>("alamat"));
 
         // Menambahkan kolom ke TableView
         guruTbl.getColumns().addAll(idCol, namaCol, nipCol, noTelpCol, alamatCol);
@@ -147,10 +148,10 @@ public class GuruController implements Initializable {
     // CREATE
     @FXML
     public void create() {
-        String nama= namaGuruField.getText();
-        String nip = nipGuruField.getText();
-        String noTelp = noTelpGuruField.getText();
-        String alamat = alamatGuruField.getText();
+        String nama= namaGuruField.getText().trim();
+        String nip = nipGuruField.getText().trim();
+        String noTelp = noTelpGuruField.getText().trim();
+        String alamat = alamatGuruField.getText().trim();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty()|| alamat.isEmpty()) {
@@ -193,10 +194,13 @@ public class GuruController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            // menampilkan pesan error
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data guru: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data anak dengan NIP yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }
@@ -208,14 +212,14 @@ public class GuruController implements Initializable {
         Guru selected = guruTbl.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            showErrorMessage("Pilih baris/data guru yang ingin diperbaharui.");
             return;
         }
 
-        String nama = namaGuruField.getText();
-        String nip = nipGuruField.getText();
-        String noTelp = noTelpGuruField.getText();
-        String alamat = alamatGuruField.getText();
+        String nama = namaGuruField.getText().trim();
+        String nip = nipGuruField.getText().trim();
+        String noTelp = noTelpGuruField.getText().trim();
+        String alamat = alamatGuruField.getText().trim();
 
         // cek input
         if (nama.isEmpty() || nip.isEmpty() || noTelp.isEmpty() || alamat.isEmpty()) {
@@ -238,10 +242,10 @@ public class GuruController implements Initializable {
             // update observable list
             updateGuruInList(selected);
 
-            guruTbl.refresh();
+            refreshData();
             // Menampilkan pesan sukses
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Guru berhasil diupdate!");
+            alert.setContentText("Data Guru berhasil diperbaharui!");
             alert.show();
 
             clear();
@@ -249,7 +253,7 @@ public class GuruController implements Initializable {
         } catch (SQLException e) {
             // Menampilkan pesan error jika terjadi kesalahan
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data guru: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data guru: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
@@ -257,12 +261,6 @@ public class GuruController implements Initializable {
     }
 
 
-    private void updateGuruInList(Guru updatedGuru) {
-        int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
-        if (index != -1) { //cek kalo selected ada di list
-            listGuru.set(index, updatedGuru); // update list
-        }
-    }
 
     // DELETE
     @FXML
@@ -274,7 +272,7 @@ public class GuruController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 GuruDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data Guru berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -285,9 +283,7 @@ public class GuruController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 
@@ -301,6 +297,15 @@ public class GuruController implements Initializable {
         selectedGuru = null;
 
     }
+
+    private void updateGuruInList(Guru updatedGuru) {
+        int index = listGuru.indexOf(selectedGuru); //cari index selected di listGuru
+        if (index != -1) { //cek kalo selected ada di list
+            listGuru.set(index, updatedGuru); // update list
+        }
+    }
+
+
     public void Search() {
 
         FilteredList<Guru> filter = new FilteredList<>(listGuru, e -> true);

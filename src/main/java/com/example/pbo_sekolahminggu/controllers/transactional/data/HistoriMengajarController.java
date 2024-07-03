@@ -1,13 +1,18 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -23,6 +28,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,6 +39,8 @@ import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -62,13 +71,18 @@ public class HistoriMengajarController implements Initializable {
     ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
     ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
+    @FXML
+    private TextField historiMengajarSearchField;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
+    ObservableList<HistoriMengajar> listHistoriMengajar = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+        tahunAjaranHistoriMengajarCb.setPromptText(" ");
+        kelasHistoriMengajarCb.setPromptText(" ");
 
         tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
@@ -88,10 +102,60 @@ public class HistoriMengajarController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listHistoriMengajar = FXCollections.
+                    observableList(HistoriMengajarDao.getAll(con));
+            for (HistoriMengajar historiMengajar: listHistoriMengajar) {
+                System.out.println(historiMengajar);
+            }
+            historiMengajarTbl.setItems(listHistoriMengajar);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<HistoriMengajar> filter = new FilteredList<>(listHistoriMengajar, e -> true);
+
+        historiMengajarSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNip().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<HistoriMengajar> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(historiMengajarTbl.comparatorProperty());
+        historiMengajarTbl.setItems(sortList);
     }
 
     @FXML
     public void showFilter() {
+        if (checkKolomError()) return;
         try {
             //selected nama kelas
             KelasPerTahun selectedKelas = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
@@ -102,13 +166,19 @@ public class HistoriMengajarController implements Initializable {
 
             if (listHistoryKelasGuru.isEmpty()) {
                 alertWarning("Belum ada anak yang terdaftar di kelas ini!");
+                return;
             }
             // Set cell value factory for each TableColumn
             idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            idhistori.setMinWidth(80);
             nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nama.setMinWidth(300);
             nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            nip.setMinWidth(140);
             kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelas.setMinWidth(150);
             tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            tahunAjaran.setMinWidth(140);
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns
@@ -158,14 +228,12 @@ public class HistoriMengajarController implements Initializable {
         }
     }
 
-
     public void filterDataKelas () {
         TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
         if (tahunSelected == null) {
-            System.out.println("No TahunAjaran selected!");
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
             return;
         }
-
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -207,12 +275,10 @@ public class HistoriMengajarController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-//        kelasHistoriMengajarCb.show();
     }
 
 
     public void populateKelasTable () {
-        System.out.println("ha");
         try {
             // Get the ArrayList of Guru objects from the database
             ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.getAll(ConnectionManager.getConnection());
@@ -244,9 +310,9 @@ public class HistoriMengajarController implements Initializable {
         }
     }
 
-
     @FXML
     public void editAssign() {
+        if (checkKolomError()) return;
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -260,12 +326,22 @@ public class HistoriMengajarController implements Initializable {
             e.printStackTrace();
         } finally {
             ConnectionManager.close(con);
+        }
+    }
 
+    @FXML
+    public void checkTahunAjaran() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null) {
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
         }
     }
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (checkKolomError()) {
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
@@ -292,32 +368,40 @@ public class HistoriMengajarController implements Initializable {
             pdfDoc = new PdfDocument(new PdfWriter(file.getAbsolutePath()));
             Document doc = new Document(pdfDoc);
 
-            //  judul
-            Paragraph title = new Paragraph("Laporan Top 3 Guru yang Mengajar Paling Banyak");
-            title.setTextAlignment(TextAlignment.CENTER);
-            title.setBold();
-            doc.add(title);
+            // Membuat table untuk logo dan judul
+            Table headerTable = new Table(UnitValue.createPercentArray(new float[]{1, 5})).useAllAvailableWidth();
+            headerTable.setMarginBottom(10);
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
-            //Logo header
-            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/exportIcon.png"));
-            logo.setWidth(UnitValue.createPercentValue(50));
-            Cell logoCell = new Cell(1, 2).add(logo);
+            // Menambahkan logo
+            Image logo = new Image(ImageDataFactory.create("src/main/resources/com/example/pbo_sekolahminggu/images/sekolahMingguLogo.png"));
+            logo.setWidth(UnitValue.createPercentValue(100));
+            com.itextpdf.layout.element.Cell logoCell = new com.itextpdf.layout.element.Cell().add(logo);
             logoCell.setBorder(Border.NO_BORDER);
-            table.addCell(logoCell);
+            headerTable.addCell(logoCell);
 
-            Cell emptyCell = new Cell(1, 1);
-            emptyCell.setBorder(Border.NO_BORDER);
-            table.addCell(emptyCell);
+            // Menambahkan judul di sebelah logo
+            Paragraph title = new Paragraph("Laporan Top 3 Guru yang Mengajar Paling Banyak")
+                    .setTextAlignment(TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(20);
+            com.itextpdf.layout.element.Cell titleCell = new com.itextpdf.layout.element.Cell().add(title);
+            titleCell.setBorder(Border.NO_BORDER);
+            titleCell.setVerticalAlignment(com.itextpdf.layout.properties.VerticalAlignment.MIDDLE);
+            headerTable.addCell(titleCell);
 
+            doc.add(headerTable);
+            Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
 
-            String[] headers = {"ID Guru", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
+            Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
-                Cell headerCell = new Cell();
-                Paragraph headerText = new Paragraph(header);
-                headerText.setTextAlignment(TextAlignment.CENTER);
-                headerText.setBold();
-                headerCell.add(headerText);
+                com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
+                Paragraph headerParagraph = new Paragraph(header);
+                headerParagraph.setTextAlignment(TextAlignment.CENTER);
+                headerParagraph.setBold();
+                headerParagraph.setFontColor(ColorConstants.WHITE);
+                headerCell.setBackgroundColor(customColor);
+                headerCell.add(headerParagraph);
                 table.addCell(headerCell);
             }
 
@@ -326,14 +410,14 @@ public class HistoriMengajarController implements Initializable {
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
-                System.out.println("ID Guru: " + row[0]);
+                System.out.println("NIP: " + row[0]);
                 System.out.println("Nama Guru: " + row[1]);
                 System.out.println("Jumlah Mengajar: " + row[2]);
 
-                Paragraph idParagraph = new Paragraph(String.valueOf(row[0]));
-                idParagraph.setTextAlignment(TextAlignment.CENTER);
-                Cell idCell = new Cell().add(idParagraph);
-                table.addCell(idCell);
+                Paragraph nipParagraph = new Paragraph(String.valueOf(row[0]));
+                nipParagraph.setTextAlignment(TextAlignment.CENTER);
+                Cell nipCell = new Cell().add(nipParagraph);
+                table.addCell(nipCell);
 
                 Paragraph namaParagraph = new Paragraph(String.valueOf(row[1]));
                 Cell namaCell = new Cell().add(namaParagraph);
@@ -342,9 +426,6 @@ public class HistoriMengajarController implements Initializable {
                 Paragraph jumlahParagraph = new Paragraph(String.valueOf(row[2]));
                 Cell jumlahCell = new Cell().add(jumlahParagraph);
                 table.addCell(jumlahCell);
-
-                // Add empty cell as needed
-                table.addCell(emptyCell);
             }
 
             doc.add(table);
@@ -369,21 +450,67 @@ public class HistoriMengajarController implements Initializable {
             con = ConnectionManager.getConnection();
             int rowid = 0;
 
-            // Judul
+            // Mengatur style untuk judul
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
+            titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Top 3 Guru yang Mengajar Paling Banyak\n");
+            titleCell.setCellValue("Laporan Top 3 Guru yang Mengajar Paling Banyak");
+            CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
+            spreadsheet.addMergedRegion(mergedRegion);
+
+            CellStyle titleStyle = workbook.createCellStyle();
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            titleStyle.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            Font titleFont = workbook.createFont();
+            titleFont.setColor(IndexedColors.WHITE.getIndex());
+            titleFont.setBold(true);
+            titleStyle.setFont(titleFont);
+            // Set border untuk judul
+            titleStyle.setBorderBottom(BorderStyle.THIN);
+            titleStyle.setBorderTop(BorderStyle.THIN);
+            titleStyle.setBorderLeft(BorderStyle.THIN);
+            titleStyle.setBorderRight(BorderStyle.THIN);
+            titleCell.setCellStyle(titleStyle);
+
+            // Mengatur style untuk header
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            Font headerFont = workbook.createFont();
+            headerFont.setColor(IndexedColors.BLACK.getIndex());
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            // Set border untuk header
+            headerStyle.setBorderBottom(BorderStyle.THIN);
+            headerStyle.setBorderTop(BorderStyle.THIN);
+            headerStyle.setBorderLeft(BorderStyle.THIN);
+            headerStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            String[] headers = {"ID Guru", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
             int cellCounter = 0;
+
             for (String header : headers) {
                 XSSFCell cell = headerRow.createCell(cellCounter++);
                 cell.setCellValue(header);
-
+                cell.setCellStyle(headerStyle);
                 spreadsheet.autoSizeColumn(cellCounter - 1);
             }
+
+            // Mengatur style untuk data
+            CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setAlignment(HorizontalAlignment.CENTER); // Menyesuaikan agar teks rata tengah
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            // Set border untuk data
+            dataStyle.setBorderBottom(BorderStyle.THIN);
+            dataStyle.setBorderTop(BorderStyle.THIN);
+            dataStyle.setBorderLeft(BorderStyle.THIN);
+            dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
             Map<String, Object[]> data = HistoriMengajarDao.getAllArrayObject(con);
@@ -393,26 +520,24 @@ public class HistoriMengajarController implements Initializable {
                 XSSFRow row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = data.get(key);
 
-                // Pastikan hanya mengambil ID Guru, Nama Guru, dan Jumlah Mengajar
-                XSSFCell cellIdGuru = row.createCell(0);
-                cellIdGuru.setCellValue(String.valueOf(objectArr[0]));
+                for (int i = 0; i < objectArr.length; i++) {
+                    XSSFCell cell = row.createCell(i);
+                    cell.setCellValue(String.valueOf(objectArr[i]));
+                    cell.setCellStyle(dataStyle); // Terapkan style untuk data di sini
+                    spreadsheet.autoSizeColumn(i);
+                }
+            }
 
-                XSSFCell cellNamaGuru = row.createCell(1);
-                cellNamaGuru.setCellValue(String.valueOf(objectArr[1]));
+            int[] columnWidths = {5000, 5500, 4500};
 
-                XSSFCell cellJumlahMengajar = row.createCell(2);
-                cellJumlahMengajar.setCellValue(String.valueOf(objectArr[2]));
-
-
-                //spreadsheet.autoSizeColumn(0);
-                spreadsheet.autoSizeColumn(1);
-                spreadsheet.autoSizeColumn(2);
+            for (int i = 0; i < columnWidths.length; i++) {
+                spreadsheet.setColumnWidth(i, columnWidths[i]);
             }
 
             out = new FileOutputStream(file);
             workbook.write(out);
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error exporting to Excel", e);
         } finally {
             ConnectionManager.close(con);
             try {
@@ -420,7 +545,7 @@ public class HistoriMengajarController implements Initializable {
                     out.close();
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error closing FileOutputStream", e);
             }
         }
     }
@@ -445,10 +570,20 @@ public class HistoriMengajarController implements Initializable {
     }
 
     private void alertWarning (String message){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private boolean checkKolomError() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        KelasPerTahun kelasSelected = kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null || kelasSelected == null) {
+            alertWarning("Harap isi semua kolom.");
+            return true;
+        }
+        return false;
     }
 }

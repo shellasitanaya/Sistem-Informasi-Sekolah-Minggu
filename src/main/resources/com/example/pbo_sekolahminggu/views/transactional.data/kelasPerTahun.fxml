@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="kelasPerTahunAncPane" prefHeight="574.0" prefWidth="863.0" stylesheets="@../../../../../../../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pbo_sekolahminggu.controllers.transactional.data.KelasPerTahunController">
@@ -20,18 +21,18 @@
    <children>
       <TableView fx:id="kelasPerTahunTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idKelasPerTahun" prefWidth="117.0" text="ID Kelas Per Tahun" />
+            <TableColumn fx:id="idKelasPerTahun" prefWidth="115.0" text="ID Kelas Per Tahun" />
             <TableColumn fx:id="namaKelasPerTahun" prefWidth="165.0" text="Nama Kelas" />
-            <TableColumn fx:id="namaPararelKelasPerTahun" prefWidth="156.0" text="Kelas Pararel" />
-            <TableColumn fx:id="tahunAjaranKelasPerTahun" prefWidth="183.0" text="Tahun Ajaran" />
+            <TableColumn fx:id="namaPararelKelasPerTahun" prefWidth="155.0" text="Kelas Pararel" />
+            <TableColumn fx:id="tahunAjaranKelasPerTahun" prefWidth="185.0" text="Tahun Ajaran" />
             <TableColumn fx:id="namaRuangKelasPerTahun" prefWidth="190.0" text="Ruang Kelas" />
          </columns>
       </TableView>
       <TextField fx:id="namaRuangKelasPerTahunField" layoutX="133.0" layoutY="410.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <Label layoutX="26.0" layoutY="326.0" text="Nama Kelas" />
       <Label layoutX="26.0" layoutY="414.0" text="Ruang Kelas" />
-      <Label layoutX="26.0" layoutY="369.0" text="Kelas Pararel" />
-      <Label layoutX="26.0" layoutY="460.0" text="Tahun Ajaran" />
+      <Label layoutX="26.0" layoutY="369.0" text="Tahun Ajaran" />
+      <Label layoutX="26.0" layoutY="460.0" text="Kelas Paralel" />
       <Button fx:id="clearKelasPerTahun" layoutX="478.0" layoutY="511.0" mnemonicParsing="false" onAction="#clear" prefHeight="40.0" prefWidth="80.0" stylesheets="@../../../../../../../style.css" text="CLEAR">
          <styleClass>
             <String fx:value="btn_clear" />
@@ -68,7 +69,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="exportKelasPerTahun" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportKelasPerTahun" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -99,8 +100,27 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="namaPararelKelasPerTahunField" layoutX="133.0" layoutY="365.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <ComboBox fx:id="tahunAjaranKelasPerTahunCb" layoutX="133.0" layoutY="456.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <TextField fx:id="namaPararelKelasPerTahunField" layoutX="133.0" layoutY="456.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="tahunAjaranKelasPerTahunCb" layoutX="133.0" layoutY="365.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="namaKelasPerTahunCb" layoutX="133.0" layoutY="322.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <Label layoutX="27.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Pane layoutX="25.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
+         <children>
+            <TextField fx:id="kelasPerTahunSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#Search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+         </children>
+         <styleClass>
+            <String fx:value="search_box_outer" />
+            <String fx:value="shadow" />
+         </styleClass>
+      </Pane>
+      <Label layoutX="139.0" layoutY="523.0" text="Laporan Kelas dan Jumlah Murid">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

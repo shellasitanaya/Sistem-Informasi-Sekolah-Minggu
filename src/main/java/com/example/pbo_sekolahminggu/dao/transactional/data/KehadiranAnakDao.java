@@ -4,6 +4,7 @@ package com.example.pbo_sekolahminggu.dao.transactional.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -48,7 +49,8 @@ public class KehadiranAnakDao {
                 "                JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "                JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
                 "                JOIN tbl_kebaktian kbk ON kbk.id = ka.id_kebaktian\n" +
-                "                WHERE kbk.status_aktif = 1 AND a.status_aktif = 1 AND kpt.status_aktif = 1 ORDER BY ka.id ASC";
+                "                WHERE kbk.status_aktif = 1 AND a.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1" +
+                " ORDER BY ka.id ASC";
         ArrayList<KehadiranAnak> listkehadiranAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -83,13 +85,13 @@ public class KehadiranAnakDao {
                 "                JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "                JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
                 "                JOIN tbl_kebaktian kbk ON kbk.id = ka.id_kebaktian\n" +
-                "                WHERE hka.id_kelas_per_tahun = ? AND ka.id_kebaktian = ? AND ka.status_aktif = 1";
+                "                WHERE hka.id_kelas_per_tahun = ? AND ka.id_kebaktian = ? AND kbk.status_aktif = 1 AND a.status_aktif = 1 AND kpt.status_aktif = 1 " +
+                "AND k.status_aktif = 1 AND ta.status_aktif = 1 ORDER BY ka.id";
         ArrayList<KehadiranAnak> listkehadiranAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             ps.setInt(1, kelas.getIdKelasPerTahun());
             ps.setInt(2, kbk.getIdKebaktian());
-
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranAnak kehadiranAnak = new KehadiranAnak();

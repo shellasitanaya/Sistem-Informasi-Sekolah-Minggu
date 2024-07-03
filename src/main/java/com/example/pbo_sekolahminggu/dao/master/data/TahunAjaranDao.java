@@ -32,8 +32,10 @@ public class TahunAjaranDao {
         return listtahunAjaran;
     }
 
+
+
     // CREATE
-    public static void create(Connection con, TahunAjaran tahunAjaran) {
+    public static void create(Connection con, TahunAjaran tahunAjaran) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_tahun_ajaran(tahun_ajaran) VALUES (?)";
 
@@ -41,8 +43,6 @@ public class TahunAjaranDao {
             statement = con.prepareStatement(query);
             statement.setString(1, tahunAjaran.getTahunAjaran());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving tahunAjaran: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }

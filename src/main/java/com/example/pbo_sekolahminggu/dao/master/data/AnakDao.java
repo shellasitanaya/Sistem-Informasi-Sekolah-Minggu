@@ -42,9 +42,9 @@ public class AnakDao {
     }
 
     // SAVE
-    public static void create(Connection con, Anak anak) {
+    public static void create(Connection con, Anak anak) throws SQLException {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, nama_ortu, alamat_ortu, no_telp_ortu) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO tbl_anak (nama, nis, jenis_kelamin, nama_ortu, alamat_ortu, no_telp_ortu) VALUES (INITCAP(?), UPPER(?), ?, INITCAP(?), INITCAP(?), ?)";
 
         try {
             statement = con.prepareStatement(query);
@@ -55,8 +55,6 @@ public class AnakDao {
             statement.setString(5, anak.getAlamatOrangTua());
             statement.setString(6, anak.getNoTelpOrangTua());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving anak: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -65,7 +63,7 @@ public class AnakDao {
     // EDIT
     public static void update(Connection con, Anak anak) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_anak SET nama = ?, nis = ?, jenis_kelamin = ?, nama_ortu = ?, alamat_ortu= ?, no_telp_ortu = ? WHERE id = ?";
+        String query = "UPDATE tbl_anak SET nama = INITCAP(?), nis = UPPER(?), jenis_kelamin = ?, nama_ortu = INITCAP(?), alamat_ortu= INITCAP(?), no_telp_ortu = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);

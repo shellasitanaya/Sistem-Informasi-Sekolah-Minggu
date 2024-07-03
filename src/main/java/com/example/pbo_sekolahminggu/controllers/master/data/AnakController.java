@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.dao.master.data.AnakDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -74,31 +75,31 @@ public class AnakController implements Initializable {
 
         // Initialize table columns
         TableColumn<Anak, Integer> idCol = new TableColumn<>("ID Anak");
-        idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_ANAK"));
+        idCol.setMinWidth(55);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idAnak"));
 
         TableColumn<Anak, String> namaCol = new TableColumn<>("Nama Anak");
-        namaCol.setMinWidth(150);
-        namaCol.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaCol.setMinWidth(145);
+        namaCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisCol = new TableColumn<>("NIS");
-        nisCol.setMinWidth(100);
-        nisCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisCol.setMinWidth(115);
+        nisCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         TableColumn<Anak, String> jenisKelaminCol = new TableColumn<>("Jenis Kelamin");
-        jenisKelaminCol.setMinWidth(100);
-        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("JenisKelamin"));
+        jenisKelaminCol.setMinWidth(85);
+        jenisKelaminCol.setCellValueFactory(new PropertyValueFactory<>("jenisKelamin"));
 
         TableColumn<Anak, String> namaOrangTuaCol = new TableColumn<>("Nama Orang Tua");
-        namaOrangTuaCol.setMinWidth(150);
+        namaOrangTuaCol.setMinWidth(145);
         namaOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("namaOrangTua"));
 
         TableColumn<Anak, String> noTelpOrangTuaCol = new TableColumn<>("No Telp Orang Tua");
-        noTelpOrangTuaCol.setMinWidth(150);
+        noTelpOrangTuaCol.setMinWidth(120);
         noTelpOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("noTelpOrangTua"));
 
         TableColumn<Anak, String> alamatOrangTuaCol = new TableColumn<>("Alamat Orang Tua");
-        alamatOrangTuaCol.setMinWidth(200);
+        alamatOrangTuaCol.setMinWidth(152);
         alamatOrangTuaCol.setCellValueFactory(new PropertyValueFactory<>("alamatOrangTua"));
 
         anakTbl.getColumns().addAll(idCol, namaCol, nisCol, jenisKelaminCol, namaOrangTuaCol, noTelpOrangTuaCol, alamatOrangTuaCol);
@@ -151,13 +152,15 @@ public class AnakController implements Initializable {
         alert.showAndWait();
     }
 
+
+    //CRUD
     @FXML
     public void create() {
-        String nama = namaAnakField.getText();
-        String nis = nisAnakField.getText();
-        String alamat = alamatOrangTuaField.getText();
-        String nama_orang_tua = namaOrangTuaField.getText();
-        String no_telp = nomorTeleponField.getText();
+        String nama = namaAnakField.getText().trim();
+        String nis = nisAnakField.getText().trim();
+        String alamat = alamatOrangTuaField.getText().trim();
+        String nama_orang_tua = namaOrangTuaField.getText().trim();
+        String no_telp = nomorTeleponField.getText().trim();
 
         RadioButton selectedGender = (RadioButton) radioButtonGroup.getSelectedToggle();
         String jenisKelamin = selectedGender != null ? (selectedGender.getText().equalsIgnoreCase("Male") ? "male" : "female") : "";
@@ -189,9 +192,14 @@ public class AnakController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data anak: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                // Show an alert for SQL exception
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data anak dengan NIS yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }
@@ -201,16 +209,16 @@ public class AnakController implements Initializable {
     public void update() {
         Anak selectedAnak = anakTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak == null) {
-            showErrorMessage("Pilih data anak yang ingin diupdate.");
+            showErrorMessage("Pilih baris/data anak yang ingin diperbaharui.");
             return;
         }
 
-        String nama = namaAnakField.getText();
-        String nis = nisAnakField.getText();
+        String nama = namaAnakField.getText().trim();
+        String nis = nisAnakField.getText().trim();
         String jenisKelamin = lakiAnakBtn.isSelected() ? "male" : "female";
-        String alamat = alamatOrangTuaField.getText();
-        String nama_ortu = namaOrangTuaField.getText();
-        String no_telp = nomorTeleponField.getText();
+        String alamat = alamatOrangTuaField.getText().trim();
+        String nama_ortu = namaOrangTuaField.getText().trim();
+        String no_telp = nomorTeleponField.getText().trim();
 
         if (nama.isEmpty() || nis.isEmpty() || alamat.isEmpty() || nama_ortu.isEmpty() || no_telp.isEmpty()
                 || (!lakiAnakBtn.isSelected() && !perempuanAnakBtn.isSelected())) {
@@ -235,39 +243,33 @@ public class AnakController implements Initializable {
             updateAnakInList(selectedAnak);
 
             // Refresh table view
-            anakTbl.refresh();
+            refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Anak berhasil diupdate!");
+            alert.setContentText("Data Anak berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data anak: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data anak: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
         }
     }
 
-    private void updateAnakInList(Anak updatedAnak) {
-        int index = listAnak.indexOf(updatedAnak); // cari index selected di listAnak
-        if (index != -1) { // cek kalo selected ada di list
-            listAnak.set(index, updatedAnak); // update list
-        }
-    }
 
     @FXML
     public void delete() {
-        if (anakTbl.getSelectionModel().getSelectedItems().size() != 0) {
+        if (!anakTbl.getSelectionModel().getSelectedItems().isEmpty()) {
             Anak selected = anakTbl.getSelectionModel().getSelectedItem();
             Connection connection = null;
             try {
                 connection = ConnectionManager.getConnection();
                 AnakDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data Anak berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -278,11 +280,16 @@ public class AnakController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
 
+    }
+
+    private void updateAnakInList(Anak updatedAnak) {
+        int index = listAnak.indexOf(updatedAnak); // cari index selected di listAnak
+        if (index != -1) { // cek kalo selected ada di list
+            listAnak.set(index, updatedAnak); // update list
+        }
     }
 
     @FXML

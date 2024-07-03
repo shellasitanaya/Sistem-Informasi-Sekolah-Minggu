@@ -21,19 +21,19 @@
    <children>
       <TableView fx:id="kehadiranAnakTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn prefWidth="81.0" text="ID Kehadiran" />
-            <TableColumn prefWidth="188.0" text="Nama" />
-            <TableColumn prefWidth="128.0" text="NIS" />
-            <TableColumn prefWidth="127.0" text="Kelas" />
-            <TableColumn prefWidth="88.0" text="Kebaktian" />
-            <TableColumn prefWidth="106.0" text="Tanggal" />
-            <TableColumn prefWidth="92.0" text="Presensi" />
+            <TableColumn fx:id="idKehadiranCol" text="ID Kehadiran" />
+            <TableColumn fx:id="namaCol" prefWidth="190.0" text="Nama" />
+            <TableColumn fx:id="nisCol" prefWidth="130.0" text="NIS" />
+            <TableColumn fx:id="kelasCol" prefWidth="130.0" text="Kelas" />
+            <TableColumn fx:id="kebaktianCol" prefWidth="90.0" text="Kebaktian" />
+            <TableColumn fx:id="tanggalCol" prefWidth="100.0" text="Tanggal" />
+            <TableColumn fx:id="presensiCol" prefWidth="90.0" text="Presensi" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
          <children>
 
-            <TextField fx:id="kehadiranAnakSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="kehadiranAnakSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />
@@ -76,7 +76,7 @@
          </font>
       </Label>
       <Label layoutX="26.0" layoutY="338.0" text="Tahun Ajaran" />
-      <Button fx:id="exportKehadiranAnakBtn" layoutX="29.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportKehadiranAnakBtn" layoutX="29.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" onMouseClicked="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" onMouseClicked="#export" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -84,16 +84,26 @@
             </image>
          </ImageView>
          </graphic>
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
          <styleClass>
             <String fx:value="btn_export" />
             <String fx:value="shadow2" />
          </styleClass>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
       </Button>
-      <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
-      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../style.css" />
+      <ComboBox fx:id="tahunAjaranKehadiranAnakCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="kelasKehadiranAnakCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <ComboBox fx:id="kebaktianKehadiranAnakCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
+      <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="140.0" layoutY="523.0" text="Laporan Kehadiran Tiap Minggu di Kelas Pada Tahun Ajaran">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

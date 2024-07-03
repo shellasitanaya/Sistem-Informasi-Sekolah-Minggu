@@ -36,7 +36,7 @@ public class HistoriKelasAnakDao {
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
                 "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE anak.status_aktif = 1\n";
+                "WHERE anak.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND t.status_aktif = 1 ORDER BY histAnak.id\n";
         ArrayList<HistoriKelasAnak> listHistoriKelasAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -66,15 +66,15 @@ public class HistoriKelasAnakDao {
         ResultSet rs = null;
         String query =
                 "SELECT a.id AS anak_id, a.nama AS nama_anak, COUNT(ka.id) AS total_kehadiran\n" +
-                        "                        FROM tbl_histori_kelas_anak hka\n" +
-                        "                        JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
-                        "                        JOIN tbl_anak a ON a.id = hka.id_anak\n" +
-                        "                        JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
-                        "                        JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
-                        "                        JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
-                        "                        WHERE kpt.id = ? AND a.status_aktif = 1 AND ka.presensi = true\n" +
-                        "                        GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
-                        "                        ORDER BY anak_id\n";
+                        "FROM tbl_histori_kelas_anak hka\n" +
+                        "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hka.id_kelas_per_tahun\n" +
+                        "JOIN tbl_anak a ON a.id = hka.id_anak\n" +
+                        "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
+                        "JOIN tbl_tahun_ajaran ta ON ta.id = kpt.id_tahun_ajaran\n" +
+                        "JOIN tbl_kehadiran_anak ka ON hka.id = ka.id_histori_kelas_anak\n" +
+                        "WHERE kpt.id = ?\n" +
+                        "GROUP BY a.id, a.nama, k.nama_kelas, kpt.kelas_paralel, ta.tahun_ajaran\n" +
+                        "ORDER BY anak_id;\n";
 
         Map<String, Object[]> listKehadiran = new TreeMap<>();
         try {
@@ -130,11 +130,13 @@ public class HistoriKelasAnakDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT * FROM tbl_anak\n" +
-                "WHERE status_aktif = 1";
+                "WHERE id NOT IN (SELECT a.id FROM tbl_anak a\n" +
+                "\t\t\t\tJOIN tbl_histori_kelas_anak hka on a.id = hka.id_anak\n" +
+                "\t\t\t\tWHERE hka.id_kelas_per_tahun = ?) AND status_aktif = 1";
         ArrayList<Anak> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
             rs = ps.executeQuery();
             while (rs.next()) {
                 Anak anak = new Anak();
@@ -192,7 +194,7 @@ public class HistoriKelasAnakDao {
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "JOIN tbl_tahun_ajaran t ON t.id = kpt.id_tahun_ajaran\n" +
                 "JOIN tbl_anak anak ON anak.id = histAnak.id_anak\n" +
-                "WHERE kpt.id = ? and anak.status_aktif = 1";
+                "WHERE kpt.id = ? and anak.status_aktif = 1 AND kpt.status_aktif = 1 AND t.status_aktif = 1 AND k.status_aktif = 1";
         ArrayList<HistoriKelasAnak> listhistoriAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);

@@ -30,10 +30,10 @@ public class HistoriMengajarDao {
 
         String query = "SELECT \n" +
                 "thm.id,\n" +
-                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
-                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
+                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.status_aktif = 1 AND k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
+                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.status_aktif = 1 AND ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
                 "--foreign keys\n" +
                 "id_guru,\n" +
                 "id_kelas_per_tahun\n" +
@@ -85,7 +85,7 @@ public class HistoriMengajarDao {
                 "LEFT JOIN tbl_kelas_per_tahun kpt ON thm.id_kelas_per_tahun = kpt.id\n" +
                 "LEFT JOIN tbl_kelas k ON kpt.id_kelas = k.id\n" +
                 "LEFT JOIN tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
-                "WHERE thm.status_aktif = 1 AND kpt.id=?\n" +
+                "WHERE thm.status_aktif = 1 AND kpt.id=? AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1\n" +
                 "ORDER BY thm.id";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
@@ -117,7 +117,7 @@ public class HistoriMengajarDao {
         ResultSet rs = null;
         String query = "SELECT a.* FROM tbl_guru a\n" +
                 "                JOIN tbl_histori_mengajar hm on a.id = hm.id_guru\n" +
-                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1";
+                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1 AND hm.status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
@@ -142,10 +142,14 @@ public class HistoriMengajarDao {
     public static ArrayList<Guru> getAllGuruTidakKelas(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "SELECT * FROM tbl_guru WHERE status_aktif = 1";
+        String query = "SELECT * FROM tbl_guru\n" +
+        "WHERE id NOT IN (SELECT g.id FROM tbl_guru g\n" +
+                "\t\t\t\tJOIN tbl_histori_mengajar hm on g.id = hm.id_guru\n" +
+                "\t\t\t\tWHERE hm.id_kelas_per_tahun = ?) AND status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
@@ -248,7 +252,7 @@ public class HistoriMengajarDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT \n" +
-                "    g.id AS id_guru,\n" +
+                "    g.nip AS nip,\n" +
                 "    g.nama AS nama_guru,\n" +
                 "    COUNT(hm.id) AS jumlah_mengajar\n" +
                 "FROM \n" +
@@ -266,7 +270,7 @@ public class HistoriMengajarDao {
             int i = 1;
             while(rs.next()) {
                 Object[] object = new Object[3];
-                object[0] = rs.getInt("id_guru");
+                object[0] = rs.getString("nip");
                 object[1] = rs.getString("nama_guru");
                 object[2] = rs.getInt("jumlah_mengajar");
 

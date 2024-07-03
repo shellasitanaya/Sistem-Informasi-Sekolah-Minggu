@@ -3,6 +3,7 @@ package com.example.pbo_sekolahminggu.controllers.master.data;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -51,10 +52,10 @@ public class TahunAjaranController implements Initializable {
         // inisialisasi table columns
         TableColumn<TahunAjaran, Integer> idCol = new TableColumn<>("ID Tahun Ajaran");
         idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_TAHUN_AJARAN"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idTahunAjaran"));
 
         TableColumn<TahunAjaran, String> tahunCol = new TableColumn<>("Tahun Ajaran");
-        tahunCol.setMinWidth(150);
+        tahunCol.setMinWidth(235);
         tahunCol.setCellValueFactory(new PropertyValueFactory<>("tahunAjaran"));
 
         tahunAjaranTbl.getColumns().addAll(idCol, tahunCol);
@@ -91,9 +92,10 @@ public class TahunAjaranController implements Initializable {
         alert.showAndWait();
     }
 
+    //CRUD
     @FXML
     public void create() {
-        String tahun = tahunAjaranField.getText();
+        String tahun = tahunAjaranField.getText().trim();
 
         if (tahun.isEmpty()) {
             showErrorMessage("Harap isi tahun ajaran.");
@@ -116,9 +118,13 @@ public class TahunAjaranController implements Initializable {
             alert.show();
             clear();
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data tahun ajaran: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data tahun ajaran yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }
@@ -129,11 +135,11 @@ public class TahunAjaranController implements Initializable {
         TahunAjaran selected = tahunAjaranTbl.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showErrorMessage("Pilih tahun ajaran yang ingin diupdate.");
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
             return;
         }
 
-        String tahunAjaran = tahunAjaranField.getText();
+        String tahunAjaran = tahunAjaranField.getText().trim();
 
         if (tahunAjaran.isEmpty()) {
             showErrorMessage("Harap isi tahun ajaran.");
@@ -151,23 +157,16 @@ public class TahunAjaranController implements Initializable {
             tahunAjaranTbl.refresh();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Tahun Ajaran berhasil diupdate!");
+            alert.setContentText("Data Tahun Ajaran berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data tahun ajaran: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memeperbaharui data tahun ajaran: " + e.getMessage());
             alert.show();
         } finally {
             ConnectionManager.close(con);
-        }
-    }
-
-    private void updateTahunAjaranInList(TahunAjaran updatedTahunAjaran) {
-        int index = listTahunAjaran.indexOf(selectedTahunAjaran);
-        if (index != -1) {
-            listTahunAjaran.set(index, updatedTahunAjaran);
         }
     }
 
@@ -180,7 +179,7 @@ public class TahunAjaranController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 TahunAjaranDao.delete(connection, selected);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -190,9 +189,14 @@ public class TahunAjaranController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
+        }
+    }
+
+    private void updateTahunAjaranInList(TahunAjaran updatedTahunAjaran) {
+        int index = listTahunAjaran.indexOf(selectedTahunAjaran);
+        if (index != -1) {
+            listTahunAjaran.set(index, updatedTahunAjaran);
         }
     }
 

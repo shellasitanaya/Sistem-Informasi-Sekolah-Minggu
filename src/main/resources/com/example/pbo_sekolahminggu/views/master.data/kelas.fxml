@@ -20,8 +20,8 @@
    <children>
       <TableView fx:id="kelasTbl" layoutX="26.0" layoutY="68.0" onMouseClicked="#handleRowClick" prefHeight="427.0" prefWidth="296.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idKelas" prefWidth="56.0" text="ID Kelas" />
-            <TableColumn fx:id="namaKelas" prefWidth="238.0" text="Nama Kelas" />
+            <TableColumn fx:id="idKelas" prefWidth="55.0" text="ID Kelas" />
+            <TableColumn fx:id="namaKelas" prefWidth="240.0" text="Nama Kelas" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
@@ -30,7 +30,7 @@
             <String fx:value="shadow" />
          </styleClass>
          <children>
-            <TextField fx:id="kelasSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="229.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="kelasSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="229.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
       </Pane>
       <TextField fx:id="namaKelasField" layoutX="570.0" layoutY="64.0" prefHeight="25.0" prefWidth="215.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />

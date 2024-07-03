@@ -1,3 +1,382 @@
+-- HISTORI KELAS ANAK
+CREATE OR REPLACE FUNCTION insert_histori_kelas_anak() RETURNS VOID AS $$
+DECLARE
+    i_kelas INTEGER;
+    i_anak RECORD;
+BEGIN
+    CREATE TEMP TABLE temp_used_anak (id_anak INTEGER);
+
+    FOR i_kelas IN 1..204 LOOP
+        FOR i_anak IN
+            SELECT id
+            FROM tbl_anak
+            WHERE id NOT IN (
+                SELECT id_anak
+                FROM tbl_histori_kelas_anak
+                UNION
+                SELECT id_anak
+                FROM temp_used_anak
+            )
+            LIMIT 25
+        LOOP
+            INSERT INTO tbl_histori_kelas_anak (id_anak, id_kelas_per_tahun)
+            VALUES (i_anak.id, i_kelas);
+
+            INSERT INTO temp_used_anak (id_anak) VALUES (i_anak.id);
+        END LOOP;
+    END LOOP;
+
+    DROP TABLE temp_used_anak;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT insert_histori_kelas_anak();
+
+
+-- GURU
+INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES
+('Liam Connor', '1234567890', '081234567890', '123 Main Street'),
+('Emma Murphy', '2345678901', '081345678901', '456 Elm Street'),
+('Noah Kelly', '3456789012', '081456789012', '789 Oak Street'),
+('Olivia Byrne', '4567890123', '081567890123', '567 Pine Street'),
+('Ethan Ryan', '5678901234', '081678901234', '890 Maple Street'),
+('Ava Sullivan', '6789012345', '081789012345', '234 Cedar Street'),
+('Lucas Brien', '7890123456', '081890123456', '456 Birch Street'),
+('Sophia McCarthy', '8901234567', '081901234567', '789 Elm Street'),
+('Mason Byrne', '9012345678', '082012345678', '123 Oak Street'),
+('Isabella Donnell', '0123456789', '082123456789', '456 Pine Street'),
+('Oliver Neill', '9876543210', '082234567890', '789 Maple Street'),
+('Amelia Walsh', '8765432109', '082345678901', '234 Cedar Street'),
+('William Reilly', '7654321098', '082456789012', '567 Birch Street'),
+('Charlotte Dunne', '6543210987', '082567890123', '890 Elm Street'),
+('James Sullivan', '5432109876', '082678901234', '123 Oak Street'),
+('Benjamin Nolan', '4321098765', '082789012345', '456 Pine Street'),
+('Sophia Connor', '3210987654', '082890123456', '789 Maple Street'),
+('Evelyn Kelly', '2109876543', '082901234567', '234 Cedar Street'),
+('Oliver Reilly', '1098765432', '083012345678', '567 Birch Street'),
+('Kelly Patricia', '1234509876', '083123456789', '890 Elm Street');
+
+
+--KELAS
+ALTER SEQUENCE tbl_kelas_id_seq RESTART WITH 1;
+INSERT INTO tbl_kelas (nama_kelas) VALUES ('Betania'), ('Getsemani'), ('Yerusalem'), ('Nazaret'), ('Betlehem'), ('Kapernaum'), ('Yeriko'), ('Efrata'), ('Galilea'), ('Kana'), ('Samaria'), ('Hebron'), ('Silo'), ('Emmaus'), ('Judea');
+
+-- ANAK
+INSERT INTO tbl_anak (nis, nama, jenis_kelamin, nama_ortu, alamat_ortu, no_telp_ortu) VALUES
+('NIS001', 'Anna Brown', 'female', 'Ms. Brown', 'Jl. Siwalankerto VIII', '08128238288'),
+('NIS002', 'Ben Green', 'male', 'Mr. Green', 'Jl. Sudirman No.45', '08123456789'),
+('NIS003', 'Cathy Black', 'female', 'Mrs. Black', 'Jl. Thamrin No.23', '08129876543'),
+('NIS004', 'David White', 'male', 'Ms. White', 'Jl. Ahmad Yani No.12', '08121234567'),
+('NIS005', 'Ella Blue', 'female', 'Mr. Blue', 'Jl. Diponegoro No.56', '08122334455'),
+('NIS006', 'Frank Gray', 'male', 'Mrs. Gray', 'Jl. Basuki Rahmat No.34', '08123334445'),
+('NIS007', 'Grace Yellow', 'female', 'Ms. Yellow', 'Jl. Panglima Polim No.78', '08124445566'),
+('NIS008', 'Henry Red', 'male', 'Mr. Red', 'Jl. MH Thamrin No.89', '08125556677'),
+('NIS009', 'Isabella Purple', 'female', 'Mrs. Purple', 'Jl. HR Rasuna Said No.15', '08126667788'),
+('NIS010', 'Jack Orange', 'male', 'Ms. Orange', 'Jl. Gatot Subroto No.22', '08127778899'),
+('NIS011', 'Karen Pink', 'female', 'Mr. Pink', 'Jl. Sisingamangaraja No.33', '08128889900'),
+('NIS012', 'Liam Cyan', 'male', 'Mrs. Cyan', 'Jl. Mangga Besar No.44', '08129990011'),
+('NIS013', 'Mia Magenta', 'female', 'Ms. Magenta', 'Jl. Kebon Sirih No.55', '08121111222'),
+('NIS014', 'Noah Indigo', 'male', 'Mr. Indigo', 'Jl. Pasar Minggu No.66', '08122223334'),
+('NIS015', 'Olivia Violet', 'female', 'Mrs. Violet', 'Jl. Buncit Raya No.77', '08123334456'),
+('NIS016', 'Peter Brown', 'male', 'Ms. Brown', 'Jl. Siwalankerto VIII', '08128238288'),
+('NIS017', 'Quinn Green', 'female', 'Mr. Green', 'Jl. Sudirman No.45', '08123456789'),
+('NIS018', 'Rachel Black', 'female', 'Mrs. Black', 'Jl. Thamrin No.23', '08129876543'),
+('NIS019', 'Sam White', 'male', 'Ms. White', 'Jl. Ahmad Yani No.12', '08121234567'),
+('NIS020', 'Tina Blue', 'female', 'Mr. Blue', 'Jl. Diponegoro No.56', '08122334455'),
+('NIS021', 'Umar Gray', 'male', 'Mrs. Gray', 'Jl. Basuki Rahmat No.34', '08123334445'),
+('NIS022', 'Vera Yellow', 'female', 'Ms. Yellow', 'Jl. Panglima Polim No.78', '08124445566'),
+('NIS023', 'William Red', 'male', 'Mr. Red', 'Jl. MH Thamrin No.89', '08125556677'),
+('NIS024', 'Xena Purple', 'female', 'Mrs. Purple', 'Jl. HR Rasuna Said No.15', '08126667788'),
+('NIS025', 'Yusuf Orange', 'male', 'Ms. Orange', 'Jl. Gatot Subroto No.22', '08127778899');
+
+
+--TAHUN AJARAN
+ALTER SEQUENCE tbl_tahun_ajaran_id_seq RESTART WITH 1;
+INSERT INTO tbl_tahun_ajaran (tahun_ajaran) VALUES ('2008/2009'), ('2009/2010'), ('2010/2011'), ('2011/2012'), ('2012/2013'), ('2013/2014'), ('2014/2015'), ('2015/2016'), ('2016/2017'), ('2017/2018'), ('2018/2019'), ('2019/2020'), ('2020/2021'), ('2021/2022'), ('2022/2023'), ('2023/2024'), ('2024/2025');
+
+--KEBAKTIAN
+INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES  ('Umum', '2008-07-13'), ('Paskah', '2008-09-21'), ('Natal', '2008-12-25'), ('Retreat', '2008-11-16'), ('Umum', '2009-02-15'), ('Doa Bersama', '2009-05-17'), ('Kebaktian Padang', '2009-08-16'), ('Natal', '2009-12-25'), ('Paskah', '2010-04-11'), ('Umum', '2010-06-20'), ('Retreat', '2010-09-19'), ('Natal', '2010-12-25'),  ('Umum', '2011-01-16'), ('Paskah', '2011-04-10'), ('Natal', '2011-12-25'), ('Retreat', '2011-11-13'), ('Umum', '2012-02-19'), ('Paskah', '2012-04-15'), ('Retreat', '2012-07-22'), ('Natal', '2012-12-24'), ('Umum', '2013-03-17'), ('Paskah', '2013-04-21'), ('Doa Bersama', '2013-06-23'), ('Natal', '2013-12-25'), ('Umum', '2014-01-19'), ('Paskah', '2014-04-13'), ('Kebaktian Padang', '2014-05-18'), ('Natal', '2014-12-25'), ('Umum', '2015-02-15'), ('Paskah', '2015-04-12'), ('Retreat', '2015-07-19'), ('Natal', '2015-12-25'), ('Umum', '2016-01-17'), ('Paskah', '2016-04-10'), ('Doa Bersama', '2016-08-14'), ('Natal', '2016-12-25'), ('Umum', '2017-03-19'), ('Paskah', '2017-04-16'), ('Retreat', '2017-06-18'), ('Natal', '2017-12-24'), ('Umum', '2018-01-14'), ('Paskah', '2018-04-01'), ('Kebaktian Padang', '2018-05-20'), ('Natal', '2018-12-25'),
+('Umum', '2018-07-15'), ('Paskah', '2018-09-09'), ('Retreat', '2018-11-11'), ('Umum', '2019-02-17'), ('Doa Bersama', '2019-05-05'), ('Kebaktian Padang', '2019-08-18'), ('Natal', '2019-12-25'), ('Paskah', '2020-04-12'), ('Umum', '2020-06-14'), ('Retreat', '2020-09-20'), ('Natal', '2020-12-24'), ('Umum', '2021-01-10'), ('Paskah', '2021-04-04'), ('Natal', '2021-12-25'), ('Retreat', '2021-11-21'), ('Umum', '2022-02-13'), ('Paskah', '2022-04-17'), ('Retreat', '2022-07-10'), ('Natal', '2022-12-24'), ('Umum', '2023-03-12'), ('Paskah', '2023-04-16'), ('Doa Bersama', '2023-06-18'), ('Natal', '2023-12-25'),  ('Umum', '2024-01-21'), ('Paskah', '2024-04-14'), ('Kebaktian Padang', '2024-05-19'), ('Natal', '2024-12-25');
+
+--KEHADIRAN GURU
+INSERT INTO tbl_kehadiran_guru (id_histori_mengajar, id_kebaktian, presensi)
+SELECT DISTINCT ON (id_histori_mengajar, id_kebaktian)
+    id_histori_mengajar,
+    id_kebaktian,
+    CASE WHEN RANDOM() < 0.5 THEN TRUE ELSE FALSE END AS presensi
+FROM (
+    SELECT
+        FLOOR(RANDOM() * 20) + 1 AS id_histori_mengajar,
+        FLOOR(RANDOM() * 15) + 1 AS id_kebaktian
+    FROM generate_series(1, 50)
+) AS random_pairs
+ORDER BY id_histori_mengajar, id_kebaktian, RANDOM()
+LIMIT 25;
+
+
+INSERT INTO tbl_kehadiran_guru (id_histori_mengajar, id_kebaktian) VALUES
+(481, 68),
+(482, 69),
+(483, 70),
+(484, 71),
+(485, 68),
+(486, 69),
+(487, 70),
+(488, 71),
+(489, 68),
+(490, 69),
+(491, 70),
+(492, 71),
+(481, 69),
+(482, 70),
+(483, 71),
+(484, 68),
+(485, 69),
+(486, 70),
+(487, 71),
+(488, 68),
+(489, 69),
+(490, 70),
+(491, 71),
+(492, 68),
+(481, 70),
+(482, 71),
+(483, 68),
+(484, 69),
+(485, 70),
+(486, 71),
+(487, 68),
+(488, 69),
+(489, 70),
+(490, 71),
+(491, 68),
+(492, 69),
+(481, 71),
+(482, 68),
+(483, 69),
+(484, 70),
+(485, 71),
+(486, 68);
+
+
+-- KEHADIRAN ANAK
+INSERT INTO tbl_kehadiran_anak (id_histori_kelas_anak, id_kebaktian, presensi)
+SELECT DISTINCT ON (id_histori_kelas_anak, id_kebaktian)
+    id_histori_kelas_anak,
+    id_kebaktian,
+    CASE WHEN RANDOM() < 0.5 THEN TRUE ELSE FALSE END AS presensi
+FROM (
+    SELECT
+        FLOOR(RANDOM() * 20) + 1 AS id_histori_kelas_anak,
+        FLOOR(RANDOM() * 15) + 1 AS id_kebaktian
+    FROM generate_series(1, 50)
+) AS random_pairs
+ORDER BY id_histori_kelas_anak, id_kebaktian, RANDOM()
+LIMIT 50;
+
+INSERT INTO tbl_kehadiran_anak (id_histori_kelas_anak, id_kebaktian, presensi) VALUES
+(20, 1, true),
+(20, 5, false),
+(21, 3, true),
+(21, 4, true),
+(21, 6, false),
+(21, 7, true),
+(21, 8, false),
+(21, 1, true),
+(21, 2, true),
+(22, 2, false),
+(22, 3, false),
+(22, 5, true),
+(22, 7, true),
+(22, 8, false),
+(23, 1, false),
+(23, 4, true),
+(23, 6, true),
+(24, 1, true),
+(24, 3, false),
+(24, 5, true),
+(24, 6, false),
+(24, 7, true),
+(24, 8, true),
+(25, 2, false),
+(25, 4, true),
+(26, 1, true),
+(26, 3, false),
+(27, 2, true),
+(27, 4, true),
+(27, 5, false),
+(28, 1, true),
+(28, 2, false),
+(28, 3, true),
+(28, 5, true),
+(29, 1, false),
+(29, 2, false),
+(29, 3, true),
+(30, 1, true),
+(30, 2, true),
+(30, 3, false),
+(30, 4, true),
+(31, 1, true),
+(31, 2, false),
+(31, 3, true),
+(31, 4, false),
+(31, 5, true),
+(32, 1, true),
+(32, 3, true),
+(32, 5, false),
+(33, 1, false),
+(33, 2, true),
+(33, 3, true),
+(33, 4, true),
+(34, 2, true),
+(34, 3, false),
+(35, 1, true),
+(35, 2, true),
+(35, 3, false),
+(35, 4, true),
+(36, 1, false),
+(36, 3, true),
+(36, 5, true),
+(37, 1, true),
+(37, 2, false),
+(37, 3, true),
+(37, 4, true),
+(37, 5, false),
+(38, 1, false),
+(38, 3, true),
+(38, 4, true),
+(39, 1, true),
+(39, 2, false),
+(39, 3, true),
+(39, 4, false),
+(40, 1, true),
+(40, 2, true),
+(40, 3, false),
+(40, 4, true),
+(41, 1, true),
+(41, 2, false),
+(41, 3, true),
+(41, 5, false),
+(42, 1, true),
+(42, 2, true),
+(42, 3, false),
+(42, 4, true),
+(42, 5, true),
+(43, 1, false),
+(43, 2, true),
+(43, 3, true),
+(43, 4, false),
+(43, 5, true),
+(44, 1, true),
+(44, 3, true),
+(44, 4, false),
+(45, 1, true),
+(45, 2, false),
+(45, 3, true),
+(45, 4, true),
+(46, 1, true),
+(46, 2, false),
+(46, 3, false),
+(46, 4, true),
+(46, 5, true),
+(47, 1, false),
+(47, 2, true),
+(47, 3, true),
+(47, 4, true),
+(47, 5, false),
+(48, 1, true),
+(48, 2, true),
+(48, 3, false),
+(48, 4, true),
+(48, 5, false),
+(49, 1, true), (49, 4, false),
+(50, 2, true),
+(51, 1, false), (51, 3, true), (51, 5, true),
+(52, 2, false), (52, 3, true), (52, 4, true),
+(53, 1, true), (53, 2, true), (53, 3, false),
+(54, 1, true), (54, 2, false), (54, 3, true), (54, 5, true),
+(55, 1, false), (55, 2, true), (55, 3, true), (55, 4, false),
+(56, 1, true), (56, 2, true), (56, 3, true), (56, 4, false), (56, 5, true),
+(57, 1, true), (57, 3, false), (57, 4, true),
+(58, 2, false), (58, 3, true), (58, 4, false),
+(59, 1, false), (59, 2, true), (59, 3, false), (59, 4, true), (59, 5, true),
+(60, 1, true), (60, 2, false), (60, 3, true), (60, 4, true), (60, 5, true),
+(61, 1, true), (61, 2, true), (61, 3, false), (61, 4, true),
+(62, 1, false), (62, 2, true), (62, 3, true), (62, 4, true), (62, 5, false),
+(63, 1, true), (63, 2, false), (63, 3, true), (63, 4, false), (63, 5, true),
+(64, 1, false), (64, 2, true), (64, 3, false), (64, 4, true), (64, 5, true),
+(65, 1, true), (65, 3, true), (65, 4, false), (65, 5, false),
+(66, 1, false), (66, 2, true), (66, 3, true),
+(67, 1, true), (67, 2, false), (67, 3, false), (67, 4, true),
+(68, 1, true), (68, 2, true), (68, 3, false), (68, 4, true),
+(69, 1, false), (69, 2, false), (69, 3, true), (69, 4, false), (69, 5, true),
+(70, 1, true), (70, 2, true), (70, 3, true), (70, 4, false), (70, 5, true),
+(71, 1, true), (71, 2, false), (71, 3, true), (71, 4, false), (71, 5, true),
+(72, 1, true), (72, 2, false), (72, 3, true), (72, 4, false), (72, 5, true),
+(73, 1, true), (73, 2, false), (73, 3, true), (73, 4, false), (73, 5, true),
+(74, 1, true), (74, 2, true), (74, 3, true), (74, 4, true),
+(75, 1, false), (75, 2, false), (75, 3, true), (75, 4, true), (75, 5, false),
+(76, 1, true), (76, 2, true), (76, 3, false), (76, 4, true), (76, 5, false),
+(77, 1, false), (77, 2, true), (77, 3, true), (77, 4, true),
+(78, 1, true), (78, 2, false), (78, 3, true), (78, 4, false), (78, 5, true),
+(79, 1, true), (79, 2, false), (79, 3, true), (79, 4, false),
+(80, 1, true), (80, 2, false), (80, 3, true), (80, 4, true), (80, 5, true),
+(81, 1, true), (81, 2, true), (81, 3, false), (81, 4, true),
+(82, 1, true), (82, 2, false), (82, 3, true), (82, 4, false),
+(83, 1, true), (83, 2, true), (83, 3, false), (83, 4, true), (83, 5, false),
+(84, 1, false), (84, 2, true), (84, 3, true), (84, 4, true), (84, 5, true),
+(85, 1, true), (85, 2, false), (85, 3, true), (85, 4, false),
+(86, 1, false), (86, 2, true), (86, 3, true), (86, 4, true),
+(87, 1, true), (87, 3, false), (87, 5, true),
+(88, 2, true), (88, 4, false),
+(89, 1, true), (89, 2, true), (89, 3, false), (89, 4, true),
+(90, 1, false), (90, 3, true), (90, 5, true),
+(91, 1, true), (91, 2, true), (91, 3, true), (91, 4, false),
+(92, 1, false), (92, 2, false), (92, 3, true), (92, 4, true), (92, 5, true),
+(93, 1, true), (93, 2, false), (93, 3, true), (93, 4, false), (93, 5, true),
+(94, 1, true), (94, 2, false), (94, 3, false), (94, 4, true), (94, 5, true),
+(95, 1, false), (95, 2, true), (95, 3, true), (95, 4, false),
+(96, 1, true), (96, 2, true), (96, 3, false), (96, 4, true), (96, 5, true),
+(97, 1, true), (97, 2, true), (97, 3, false), (97, 4, true),
+(98, 1, false), (98, 2, true), (98, 3, true), (98, 4, true), (98, 5, false),
+(99, 1, true), (99, 2, true), (99, 3, false), (99, 4, true), (99, 5, true),
+(100, 1, true), (100, 2, false), (100, 3, true), (100, 4, false), (100, 5, true),
+(101, 1, false), (101, 2, true), (101, 3, false), (101, 4, true),
+(102, 1, true), (102, 2, false), (102, 3, true), (102, 4, false), (102, 5, true),
+(103, 1, true), (103, 2, true), (103, 3, true), (103, 4, false),
+(104, 1, false), (104, 2, false), (104, 3, true), (104, 4, true), (104, 5, true),
+(105, 1, true), (105, 2, false), (105, 3, true), (105, 4, false), (105, 5, true),
+(106, 1, true), (106, 2, true), (106, 3, true), (106, 4, false),
+(107, 1, true), (107, 2, true), (107, 3, true), (107, 4, true), (107, 5, true),
+(108, 1, true), (108, 2, false), (108, 3, true), (108, 4, false), (108, 5, true),
+(109, 1, true), (109, 2, true), (109, 3, false), (109, 4, true),
+(110, 1, false), (110, 2, true), (110, 3, true), (110, 4, true), (110, 5, false),
+(111, 1, true), (111, 2, true), (111, 3, false), (111, 4, true), (111, 5, true),
+(112, 1, true), (112, 2, false), (112, 3, true), (112, 4, false),
+(113, 1, true), (113, 2, false), (113, 3, true),
+(114, 1, true), (114, 2, false), (114, 3, false), (114, 4, true), (114, 5, true),
+(115, 1, false), (115, 2, true), (115, 3, true), (115, 4, false),
+(116, 1, true), (116, 2, true), (116, 3, false), (116, 4, true), (116, 5, true),
+(117, 1, true), (117, 2, true), (117, 3, false), (117, 4, true),
+(118, 1, false), (118, 2, true), (118, 3, true), (118, 4, true), (118, 5, false),
+(119, 1, true), (119, 2, true), (119, 3, false), (119, 4, true), (119, 5, true),
+(120, 1, true), (120, 2, true), (120, 3, true), (120, 4, true), (120, 5, true),
+(121, 1, false), (121, 2, true), (121, 3, false), (121, 4, true),
+(122, 1, true), (122, 2, false), (122, 3, true), (122, 4, false), (122, 5, true),
+(123, 1, true), (123, 2, true), (123, 3, true), (123, 4, false),
+(124, 1, false), (124, 2, false), (124, 3, true), (124, 4, true), (124, 5, true),
+(125, 1, true), (125, 2, false), (125, 3, true),
+(126, 1, true), (126, 2, true), (126, 3, true), (126, 4, false),
+(127, 1, false), (127, 2, true), (127, 3, true), (127, 4, true), (127, 5, false),
+(128, 1, true), (128, 2, false), (128, 3, true), (128, 4, false),
+(129, 1, true), (129, 2, true), (129, 3, false), (129, 4, true),
+(130, 1, false), (130, 2, true), (130, 3, true), (130, 4, true), (130, 5, false),
+(131, 1, true), (131, 2, true),
+(132, 1, true), (132, 2, false), (132, 3, true), (132, 4, false),
+(133, 1, true), (133, 2, false), (133, 3, true), (133, 4, false), (133, 5, true),
+(134, 1, true), (134, 2, false), (134, 3, false) ;
+
+
 -- KELAS PER TAHUN
 INSERT INTO tbl_kelas_per_tahun (id_kelas, id_tahun_ajaran, ruang_kelas, kelas_paralel) VALUES
 (1, 1, 'Aula Utama', 'A'),
@@ -222,6 +601,7 @@ INSERT INTO tbl_kelas_per_tahun (id_kelas, id_tahun_ajaran, ruang_kelas, kelas_p
 (8, 17, 'Ruang Serbaguna G', 'B'),
 (9, 17, 'Aula Utama', 'C');
 
+
 -- HISTORI MENGAJAR
 INSERT INTO tbl_histori_mengajar (id_guru, id_kelas_per_tahun) VALUES
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
@@ -322,90 +702,61 @@ INSERT INTO tbl_histori_mengajar (id_guru, id_kelas_per_tahun) VALUES
 (16, 188), (17, 189), (18, 190), (19, 191), (20, 192),
 (1, 193), (2, 194), (3, 195), (4, 196), (5, 197),
 (6, 198), (7, 199), (8, 200), (9, 201), (10, 202),
-(11, 203), (12, 204);
-
+(11, 203), (12, 204), (8, 1),
+(11, 2), (11, 3),(11, 6),(11, 12),
+(14, 4),
+(8, 5),
+(14, 3), (14, 1),
+(8, 7),(8, 10),(8, 9),
+(11, 7), (11, 5), (11, 1),(11, 13);
 
 -- HISTORI KELAS ANAK
-CREATE OR REPLACE FUNCTION insert_histori_kelas_anak() RETURNS VOID AS $$
-DECLARE
-    i_anak INTEGER;
-    i_kelas INTEGER;
-BEGIN
-    -- Loop through each id_kelas_per_tahun
-    FOR i_kelas IN 1..204 LOOP
-        -- Generate 25 distinct id_anak for the current id_kelas_per_tahun
-        FOR i_anak IN (SELECT id_anak FROM generate_series(1, 25) AS id_anak) LOOP
-            -- Insert into tbl_histori_kelas_anak
-            INSERT INTO tbl_histori_kelas_anak (id_anak, id_kelas_per_tahun)
-            VALUES (i_anak, i_kelas);
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE PLPGSQL;
-SELECT insert_histori_kelas_anak();
+INSERT INTO tbl_histori_kelas_anak (id_anak, id_kelas_per_tahun) VALUES
+(5, 2), (12, 2), (18, 2), (3, 2), (7, 2),
+(14, 2), (21, 2), (9, 2), (2, 2), (25, 2),
+(4, 2), (11, 2), (19, 2), (6, 2), (8, 2),
+(15, 2), (22, 2), (10, 2), (13, 2), (20, 2),
+(1, 2), (16, 2), (23, 2),
+(5, 3), (12, 3), (18, 3), (3, 3), (7, 3),
+(14, 3), (21, 3), (9, 3), (2, 3), (25, 3),
+(4, 3), (11, 3), (19, 3), (6, 3), (8, 3),
+(15, 3), (22, 3), (10, 3), (13, 3), (20, 3),
+(5, 4), (12, 4), (18, 4), (3, 4), (7, 4),
+(14, 4), (21, 4), (9, 4), (2, 4), (25, 4),
+(4, 4), (11, 4), (19, 4), (6, 4), (8, 4),
+(15, 4), (22, 4), (10, 4),
+(5, 5), (12, 5), (18, 5), (3, 5), (7, 5),
+(14, 5), (21, 5), (9, 5), (2, 5), (25, 5),
+(4, 5), (11, 5), (19, 5), (6, 5), (8, 5),
+(15, 5), (22, 5), (10, 5), (13, 5), (20, 5),
+(1, 5), (16, 5), (23, 5),
+(5, 6), (12, 6), (18, 6), (3, 6), (7, 6),
+(14, 6), (21, 6), (9, 6), (2, 6), (25, 6),
+(4, 6), (11, 6), (19, 6), (6, 6), (8, 6),
+(15, 6), (22, 6), (10, 6), (13, 6), (20, 6),
+(1, 6), (16, 6), (23, 6), (17, 6), (24, 6),
+(5, 7), (12, 7), (18, 7), (3, 7), (7, 7),
+(14, 7), (21, 7), (9, 7), (2, 7), (25, 7),
+(4, 7), (11, 7), (19, 7), (6, 7), (8, 7),
+(15, 7), (22, 7), (10, 7),
+(5, 8), (12, 8), (18, 8), (3, 8), (7, 8),
+(14, 8), (21, 8), (9, 8), (2, 8), (25, 8),
+(4, 8), (11, 8), (19, 8), (6, 8), (8, 8),
+(5, 9), (12, 9), (18, 9), (3, 9), (7, 9),
+(14, 9), (21, 9), (9, 9), (2, 9), (25, 9),
+(4, 9), (11, 9), (19, 9), (6, 9), (8, 9), (1, 9),
+(5, 10), (12, 10), (18, 10), (3, 10), (7, 10),
+(14, 10), (21, 10), (9, 10), (2, 10), (25, 10),
+(4, 10), (11, 10), (19, 10), (6, 10), (8, 10),
+(5, 11), (12, 11), (18, 11), (3, 11), (7, 11),
+(14, 11), (21, 11), (9, 11), (2, 11), (25, 11),
+(4, 11), (11, 11), (19, 11), (6, 11), (8, 11),
+(5, 12), (12, 12), (18, 12), (3, 12), (7, 12),
+(14, 12), (21, 12), (9, 12), (2, 12), (25, 12),
+(4, 12), (11, 12), (19, 12), (6, 12), (8, 12), (1, 12);
 
--- GURU
-INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES
-('Liam Connor', '1234567890', '081234567890', '123 Main Street'),
-('Emma Murphy', '2345678901', '081345678901', '456 Elm Street'),
-('Noah Kelly', '3456789012', '081456789012', '789 Oak Street'),
-('Olivia Byrne', '4567890123', '081567890123', '567 Pine Street'),
-('Ethan Ryan', '5678901234', '081678901234', '890 Maple Street'),
-('Ava Sullivan', '6789012345', '081789012345', '234 Cedar Street'),
-('Lucas Brien', '7890123456', '081890123456', '456 Birch Street'),
-('Sophia McCarthy', '8901234567', '081901234567', '789 Elm Street'),
-('Mason Byrne', '9012345678', '082012345678', '123 Oak Street'),
-('Isabella Donnell', '0123456789', '082123456789', '456 Pine Street'),
-('Oliver Neill', '9876543210', '082234567890', '789 Maple Street'),
-('Amelia Walsh', '8765432109', '082345678901', '234 Cedar Street'),
-('William Reilly', '7654321098', '082456789012', '567 Birch Street'),
-('Charlotte Dunne', '6543210987', '082567890123', '890 Elm Street'),
-('James Sullivan', '5432109876', '082678901234', '123 Oak Street'),
-('Benjamin Nolan', '4321098765', '082789012345', '456 Pine Street'),
-('Sophia Connor', '3210987654', '082890123456', '789 Maple Street'),
-('Evelyn Kelly', '2109876543', '082901234567', '234 Cedar Street'),
-('Oliver Reilly', '1098765432', '083012345678', '567 Birch Street'),
-('Kelly Patricia', '1234509876', '083123456789', '890 Elm Street');
 
 
---KELAS
-INSERT INTO tbl_kelas (nama_kelas) VALUES ('Betania'), ('Getsemani'), ('Yerusalem'), ('Nazaret'), ('Betlehem'), ('Kapernaum'), ('Yeriko'), ('Efrata'), ('Galilea'), ('Kana'), ('Samaria'), ('Hebron'), ('Silo'), ('Emmaus'), ('Judea');
-
---ANAK
-INSERT INTO tbl_anak (nis, nama, jenis_kelamin, nama_ortu, alamat_ortu, no_telp_ortu) VALUES
-('NIS001', 'Anna Brown', 'female', 'Ms. Brown', 'Jl. Siwalankerto VIII', '08128238288'),
-('NIS002', 'Ben Green', 'male', 'Mr. Green', 'Jl. Sudirman No.45', '08123456789'),
-('NIS003', 'Cathy Black', 'female', 'Mrs. Black', 'Jl. Thamrin No.23', '08129876543'),
-('NIS004', 'David White', 'male', 'Ms. White', 'Jl. Ahmad Yani No.12', '08121234567'),
-('NIS005', 'Ella Blue', 'female', 'Mr. Blue', 'Jl. Diponegoro No.56', '08122334455'),
-('NIS006', 'Frank Gray', 'male', 'Mrs. Gray', 'Jl. Basuki Rahmat No.34', '08123334445'),
-('NIS007', 'Grace Yellow', 'female', 'Ms. Yellow', 'Jl. Panglima Polim No.78', '08124445566'),
-('NIS008', 'Henry Red', 'male', 'Mr. Red', 'Jl. MH Thamrin No.89', '08125556677'),
-('NIS009', 'Isabella Purple', 'female', 'Mrs. Purple', 'Jl. HR Rasuna Said No.15', '08126667788'),
-('NIS010', 'Jack Orange', 'male', 'Ms. Orange', 'Jl. Gatot Subroto No.22', '08127778899'),
-('NIS011', 'Karen Pink', 'female', 'Mr. Pink', 'Jl. Sisingamangaraja No.33', '08128889900'),
-('NIS012', 'Liam Cyan', 'male', 'Mrs. Cyan', 'Jl. Mangga Besar No.44', '08129990011'),
-('NIS013', 'Mia Magenta', 'female', 'Ms. Magenta', 'Jl. Kebon Sirih No.55', '08121111222'),
-('NIS014', 'Noah Indigo', 'male', 'Mr. Indigo', 'Jl. Pasar Minggu No.66', '08122223334'),
-('NIS015', 'Olivia Violet', 'female', 'Mrs. Violet', 'Jl. Buncit Raya No.77', '08123334456'),
-('NIS016', 'Peter Brown', 'male', 'Ms. Brown', 'Jl. Siwalankerto VIII', '08128238288'),
-('NIS017', 'Quinn Green', 'female', 'Mr. Green', 'Jl. Sudirman No.45', '08123456789'),
-('NIS018', 'Rachel Black', 'female', 'Mrs. Black', 'Jl. Thamrin No.23', '08129876543'),
-('NIS019', 'Sam White', 'male', 'Ms. White', 'Jl. Ahmad Yani No.12', '08121234567'),
-('NIS020', 'Tina Blue', 'female', 'Mr. Blue', 'Jl. Diponegoro No.56', '08122334455'),
-('NIS021', 'Umar Gray', 'male', 'Mrs. Gray', 'Jl. Basuki Rahmat No.34', '08123334445'),
-('NIS022', 'Vera Yellow', 'female', 'Ms. Yellow', 'Jl. Panglima Polim No.78', '08124445566'),
-('NIS023', 'William Red', 'male', 'Mr. Red', 'Jl. MH Thamrin No.89', '08125556677'),
-('NIS024', 'Xena Purple', 'female', 'Mrs. Purple', 'Jl. HR Rasuna Said No.15', '08126667788'),
-('NIS025', 'Yusuf Orange', 'male', 'Ms. Orange', 'Jl. Gatot Subroto No.22', '08127778899');
-
---TAHUN AJARAN
-ALTER SEQUENCE tbl_tahun_ajaran_id_seq RESTART WITH 1;
-INSERT INTO tbl_tahun_ajaran (tahun_ajaran) VALUES ('2008/2009'), ('2009/2010'), ('2010/2011'), ('2011/2012'), ('2012/2013'), ('2013/2014'), ('2014/2015'), ('2015/2016'), ('2016/2017'), ('2017/2018'), ('2018/2019'), ('2019/2020'), ('2020/2021'), ('2021/2022'), ('2022/2023'), ('2023/2024'), ('2024/2025');
-
---KEBAKTIAN
-INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES  ('Umum', '2008-07-13'), ('Paskah', '2008-09-21'), ('Natal', '2008-12-25'), ('Retreat', '2008-11-16'), ('Umum', '2009-02-15'), ('Doa Bersama', '2009-05-17'), ('Kebaktian Padang', '2009-08-16'), ('Natal', '2009-12-25'), ('Paskah', '2010-04-11'), ('Umum', '2010-06-20'), ('Retreat', '2010-09-19'), ('Natal', '2010-12-25'),  ('Umum', '2011-01-16'), ('Paskah', '2011-04-10'), ('Natal', '2011-12-25'), ('Retreat', '2011-11-13'), ('Umum', '2012-02-19'), ('Paskah', '2012-04-15'), ('Retreat', '2012-07-22'), ('Natal', '2012-12-24'), ('Umum', '2013-03-17'), ('Paskah', '2013-04-21'), ('Doa Bersama', '2013-06-23'), ('Natal', '2013-12-25'), ('Umum', '2014-01-19'), ('Paskah', '2014-04-13'), ('Kebaktian Padang', '2014-05-18'), ('Natal', '2014-12-25'), ('Umum', '2015-02-15'), ('Paskah', '2015-04-12'), ('Retreat', '2015-07-19'), ('Natal', '2015-12-25'), ('Umum', '2016-01-17'), ('Paskah', '2016-04-10'), ('Doa Bersama', '2016-08-14'), ('Natal', '2016-12-25'), ('Umum', '2017-03-19'), ('Paskah', '2017-04-16'), ('Retreat', '2017-06-18'), ('Natal', '2017-12-24'), ('Umum', '2018-01-14'), ('Paskah', '2018-04-01'), ('Kebaktian Padang', '2018-05-20'), ('Natal', '2018-12-25'),
-('Umum', '2018-07-15'), ('Paskah', '2018-09-09'), ('Natal', '2018-12-25'), ('Retreat', '2018-11-11'), ('Umum', '2019-02-17'), ('Doa Bersama', '2019-05-05'), ('Kebaktian Padang', '2019-08-18'), ('Natal', '2019-12-25'), ('Paskah', '2020-04-12'), ('Umum', '2020-06-14'), ('Retreat', '2020-09-20'), ('Natal', '2020-12-24'), ('Umum', '2021-01-10'), ('Paskah', '2021-04-04'), ('Natal', '2021-12-25'), ('Retreat', '2021-11-21'), ('Umum', '2022-02-13'), ('Paskah', '2022-04-17'), ('Retreat', '2022-07-10'), ('Natal', '2022-12-24'), ('Umum', '2023-03-12'), ('Paskah', '2023-04-16'), ('Doa Bersama', '2023-06-18'), ('Natal', '2023-12-25'),  ('Umum', '2024-01-21'), ('Paskah', '2024-04-14'), ('Kebaktian Padang', '2024-05-19'), ('Natal', '2024-12-25');
 
 
 

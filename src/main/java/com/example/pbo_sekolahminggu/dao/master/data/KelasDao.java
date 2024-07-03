@@ -33,16 +33,14 @@ public class KelasDao {
     }
 
     // SAVE
-    public static void save(Connection con, Kelas kelas) {
+    public static void create(Connection con, Kelas kelas) throws SQLException {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_kelas(nama_kelas) VALUES (?)";
+        String query = "INSERT INTO tbl_kelas(nama_kelas) VALUES (INITCAP(?))";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, kelas.getNamaKelas());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kelas: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -51,7 +49,7 @@ public class KelasDao {
     // EDIT
     public static void update(Connection con, Kelas kelas) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_kelas SET nama_kelas = ? WHERE id = ?";
+        String query = "UPDATE tbl_kelas SET nama_kelas = INITCAP(?) WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
