@@ -209,7 +209,7 @@ public class KehadiranGuruDao {
                 "    hka.id_kelas_per_tahun = ?\n" +
                 "    AND ka.id_kebaktian = ?\n" +
                 "    AND ka.status_aktif = 1\n" +
-                "    AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1 AND kbk.status_aktif = 1";
+                "    AND a.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1 AND kbk.status_aktif = 1";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
