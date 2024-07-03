@@ -1,12 +1,11 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 
-import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
+import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
-import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
-import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -35,7 +34,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
@@ -46,11 +44,10 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
@@ -380,7 +377,7 @@ public class HistoriMengajarController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            Paragraph title = new Paragraph("Laporan Top 3 Guru yang Mengajar Paling Banyak")
+            Paragraph title = new Paragraph("Laporan Top 3 Guru yang Mengajar Paling Lama")
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(20);
@@ -392,7 +389,7 @@ public class HistoriMengajarController implements Initializable {
             doc.add(headerTable);
             Table table = new Table(UnitValue.createPercentArray(new float[] {10, 30, 60})).useAllAvailableWidth();
 
-            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Lama Mengajar (Tahun)"};
             Color customColor = new DeviceRgb(39, 106, 207);
             for (String header : headers) {
                 com.itextpdf.layout.element.Cell headerCell = new com.itextpdf.layout.element.Cell();
@@ -412,7 +409,7 @@ public class HistoriMengajarController implements Initializable {
                 Object[] row = data.get(key);
                 System.out.println("NIP: " + row[0]);
                 System.out.println("Nama Guru: " + row[1]);
-                System.out.println("Jumlah Mengajar: " + row[2]);
+                System.out.println("Lama Mengajar: " + row[2]);
 
                 Paragraph nipParagraph = new Paragraph(String.valueOf(row[0]));
                 nipParagraph.setTextAlignment(TextAlignment.CENTER);
@@ -454,7 +451,7 @@ public class HistoriMengajarController implements Initializable {
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("Laporan Top 3 Guru yang Mengajar Paling Banyak");
+            titleCell.setCellValue("Laporan Top 3 Guru yang Mengajar Paling Lama");
             CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
             spreadsheet.addMergedRegion(mergedRegion);
 
@@ -492,7 +489,7 @@ public class HistoriMengajarController implements Initializable {
 
             // Export Header
             XSSFRow headerRow = spreadsheet.createRow(rowid++);
-            String[] headers = {"NIP", "Nama Guru", "Jumlah Mengajar"};
+            String[] headers = {"NIP", "Nama Guru", "Lama Mengajar (Tahun)"};
             int cellCounter = 0;
 
             for (String header : headers) {
@@ -528,7 +525,7 @@ public class HistoriMengajarController implements Initializable {
                 }
             }
 
-            int[] columnWidths = {5000, 5500, 4500};
+            int[] columnWidths = {5000, 5500, 5500};
 
             for (int i = 0; i < columnWidths.length; i++) {
                 spreadsheet.setColumnWidth(i, columnWidths[i]);
