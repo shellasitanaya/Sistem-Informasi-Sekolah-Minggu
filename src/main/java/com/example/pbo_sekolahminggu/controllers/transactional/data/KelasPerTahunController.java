@@ -341,6 +341,7 @@ public class KelasPerTahunController implements Initializable {
 
     private void exportToPdf(File file) {
         //TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -359,7 +360,6 @@ public class KelasPerTahunController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
             Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedKelas.getTahunAjaran())
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
