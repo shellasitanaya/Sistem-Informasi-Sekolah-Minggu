@@ -36,8 +36,8 @@ public class WelcomeController {
         stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
         scene = new Scene(root);
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((screenBounds.getWidth() - scene.getWidth()) / 5);
-        stage.setY((screenBounds.getHeight() - scene.getHeight()) / 5);
+        stage.setX((screenBounds.getWidth() - scene.getWidth()) / 16);
+        stage.setY((screenBounds.getHeight() - scene.getHeight()) / 14);
         stage.setResizable(false);
         stage.setMaximized(false);
         stage.setTitle("Dasboard");
