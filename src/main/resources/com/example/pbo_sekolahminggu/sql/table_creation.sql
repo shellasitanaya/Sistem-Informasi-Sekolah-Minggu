@@ -108,5 +108,5 @@ CREATE TABLE tbl_kehadiran_anak (
 	CONSTRAINT histori_kelas_kebaktian_u UNIQUE (id_histori_kelas_anak, id_kebaktian)
 );
 
-
+--end
 
