@@ -17,14 +17,14 @@ public class KebaktianDao {
     public static ArrayList<Kebaktian> getAll(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from tbl_kebaktian where status_aktif = 1";
+        String query = "select * from tbl_kebaktian where status_aktif = 1 ORDER BY id ASC";
         ArrayList<Kebaktian> listkebaktian = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kebaktian kebaktian = new Kebaktian();
-                kebaktian.setID_KEBAKTIAN(rs.getInt("id"));
+                kebaktian.setIdKebaktian(rs.getInt("id"));
                 kebaktian.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kebaktian.setTanggal(rs.getDate("tanggal"));;
                 listkebaktian.add(kebaktian);
@@ -53,7 +53,7 @@ public class KebaktianDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Kebaktian kebaktian = new Kebaktian();
-                kebaktian.setID_KEBAKTIAN(rs.getInt("id"));
+                kebaktian.setIdKebaktian(rs.getInt("id"));
                 kebaktian.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kebaktian.setTanggal(rs.getDate("tanggal"));;
                 listkebaktian.add(kebaktian);
@@ -67,17 +67,15 @@ public class KebaktianDao {
     }
 
     // CREATE
-    public static void create (Connection con, Kebaktian kebaktian) {
+    public static void create (Connection con, Kebaktian kebaktian) throws SQLException {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (?, ?)";
+        String query = "INSERT INTO tbl_kebaktian (jenis_kebaktian, tanggal) VALUES (INITCAP(?), ?)";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, kebaktian.getJenisKebaktian());
             statement.setDate(2, kebaktian.getTanggal());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kebaktian: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -86,13 +84,13 @@ public class KebaktianDao {
     // EDIT
     public static void update(Connection con, Kebaktian kebaktian) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_kebaktian SET jenis_kebaktian = ?, tanggal = ? WHERE id = ?";
+        String query = "UPDATE tbl_kebaktian SET jenis_kebaktian = INITCAP(?), tanggal = ? WHERE id = ?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, kebaktian.getJenisKebaktian());
             statement.setDate(2, kebaktian.getTanggal());
-            statement.setInt(3, kebaktian.getID_KEBAKTIAN());
+            statement.setInt(3, kebaktian.getIdKebaktian());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kebaktian: " + e.getMessage());
@@ -108,7 +106,7 @@ public class KebaktianDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kebaktian.getID_KEBAKTIAN());
+            statement.setInt(1, kebaktian.getIdKebaktian());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kebaktian: " + e.getMessage());
@@ -141,8 +139,8 @@ public class KebaktianDao {
                 "),\n" +
                 "TotalCounts AS (\n" +
                 "    SELECT\n" +
-                "        '' AS jenis_kebaktian,\n" +
-                "        NULL::date AS tanggal,\n" +
+                "        '',\n" +
+                "        NULL::DATE as tanggal,\n" +
                 "        'Total' AS kelas,\n" +
                 "        SUM(LakiLaki) AS LakiLaki,\n" +
                 "        SUM(Perempuan) AS Perempuan,\n" +
@@ -161,7 +159,7 @@ public class KebaktianDao {
         Map<String, Object[]> listKebaktian = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kbk.getID_KEBAKTIAN());
+            ps.setInt(1, kbk.getIdKebaktian());
             rs = ps.executeQuery();
             int i = 1;
             while (rs.next()) {

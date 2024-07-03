@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -83,15 +84,15 @@ public class KebaktianController implements Initializable {
 
         // Inisialisasi table columns
         TableColumn<Kebaktian, Integer> idCol = new TableColumn<>("ID Kebaktian");
-        idCol.setMinWidth(100);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("ID_KEBAKTIAN"));
+        idCol.setMinWidth(90);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("idKebaktian"));
 
         TableColumn<Kebaktian, String> jenisCol = new TableColumn<>("Jenis Kebaktian");
-        jenisCol.setMinWidth(150);
+        jenisCol.setMinWidth(245);
         jenisCol.setCellValueFactory(new PropertyValueFactory<>("jenisKebaktian"));
 
         TableColumn<Kebaktian, Date> tanggalCol = new TableColumn<>("Tanggal");
-        tanggalCol.setMinWidth(150);
+        tanggalCol.setMinWidth(310);
         tanggalCol.setCellValueFactory(new PropertyValueFactory<>("tanggal"));
 
         kebaktianTbl.getColumns().addAll(idCol, jenisCol, tanggalCol);
@@ -129,6 +130,7 @@ public class KebaktianController implements Initializable {
         alert.showAndWait();
     }
 
+    //CRUD
     @FXML
     public void create() {
         String jenis = jenisKebaktianField.getText();
@@ -158,26 +160,29 @@ public class KebaktianController implements Initializable {
 
             clear();
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat menambahkan data kebaktian: " + e.getMessage());
-            alert.show();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data kebaktian di tanggal dan jenis yang sama.");
+                alert.showAndWait();
+            });
         } finally {
             ConnectionManager.close(con);
         }
     }
-
     @FXML
     public void update() {
         Kebaktian selected = kebaktianTbl.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showErrorMessage("Pilih kolom yang ingin diupdate.");
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
             return;
         }
 
-        String jenis = jenisKebaktianField.getText();
+        String jenis = jenisKebaktianField.getText().trim();
         Date tanggal = Date.valueOf(tanggalKebaktianPicker.getValue());
 
-        if (jenis.isEmpty() || tanggal == null) {
+        if (jenis.isEmpty() || tanggalKebaktianPicker.getValue() == null) {
             showErrorMessage("Harap isi semua kolom.");
             return;
         }
@@ -192,16 +197,16 @@ public class KebaktianController implements Initializable {
 
             updateKebaktianInList(selected);
 
-            kebaktianTbl.refresh();
+            refreshData();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Data Kebaktian berhasil diupdate!");
+            alert.setContentText("Data Kebaktian berhasil diperbaharui!");
             alert.show();
 
             clear();
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi kesalahan saat mengupdate data kebaktian: " + e.getMessage());
+            alert.setContentText("Terjadi kesalahan saat memperbaharui data kebaktian: " + e.getMessage());
             alert.show();
 
         } finally {
@@ -209,13 +214,6 @@ public class KebaktianController implements Initializable {
         }
     }
 
-
-    private void updateKebaktianInList(Kebaktian updatedKebaktian) {
-        int index = listKebaktian.indexOf(selectedKebaktian);
-        if (index != -1) {
-            listKebaktian.set(index, updatedKebaktian);
-        }
-    }
 
     @FXML
     public void delete() {
@@ -226,7 +224,7 @@ public class KebaktianController implements Initializable {
                 connection = ConnectionManager.getConnection();
                 KebaktianDao.delete(connection, selectedKebaktian);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Data berhasil dihapus !");
+                alert.setContentText("Data berhasil dihapus!");
                 alert.show();
 
                 refreshData();
@@ -237,11 +235,19 @@ public class KebaktianController implements Initializable {
                 ConnectionManager.close(connection);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Tidak ada data yang dipilih !");
-            alert.show();
+            showErrorMessage("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
+
+
+
+    private void updateKebaktianInList(Kebaktian updatedKebaktian) {
+        int index = listKebaktian.indexOf(selectedKebaktian);
+        if (index != -1) {
+            listKebaktian.set(index, updatedKebaktian);
+        }
+    }
+
 
     @FXML
     public void clear() {
@@ -290,6 +296,10 @@ public class KebaktianController implements Initializable {
     // EXPORTT
     @FXML
     public void export() {
+        if (jenisKebaktianField.getText().trim().isEmpty() || tanggalKebaktianPicker.getValue() == null) {
+            showErrorMessage("Harap isi semua kolom.");
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
@@ -382,6 +392,7 @@ public class KebaktianController implements Initializable {
     }
 
     private void exportToExcel(File file) {
+        Kebaktian selectedKebaktian = kebaktianTbl.getSelectionModel().getSelectedItem();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Kebaktian Data");
 

@@ -49,23 +49,23 @@ public class assignKelasAnakController implements Initializable {
         anakDalamKelasHistoriKelasTbl.getColumns().clear();
         //set the columns
         TableColumn<Anak, String> namaColTerdaftar = new TableColumn<>("Nama");
-        namaColTerdaftar.setMinWidth(100);
-        namaColTerdaftar.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaColTerdaftar.setMinWidth(125);
+        namaColTerdaftar.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisTerdaftarCol = new TableColumn<>("NIS");
-        nisTerdaftarCol.setMinWidth(60);
-        nisTerdaftarCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisTerdaftarCol.setMinWidth(95);
+        nisTerdaftarCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         anakDalamKelasHistoriKelasTbl.getColumns().addAll(namaColTerdaftar, nisTerdaftarCol);
 
         anakBerdasarkanTahunHistoriKelasTbl.getColumns().clear();
         TableColumn<Anak, String> namaColTidak = new TableColumn<>("Nama");
-        namaColTidak.setMinWidth(100);
-        namaColTidak.setCellValueFactory(new PropertyValueFactory<>("Nama"));
+        namaColTidak.setMinWidth(125);
+        namaColTidak.setCellValueFactory(new PropertyValueFactory<>("nama"));
 
         TableColumn<Anak, String> nisTidakCol = new TableColumn<>("NIS");
-        nisTidakCol.setMinWidth(60);
-        nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("NIS"));
+        nisTidakCol.setMinWidth(95);
+        nisTidakCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
 
         anakBerdasarkanTahunHistoriKelasTbl.getColumns().addAll(namaColTidak, nisTidakCol);
 
@@ -85,6 +85,7 @@ public class assignKelasAnakController implements Initializable {
                 con.rollback();
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -101,6 +102,7 @@ public class assignKelasAnakController implements Initializable {
                 con.commit();
             }
             System.out.println("Changes saved.");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -126,7 +128,7 @@ public class assignKelasAnakController implements Initializable {
     private void addToClass() {
         Anak selectedAnak = anakBerdasarkanTahunHistoriKelasTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             HistoriKelasAnakDao.insertToClass(con, selectedAnak);
             refreshTable(con);
         } else {
@@ -138,12 +140,12 @@ public class assignKelasAnakController implements Initializable {
     private void removeFromClass() {
         Anak selectedAnak = anakDalamKelasHistoriKelasTbl.getSelectionModel().getSelectedItem();
         if (selectedAnak != null) {
-            System.out.println(selectedAnak.getID_ANAK());
+            System.out.println(selectedAnak.getIdAnak());
             HistoriKelasAnakDao.removeFromClass(con, selectedAnak);
             //refresh table view
             refreshTable(con);
         } else {
-            alertWarning("Silahkan pilih anak yang akan dijadikan akan dihapus");
+            alertWarning("Silahkan pilih anak yang akan dihapus");
         }
     }
 
@@ -161,6 +163,12 @@ public class assignKelasAnakController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning!");
         alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
     }

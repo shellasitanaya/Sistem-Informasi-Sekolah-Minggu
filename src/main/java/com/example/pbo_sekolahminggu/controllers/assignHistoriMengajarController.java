@@ -1,8 +1,6 @@
 package com.example.pbo_sekolahminggu.controllers;
 
-import com.example.pbo_sekolahminggu.beans.master.data.Anak;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
-import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import javafx.collections.FXCollections;
@@ -49,22 +47,22 @@ public class assignHistoriMengajarController implements Initializable {
         addedGuruTbl.getColumns().clear();
         //set the columns
         TableColumn<Guru, String> namaColTerdaftar = new TableColumn<>("Nama");
-        namaColTerdaftar.setMinWidth(120);
+        namaColTerdaftar.setMinWidth(125);
         namaColTerdaftar.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         TableColumn<Guru, String> nipTerdaftarCol = new TableColumn<>("NIP");
-        nipTerdaftarCol.setMinWidth(100);
+        nipTerdaftarCol.setMinWidth(95);
         nipTerdaftarCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         addedGuruTbl.getColumns().addAll(namaColTerdaftar, nipTerdaftarCol);
 
         removedGuruTbl.getColumns().clear();
         TableColumn<Guru, String> namaColTidak = new TableColumn<>("Nama");
-        namaColTidak.setMinWidth(120);
+        namaColTidak.setMinWidth(125);
         namaColTidak.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
 
         TableColumn<Guru, String> nipTidakCol = new TableColumn<>("NIP");
-        nipTidakCol.setMinWidth(100);
+        nipTidakCol.setMinWidth(95);
         nipTidakCol.setCellValueFactory(new PropertyValueFactory<>("nip"));
 
         removedGuruTbl.getColumns().addAll(namaColTidak, nipTidakCol);
@@ -85,6 +83,7 @@ public class assignHistoriMengajarController implements Initializable {
                 con.rollback();
             }
             System.out.println("Changes cancelled");
+            dialogBox("Perubahan data dibatalkan.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -100,7 +99,8 @@ public class assignHistoriMengajarController implements Initializable {
             if (con != null) {
                 con.commit();
             }
-            System.out.println("Changes saved.");
+            System.out.println("Changes saved");
+            dialogBox("Data berhasil diubah!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -137,12 +137,12 @@ public class assignHistoriMengajarController implements Initializable {
     private void removeFromClass() {
         Guru selectedGuru = addedGuruTbl.getSelectionModel().getSelectedItem();
         if (selectedGuru != null) {
-            System.out.println(selectedGuru.getID_GURU());
+            System.out.println(selectedGuru.getIdGuru());
             HistoriMengajarDao.removeFromClass(con, selectedGuru);
             //refresh table view
             refreshTable(con);
         } else {
-            alertWarning("Silahkan pilih guru yang akan dijadikan akan dihapus");
+            alertWarning("Silahkan pilih guru yang akan dihapus");
         }
     }
 
@@ -157,9 +157,15 @@ public class assignHistoriMengajarController implements Initializable {
     }
 
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void dialogBox(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
     }

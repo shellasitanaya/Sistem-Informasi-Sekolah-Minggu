@@ -1,11 +1,11 @@
 package com.example.pbo_sekolahminggu.beans.master.data;
 
 public class Guru {
-    private int ID_GURU;
-    private String NamaGuru;
-    private String NIP;
-    private String NoTelp;
-    private String Alamat;
+    private int idGuru;
+    private String namaGuru;
+    private String nip;
+    private String noTelp;
+    private String alamat;
 
     // constructor
     public Guru(){
@@ -13,43 +13,43 @@ public class Guru {
     }
 
     // getter setter
-    public int getID_GURU() {
-        return ID_GURU;
+    public int getIdGuru() {
+        return idGuru;
     }
 
-    public void setID_GURU(int ID_GURU) {
-        this.ID_GURU = ID_GURU;
+    public void setIdGuru(int idGuru) {
+        this.idGuru = idGuru;
     }
 
     public String getNamaGuru() {
-        return NamaGuru;
+        return namaGuru;
     }
 
     public void setNamaGuru(String namaGuru) {
-        NamaGuru = namaGuru;
+        this.namaGuru = namaGuru;
     }
 
-    public String getNIP() {
-        return NIP;
+    public String getNip() {
+        return nip;
     }
 
-    public void setNIP(String NIP) {
-        this.NIP = NIP;
+    public void setNip(String nip) {
+        this.nip = nip;
     }
 
     public String getNoTelp() {
-        return NoTelp;
+        return noTelp;
     }
 
     public void setNoTelp(String noTelp) {
-        NoTelp = noTelp;
+        this.noTelp = noTelp;
     }
 
     public String getAlamat() {
-        return Alamat;
+        return alamat;
     }
 
     public void setAlamat(String alamat) {
-        Alamat = alamat;
+        this.alamat = alamat;
     }
 }

@@ -20,10 +20,10 @@
    <children>
       <TableView fx:id="guruTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idGuru" prefWidth="56.0" text="ID Guru" />
-            <TableColumn fx:id="namaGuru" prefWidth="234.0" text="Nama Guru" />
-            <TableColumn fx:id="nipGuru" prefWidth="104.0" text="NIP" />
-            <TableColumn fx:id="noTelpGuru" prefWidth="138.0" text="Nomor Telpon" />
+            <TableColumn fx:id="idGuru" prefWidth="55.0" text="ID Guru" />
+            <TableColumn fx:id="namaGuru" prefWidth="235.0" text="Nama Guru" />
+            <TableColumn fx:id="nipGuru" prefWidth="105.0" text="NIP" />
+            <TableColumn fx:id="noTelpGuru" prefWidth="150.0" text="Nomor Telpon" />
             <TableColumn fx:id="alamatGuru" prefWidth="279.0" text="Alamat" />
          </columns>
       </TableView>

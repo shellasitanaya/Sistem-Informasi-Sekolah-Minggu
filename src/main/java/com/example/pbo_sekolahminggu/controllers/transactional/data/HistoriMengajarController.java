@@ -1,8 +1,10 @@
 package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
 import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
+import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriKelasAnakDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.HistoriMengajarDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
@@ -26,6 +28,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -62,18 +66,23 @@ public class HistoriMengajarController implements Initializable {
     @FXML
     TableView<HistoriMengajar> historiMengajarTbl;
     @FXML
-    TableColumn<HistoriMengajar, String> IDHistori, Nama, NIP, Kelas, TahunAjaran;
+    TableColumn<HistoriMengajar, String> idhistori, nama, nip, kelas, tahunAjaran;
     @FXML
     ComboBox<TahunAjaran> tahunAjaranHistoriMengajarCb;
     @FXML
     ComboBox<KelasPerTahun> kelasHistoriMengajarCb;
+    @FXML
+    private TextField historiMengajarSearchField;
 
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
     ObservableList<KelasPerTahun> dataKelas = FXCollections.observableArrayList();
+    ObservableList<HistoriMengajar> listHistoriMengajar = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateKelasTable();
+        tahunAjaranHistoriMengajarCb.setPromptText(" ");
+        kelasHistoriMengajarCb.setPromptText(" ");
 
         tahunAjaranHistoriMengajarCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
             @Override
@@ -93,31 +102,87 @@ public class HistoriMengajarController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listHistoriMengajar = FXCollections.
+                    observableList(HistoriMengajarDao.getAll(con));
+            for (HistoriMengajar historiMengajar: listHistoriMengajar) {
+                System.out.println(historiMengajar);
+            }
+            historiMengajarTbl.setItems(listHistoriMengajar);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<HistoriMengajar> filter = new FilteredList<>(listHistoriMengajar, e -> true);
+
+        historiMengajarSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getNip().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<HistoriMengajar> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(historiMengajarTbl.comparatorProperty());
+        historiMengajarTbl.setItems(sortList);
     }
 
     @FXML
     public void showFilter() {
+        if (checkKolomError()) return;
         try {
             //selected nama kelas
             KelasPerTahun selectedKelas = (KelasPerTahun) kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
             //selected tahun ajaran
 //            TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranHistoriKelasCb.getSelectionModel().getSelectedItem();
             // Get the ArrayList of Guru objects from the database
-            ArrayList<HistoriMengajar> listHistoryKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getID_KELAS_PER_TAHUN());
+            ArrayList<HistoriMengajar> listHistoryKelasGuru = HistoriMengajarDao.get(ConnectionManager.getConnection(), selectedKelas.getIdKelasPerTahun());
 
             if (listHistoryKelasGuru.isEmpty()) {
                 alertWarning("Belum ada anak yang terdaftar di kelas ini!");
+                return;
             }
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
-            NIP.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            idhistori.setMinWidth(80);
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nama.setMinWidth(300);
+            nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            nip.setMinWidth(140);
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            kelas.setMinWidth(150);
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            tahunAjaran.setMinWidth(140);
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns
-            historiMengajarTbl.getColumns().addAll(IDHistori, Nama, NIP, Kelas, TahunAjaran);
+            historiMengajarTbl.getColumns().addAll(idhistori, nama, nip, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiMengajarTbl.getItems().clear(); // Clear existing data
@@ -163,14 +228,12 @@ public class HistoriMengajarController implements Initializable {
         }
     }
 
-
     public void filterDataKelas () {
         TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
         if (tahunSelected == null) {
-            System.out.println("No TahunAjaran selected!");
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
             return;
         }
-
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -212,26 +275,24 @@ public class HistoriMengajarController implements Initializable {
         } finally {
             ConnectionManager.close(con);
         }
-//        kelasHistoriMengajarCb.show();
     }
 
 
     public void populateKelasTable () {
-        System.out.println("ha");
         try {
             // Get the ArrayList of Guru objects from the database
             ArrayList<HistoriMengajar> listHistoryMengajar = HistoriMengajarDao.getAll(ConnectionManager.getConnection());
 
             // Set cell value factory for each TableColumn
-            IDHistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_HISTORI_MENGAJAR())));
-            Nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
-            NIP.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
-            Kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
-            TahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            idhistori.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdHistoriMengajar())));
+            nama.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaGuru()));
+            nip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+            kelas.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelas()));
+            tahunAjaran.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
 
             // Add columns to the TableView
             historiMengajarTbl.getColumns().clear(); // Clear existing columns
-            historiMengajarTbl.getColumns().addAll(IDHistori, Nama, NIP, Kelas, TahunAjaran);
+            historiMengajarTbl.getColumns().addAll(idhistori, nama, nip, kelas, tahunAjaran);
 
             // Set the data to the TableView
             historiMengajarTbl.getItems().clear(); // Clear existing data
@@ -249,9 +310,9 @@ public class HistoriMengajarController implements Initializable {
         }
     }
 
-
     @FXML
     public void editAssign() {
+        if (checkKolomError()) return;
         Connection con = null;
         try {
             con = ConnectionManager.getConnection();
@@ -265,12 +326,22 @@ public class HistoriMengajarController implements Initializable {
             e.printStackTrace();
         } finally {
             ConnectionManager.close(con);
+        }
+    }
 
+    @FXML
+    public void checkTahunAjaran() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null) {
+            alertWarning("Harap pilih tahun ajaran terlebih dahulu.");
         }
     }
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (checkKolomError()) {
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
@@ -499,10 +570,20 @@ public class HistoriMengajarController implements Initializable {
     }
 
     private void alertWarning (String message){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private boolean checkKolomError() {
+        TahunAjaran tahunSelected = tahunAjaranHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        KelasPerTahun kelasSelected = kelasHistoriMengajarCb.getSelectionModel().getSelectedItem();
+        if (tahunSelected == null || kelasSelected == null) {
+            alertWarning("Harap isi semua kolom.");
+            return true;
+        }
+        return false;
     }
 }

@@ -1,10 +1,10 @@
 package com.example.pbo_sekolahminggu.beans.master.data;
 
 public class Anak {
-    private int ID_ANAK;
-    private String NIS;
-    private String Nama;
-    private String JenisKelamin;
+    private int idAnak;
+    private String nis;
+    private String nama;
+    private String jenisKelamin;
     private String namaOrangTua;
     private String alamatOrangTua;
     private String noTelpOrangTua;
@@ -15,36 +15,36 @@ public class Anak {
     }
 
     // getter setter
-    public int getID_ANAK() {
-        return ID_ANAK;
+    public int getIdAnak() {
+        return idAnak;
     }
 
-    public void setID_ANAK(int ID_ANAK) {
-        this.ID_ANAK = ID_ANAK;
+    public void setIdAnak(int idAnak) {
+        this.idAnak = idAnak;
     }
 
-    public String getNIS() {
-        return NIS;
+    public String getNis() {
+        return nis;
     }
 
-    public void setNIS(String NIS) {
-        this.NIS = NIS;
+    public void setNis(String nis) {
+        this.nis = nis;
     }
 
     public String getNama() {
-        return Nama;
+        return nama;
     }
 
     public void setNama(String nama) {
-        Nama = nama;
+        this.nama = nama;
     }
 
     public String getJenisKelamin() {
-        return JenisKelamin;
+        return jenisKelamin;
     }
 
     public void setJenisKelamin(String jenisKelamin) {
-        JenisKelamin = jenisKelamin;
+        this.jenisKelamin = jenisKelamin;
     }
 
     public String getNamaOrangTua() {

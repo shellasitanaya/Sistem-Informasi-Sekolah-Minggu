@@ -2,6 +2,8 @@ package com.example.pbo_sekolahminggu.dao.master.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,9 +24,9 @@ public class GuruDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
-                guru.setID_GURU(rs.getInt("id"));
+                guru.setIdGuru(rs.getInt("id"));
                 guru.setNamaGuru(rs.getString("nama"));
-                guru.setNIP(rs.getString("nip"));
+                guru.setNip(rs.getString("nip"));
                 guru.setNoTelp(rs.getString("no_telp"));
                 guru.setAlamat(rs.getString("alamat"));
                 listGuru.add(guru);
@@ -38,19 +40,17 @@ public class GuruDao {
     }
 
     // CREATE
-    public static void create (Connection con, Guru guru) {
+    public static void create (Connection con, Guru guru) throws SQLException {
         PreparedStatement statement = null;
-        String query = "INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO tbl_guru (nama, nip, no_telp, alamat) VALUES (INITCAP(?), UPPER(?), ?, INITCAP(?))";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, guru.getNamaGuru());
-            statement.setString(2, guru.getNIP());
+            statement.setString(2, guru.getNip());
             statement.setString(3, guru.getNoTelp());
             statement.setString(4, guru.getAlamat());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving guru: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -81,15 +81,15 @@ public class GuruDao {
     // UPDATE
     public static void update(Connection con, Guru guru) {
         PreparedStatement statement = null;
-        String query = "UPDATE tbl_guru SET nama = ?, nip = ?, no_telp = ?, alamat = ? WHERE id = ?";
+        String query = "UPDATE tbl_guru SET nama = INITCAP(?), nip = UPPER(?), no_telp = ?, alamat = INITCAP(?) WHERE id=?";
 
         try {
             statement = con.prepareStatement(query);
             statement.setString(1, guru.getNamaGuru());
-            statement.setString(2, guru.getNIP());
+            statement.setString(2, guru.getNip());
             statement.setString(3, guru.getNoTelp());
             statement.setString(4, guru.getAlamat());
-            statement.setInt(5, guru.getID_GURU());
+            statement.setInt(5, guru.getIdGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing guru: " + e.getMessage());
@@ -105,7 +105,7 @@ public class GuruDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, guru.getID_GURU());
+            statement.setInt(1, guru.getIdGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting guru: " + e.getMessage());

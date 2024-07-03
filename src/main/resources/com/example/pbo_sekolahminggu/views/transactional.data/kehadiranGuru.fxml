@@ -21,18 +21,18 @@
    <children>
       <TableView fx:id="kehadiranGuruTbl" layoutX="26.0" layoutY="68.0" prefHeight="203.0" prefWidth="812.0" styleClass="filter" stylesheets="@../../../../../../../style.css">
          <columns>
-            <TableColumn fx:id="idKehadiranCol" prefWidth="81.0" text="ID Kehadiran" />
-            <TableColumn fx:id="namaCol" prefWidth="188.0" text="Nama" />
-            <TableColumn fx:id="nipCol" prefWidth="128.0" text="NIP" />
-            <TableColumn fx:id="kelasCol" prefWidth="127.0" text="Kelas" />
-            <TableColumn fx:id="kebaktianCol" prefWidth="88.0" text="Kebaktian" />
-            <TableColumn fx:id="tanggalCol" prefWidth="106.0" text="Tanggal" />
-            <TableColumn fx:id="presensiCol" prefWidth="92.0" text="Presensi" />
+            <TableColumn fx:id="idKehadiranCol" text="ID Kehadiran" />
+            <TableColumn fx:id="namaCol" prefWidth="190.0" text="Nama" />
+            <TableColumn fx:id="nipCol" prefWidth="130.0" text="NIP" />
+            <TableColumn fx:id="kelasCol" prefWidth="130.0" text="Kelas" />
+            <TableColumn fx:id="kebaktianCol" prefWidth="90.0" text="Kebaktian" />
+            <TableColumn fx:id="tanggalCol" prefWidth="100.0" text="Tanggal" />
+            <TableColumn fx:id="presensiCol" prefWidth="90.0" text="Presensi" />
          </columns>
       </TableView>
       <Pane layoutX="26.0" layoutY="14.0" prefHeight="40.0" prefWidth="256.0" stylesheets="@../../../../../../../style.css">
          <children>
-            <TextField fx:id="kehadiranGuruSearchField" layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
+            <TextField fx:id="kehadiranGuruSearchField" layoutX="13.0" layoutY="8.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="231.0" promptText=" Search Here" styleClass="search_field" stylesheets="@../../../../../../../style.css" />
          </children>
          <styleClass>
             <String fx:value="search_box_outer" />
@@ -78,7 +78,7 @@
       <ComboBox fx:id="tahunAjaranKehadiranGuruCb" layoutX="133.0" layoutY="334.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="kelasKehadiranGuruCb" layoutX="133.0" layoutY="376.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
       <ComboBox fx:id="kebaktianKehadiranGuruCb" layoutX="133.0" layoutY="419.0" prefWidth="150.0" styleClass="textfield" stylesheets="@../../../../../../../style.css" />
-      <Button fx:id="exportKehadiranGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.5;" stylesheets="@../../../../../../../style.css" text="EXPORT">
+      <Button fx:id="exportKehadiranGuruBtn" layoutX="27.0" layoutY="511.0" mnemonicParsing="false" onAction="#export" prefHeight="40.0" prefWidth="101.0" style="-fx-opacity: 0.75;" stylesheets="@../../../../../../../style.css" text="EXPORT">
          <graphic>
             <ImageView fitHeight="31.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -94,5 +94,15 @@
             <String fx:value="shadow2" />
          </styleClass>
       </Button>
+      <Label layoutX="26.0" layoutY="487.0" text="isi semua input field sebelum melakukan export!" textFill="RED">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="138.0" layoutY="523.0" text="Laporan Kehadiran Guru Berdasarkan Tahun Ajaran">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -1,13 +1,11 @@
 package com.example.pbo_sekolahminggu.beans.master.data;
 
-import javafx.scene.control.DatePicker;
-
 import java.sql.Date;
 
 public class Kebaktian {
-    private int ID_KEBAKTIAN;
+    private int idKebaktian;
     private String jenisKebaktian;
-    private Date Tanggal;
+    private Date tanggal;
 
     // constructor
     public Kebaktian(){
@@ -15,12 +13,12 @@ public class Kebaktian {
     }
 
     // getter setter
-    public int getID_KEBAKTIAN() {
-        return ID_KEBAKTIAN;
+    public int getIdKebaktian() {
+        return idKebaktian;
     }
 
-    public void setID_KEBAKTIAN(int ID_KEBAKTIAN) {
-        this.ID_KEBAKTIAN = ID_KEBAKTIAN;
+    public void setIdKebaktian(int idKebaktian) {
+        this.idKebaktian = idKebaktian;
     }
 
     public String getJenisKebaktian() {
@@ -32,10 +30,10 @@ public class Kebaktian {
     }
 
     public Date getTanggal() {
-        return Tanggal;
+        return tanggal;
     }
 
     public void setTanggal(Date tanggal) {
-        Tanggal = tanggal;
+        this.tanggal = tanggal;
     }
 }

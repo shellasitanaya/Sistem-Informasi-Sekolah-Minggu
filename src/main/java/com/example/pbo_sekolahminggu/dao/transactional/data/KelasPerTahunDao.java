@@ -33,13 +33,13 @@ public class KelasPerTahunDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 KelasPerTahun kelasPerTahun = new KelasPerTahun();
-                kelasPerTahun.setID_KELAS_PER_TAHUN(rs.getInt("id"));
+                kelasPerTahun.setIdKelasPerTahun(rs.getInt("id"));
                 kelasPerTahun.setRuangKelas(rs.getString("ruang_kelas"));
                 kelasPerTahun.setKelasParalel(rs.getString("kelas_paralel"));
                 kelasPerTahun.setNamaKelas(rs.getString("nama_kelas"));
                 kelasPerTahun.setTahunAjaran(rs.getString("tahun_ajaran"));
-                kelasPerTahun.setID_KELAS(rs.getInt("id_kelas"));
-                kelasPerTahun.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                kelasPerTahun.setIdKelas(rs.getInt("id_kelas"));
+                kelasPerTahun.setIdTahunAjaran(rs.getInt("id_tahun_ajaran"));
                 listkelasPerTahun.add(kelasPerTahun);
             }
         } catch (SQLException e) {
@@ -50,8 +50,37 @@ public class KelasPerTahunDao {
         return listkelasPerTahun;
     }
 
+    public static String getNextParalel(Connection con, int idKelas, int idTahunAjaran) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String query = "SELECT \n" +
+                "    CASE \n" +
+                "        WHEN MAX(kelas_paralel) IS NULL THEN 'A'\n" +
+                "        ELSE CHR(ASCII(MAX(kelas_paralel)) + 1)\n" +
+                "    END AS next_value\n" +
+                "FROM tbl_kelas_per_tahun\n" +
+                "WHERE id_kelas = ? AND id_tahun_ajaran = ? and status_aktif=1;";
+
+        String ans = "";
+        try {
+            ps = con.prepareStatement(query);
+            ps.setInt(1, idKelas);
+            ps.setInt(2, idTahunAjaran);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ans = rs.getString("next_value");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(ps, rs);
+        }
+        return ans;
+    }
+
     // EXPORT
-    public static Map<String, Object[]> getAllArrayObject(Connection con, KelasPerTahun kpt) {
+    public static Map<String, Object[]> getAllArrayObject(Connection con, TahunAjaran tahun) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query =
@@ -72,7 +101,7 @@ public class KelasPerTahunDao {
         Map<String, Object[]> listMengajar = new TreeMap<String, Object[]>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kpt.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, tahun.getIdTahunAjaran());
             rs = ps.executeQuery();
 
             int i = 1;
@@ -95,19 +124,17 @@ public class KelasPerTahunDao {
 
 
     // SAVE
-    public static void save(Connection con, KelasPerTahun kelasPerTahun) {
+    public static void save(Connection con, KelasPerTahun kelasPerTahun) throws SQLException {
         PreparedStatement statement = null;
         String query = "INSERT INTO tbl_kelas_per_tahun(id_kelas, id_tahun_ajaran, ruang_kelas, kelas_paralel) VALUES (?, ?, ?, ?)";
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kelasPerTahun.getID_KELAS());
-            statement.setInt(2, kelasPerTahun.getID_TAHUN_AJARAN());
+            statement.setInt(1, kelasPerTahun.getIdKelas());
+            statement.setInt(2, kelasPerTahun.getIdTahunAjaran());
             statement.setString(3, kelasPerTahun.getRuangKelas());
             statement.setString(4, kelasPerTahun.getKelasParalel());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error saving kelasPerTahun: " + e.getMessage());
         } finally {
             ConnectionManager.close(statement);
         }
@@ -122,9 +149,9 @@ public class KelasPerTahunDao {
             statement = con.prepareStatement(query);
             statement.setString(1, kelasPerTahun.getRuangKelas());
             statement.setString(2, kelasPerTahun.getKelasParalel());
-            statement.setInt(3, kelasPerTahun.getID_KELAS());
-            statement.setInt(4, kelasPerTahun.getID_TAHUN_AJARAN());
-            statement.setInt(5, kelasPerTahun.getID_KELAS_PER_TAHUN());
+            statement.setInt(3, kelasPerTahun.getIdKelas());
+            statement.setInt(4, kelasPerTahun.getIdTahunAjaran());
+            statement.setInt(5, kelasPerTahun.getIdKelasPerTahun());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kelasPerTahun: " + e.getMessage());
@@ -140,7 +167,7 @@ public class KelasPerTahunDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kelasPerTahun.getID_KELAS_PER_TAHUN());
+            statement.setInt(1, kelasPerTahun.getIdKelasPerTahun());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kelasPerTahun: " + e.getMessage());
@@ -165,17 +192,17 @@ public class KelasPerTahunDao {
         ArrayList<KelasPerTahun> listkelasPerTahun = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, th.getID_TAHUN_AJARAN());
+            ps.setInt(1, th.getIdTahunAjaran());
             rs = ps.executeQuery();
             while (rs.next()) {
                 KelasPerTahun kelasPerTahun = new KelasPerTahun();
-                kelasPerTahun.setID_KELAS_PER_TAHUN(rs.getInt("id"));
+                kelasPerTahun.setIdKelasPerTahun(rs.getInt("id"));
                 kelasPerTahun.setRuangKelas(rs.getString("ruang_kelas"));
                 kelasPerTahun.setKelasParalel(rs.getString("kelas_paralel"));
                 kelasPerTahun.setNamaKelas(rs.getString("nama_kelas"));
                 kelasPerTahun.setTahunAjaran(rs.getString("tahun_ajaran"));
-                kelasPerTahun.setID_KELAS(rs.getInt("id_kelas"));
-                kelasPerTahun.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                kelasPerTahun.setIdKelas(rs.getInt("id_kelas"));
+                kelasPerTahun.setIdTahunAjaran(rs.getInt("id_tahun_ajaran"));
                 listkelasPerTahun.add(kelasPerTahun);
             }
         } catch (SQLException e) {
@@ -196,8 +223,8 @@ public class KelasPerTahunDao {
                 "WHERE id_kelas=? AND id_tahun_ajaran=? AND ruang_kelas=? AND kelas_paralel=? AND status_aktif=1";
 
         try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, kelasPerTahun.getID_KELAS());
-            ps.setInt(2, kelasPerTahun.getID_TAHUN_AJARAN());
+            ps.setInt(1, kelasPerTahun.getIdKelas());
+            ps.setInt(2, kelasPerTahun.getIdTahunAjaran());
             ps.setString(3, kelasPerTahun.getRuangKelas());
             ps.setString(4,kelasPerTahun.getKelasParalel());
 

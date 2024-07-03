@@ -3,6 +3,8 @@ package com.example.pbo_sekolahminggu.dao.transactional.data;
 import com.example.pbo_sekolahminggu.beans.master.data.Guru;
 import com.example.pbo_sekolahminggu.beans.master.data.Kebaktian;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriKelasAnak;
+import com.example.pbo_sekolahminggu.beans.transactional.data.HistoriMengajar;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
@@ -53,7 +55,7 @@ public class KehadiranGuruDao {
 
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, tahun.getID_TAHUN_AJARAN());
+            ps.setInt(1, tahun.getIdTahunAjaran());
             rs = ps.executeQuery();
             int i = 1;
             while(rs.next()) {
@@ -98,24 +100,24 @@ public class KehadiranGuruDao {
                 "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 \nORDER BY kg.id";
+                "WHERE kg.status_aktif = 1 AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND keb.status_aktif = 1 \nORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranGuru kehadiranGuru = new KehadiranGuru();
-                kehadiranGuru.setID_KEHADIRAN_GURU(rs.getInt("id"));
+                kehadiranGuru.setIdKehadiranGuru(rs.getInt("id"));
                 kehadiranGuru.setPresensi(rs.getBoolean("presensi"));
                 kehadiranGuru.setNama(rs.getString("nama"));
                 kehadiranGuru.setNip(rs.getString("nip"));
                 kehadiranGuru.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kehadiranGuru.setTanggal(rs.getDate("tanggal"));
-                kehadiranGuru.setID_KEBAKTIAN(rs.getInt("id_kebaktian"));
-                kehadiranGuru.setID_HISTORI_MENGAJAR(rs.getInt("id_histori_mengajar"));
+                kehadiranGuru.setIdKebaktian(rs.getInt("id_kebaktian"));
+                kehadiranGuru.setIdHistoriMengajar(rs.getInt("id_histori_mengajar"));
                 kehadiranGuru.setKelas(rs.getString("kelas"));
-                kehadiranGuru.setID_KELAS_PER_TAHUN(rs.getInt("id_kelas_per_tahun"));
-                kehadiranGuru.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                kehadiranGuru.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
+                kehadiranGuru.setIdTahunAjaran(rs.getInt("id_tahun_ajaran"));
                 listkehadiranGuru.add(kehadiranGuru);
             }
         } catch (SQLException e) {
@@ -126,7 +128,7 @@ public class KehadiranGuruDao {
         return listkehadiranGuru;
     }
 
-    public static ArrayList<KehadiranGuru> get(Connection con, int idKebaktian) {
+    public static ArrayList<KehadiranGuru> get(Connection con, int idKebaktian, int idKelas) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "SELECT\n" +
@@ -151,25 +153,28 @@ public class KehadiranGuruDao {
                 "JOIN tbl_kelas_per_tahun kpt ON kpt.id = hm.id_kelas_per_tahun\n" +
                 "JOIN tbl_kelas k ON k.id = kpt.id_kelas\n" +
                 "LEFT JOIN tbl_kebaktian keb ON keb.id = kg.id_kebaktian\n" +
-                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian=?\nORDER BY kg.id";
+                "WHERE kg.status_aktif = 1 AND kg.id_kebaktian = ? AND kpt.id = ?" +
+                " AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND keb.status_aktif = 1\n" +
+                "ORDER BY kg.id";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
             ps.setInt(1, idKebaktian);
+            ps.setInt(2, idKelas);
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranGuru kehadiranGuru = new KehadiranGuru();
-                kehadiranGuru.setID_KEHADIRAN_GURU(rs.getInt("id"));
+                kehadiranGuru.setIdKehadiranGuru(rs.getInt("id"));
                 kehadiranGuru.setPresensi(rs.getBoolean("presensi"));
                 kehadiranGuru.setNama(rs.getString("nama"));
                 kehadiranGuru.setNip(rs.getString("nip"));
                 kehadiranGuru.setJenisKebaktian(rs.getString("jenis_kebaktian"));
                 kehadiranGuru.setTanggal(rs.getDate("tanggal"));
-                kehadiranGuru.setID_KEBAKTIAN(rs.getInt("id_kebaktian"));
-                kehadiranGuru.setID_HISTORI_MENGAJAR(rs.getInt("id_histori_mengajar"));
+                kehadiranGuru.setIdKebaktian(rs.getInt("id_kebaktian"));
+                kehadiranGuru.setIdHistoriMengajar(rs.getInt("id_histori_mengajar"));
                 kehadiranGuru.setKelas(rs.getString("kelas"));
-                kehadiranGuru.setID_KELAS_PER_TAHUN(rs.getInt("id_kelas_per_tahun"));
-                kehadiranGuru.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                kehadiranGuru.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
+                kehadiranGuru.setIdTahunAjaran(rs.getInt("id_tahun_ajaran"));
                 listkehadiranGuru.add(kehadiranGuru);
             }
         } catch (SQLException e) {
@@ -203,23 +208,24 @@ public class KehadiranGuruDao {
                 "WHERE\n" +
                 "    hka.id_kelas_per_tahun = ?\n" +
                 "    AND ka.id_kebaktian = ?\n" +
-                "    AND ka.status_aktif = 1;\n";
+                "    AND ka.status_aktif = 1\n" +
+                "    AND a.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1 AND kbk.status_aktif = 1";
         ArrayList<KehadiranGuru> listkehadiranGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, kelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, kbk.getID_KEBAKTIAN());
+            ps.setInt(1, kelas.getIdKelasPerTahun());
+            ps.setInt(2, kbk.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 KehadiranGuru kehadiranGuru = new KehadiranGuru();
-                kehadiranGuru.setID_KEHADIRAN_GURU(rs.getInt("id"));
+                kehadiranGuru.setIdKehadiranGuru(rs.getInt("id"));
                 kehadiranGuru.setNama(rs.getString("nama"));
                 kehadiranGuru.setNip(rs.getString("nip"));
                 kehadiranGuru.setKelas(rs.getString("kelas"));
-                kehadiranGuru.setTahun_ajaran(rs.getString("tahun_ajaran"));
-                kehadiranGuru.setKebaktian(rs.getString("jenis_kebaktian"));
-                kehadiranGuru.setTgl_kebaktian(rs.getDate("tanggal"));
+                kehadiranGuru.setTahunAjaran(rs.getString("tahun_ajaran"));
+                kehadiranGuru.setJenisKebaktian(rs.getString("jenis_kebaktian"));
+                kehadiranGuru.setTglKebaktian(rs.getDate("tanggal"));
                 kehadiranGuru.setPresensi(rs.getBoolean("presensi"));
                 listkehadiranGuru.add(kehadiranGuru);
             }
@@ -238,8 +244,8 @@ public class KehadiranGuruDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kehadiranGuru.getID_HISTORI_MENGAJAR());
-            statement.setInt(2, kehadiranGuru.getID_KEBAKTIAN());
+            statement.setInt(1, kehadiranGuru.getIdHistoriMengajar());
+            statement.setInt(2, kehadiranGuru.getIdKebaktian());
             statement.setBoolean(3, kehadiranGuru.isPresensi());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -256,10 +262,10 @@ public class KehadiranGuruDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kehadiranGuru.getID_HISTORI_MENGAJAR());
-            statement.setInt(2, kehadiranGuru.getID_KEBAKTIAN());
+            statement.setInt(1, kehadiranGuru.getIdHistoriMengajar());
+            statement.setInt(2, kehadiranGuru.getIdKebaktian());
             statement.setBoolean(3, kehadiranGuru.isPresensi());
-            statement.setInt(4, kehadiranGuru.getID_KEHADIRAN_GURU());
+            statement.setInt(4, kehadiranGuru.getIdKehadiranGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing kehadiranGuru: " + e.getMessage());
@@ -275,7 +281,7 @@ public class KehadiranGuruDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, kehadiranGuru.getID_KEHADIRAN_GURU());
+            statement.setInt(1, kehadiranGuru.getIdKehadiranGuru());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting kehadiranGuru: " + e.getMessage());
@@ -290,11 +296,11 @@ public class KehadiranGuruDao {
         String query = "INSERT INTO tbl_kehadiran_guru (id_histori_mengajar, id_kebaktian)\n" +
                 "                SELECT hka.id, ? \n" +
                 "                FROM tbl_histori_mengajar hka\n" +
-                "                WHERE hka.id_kelas_per_tahun = ?";
+                "                WHERE hka.id_kelas_per_tahun = ? and hka.status_aktif = 1";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKebaktian.getID_KEBAKTIAN());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedKebaktian.getIdKebaktian());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate(); // Use executeUpdate instead of executeQuery for INSERT statement
         } catch (SQLException e ){
             throw new RuntimeException(e);
@@ -317,15 +323,15 @@ public class KehadiranGuruDao {
         ArrayList<Guru> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, selectedKebaktian.getID_KEBAKTIAN());
+            ps.setInt(1, selectedKelas.getIdKelasPerTahun());
+            ps.setInt(2, selectedKebaktian.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru anak = new Guru();
-                anak.setID_GURU(rs.getInt("id"));
+                anak.setIdGuru(rs.getInt("id"));
                 anak.setNamaGuru(rs.getString("nama"));
-                anak.setNIP(rs.getString("nip"));
+                anak.setNip(rs.getString("nip"));
                 listAnak.add(anak);
             }
         } catch (SQLException e) {
@@ -348,15 +354,15 @@ public class KehadiranGuruDao {
         ArrayList<Guru> listAnak = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedKelas.getID_KELAS_PER_TAHUN());
-            ps.setInt(2, selectedKebaktian.getID_KEBAKTIAN());
+            ps.setInt(1, selectedKelas.getIdKelasPerTahun());
+            ps.setInt(2, selectedKebaktian.getIdKebaktian());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
-                guru.setID_GURU(rs.getInt("id"));
+                guru.setIdGuru(rs.getInt("id"));
                 guru.setNamaGuru(rs.getString("nama"));
-                guru.setNIP(rs.getString("nip"));
+                guru.setNip(rs.getString("nip"));
                 listAnak.add(guru);
             }
         } catch (SQLException e) {
@@ -378,8 +384,8 @@ public class KehadiranGuruDao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, guru.getID_GURU());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, guru.getIdGuru());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -397,8 +403,8 @@ public class KehadiranGuruDao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, guru.getID_GURU());
-            ps.setInt(2, selectedKelas.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, guru.getIdGuru());
+            ps.setInt(2, selectedKelas.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

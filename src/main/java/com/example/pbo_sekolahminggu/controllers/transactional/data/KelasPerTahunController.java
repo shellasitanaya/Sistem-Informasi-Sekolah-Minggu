@@ -2,9 +2,11 @@ package com.example.pbo_sekolahminggu.controllers.transactional.data;
 
 import com.example.pbo_sekolahminggu.beans.master.data.Kelas;
 import com.example.pbo_sekolahminggu.beans.master.data.TahunAjaran;
+import com.example.pbo_sekolahminggu.beans.transactional.data.KehadiranGuru;
 import com.example.pbo_sekolahminggu.beans.transactional.data.KelasPerTahun;
 import com.example.pbo_sekolahminggu.dao.master.data.KelasDao;
 import com.example.pbo_sekolahminggu.dao.master.data.TahunAjaranDao;
+import com.example.pbo_sekolahminggu.dao.transactional.data.KehadiranGuruDao;
 import com.example.pbo_sekolahminggu.dao.transactional.data.KelasPerTahunDao;
 import com.example.pbo_sekolahminggu.utils.ConnectionManager;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -21,9 +23,14 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -59,15 +66,57 @@ public class KelasPerTahunController implements Initializable {
     ComboBox<Kelas> namaKelasPerTahunCb;
     @FXML
     ComboBox<TahunAjaran> tahunAjaranKelasPerTahunCb;
-
+    @FXML
+    private TextField kelasPerTahunSearchField;
     @FXML
     TextField namaPararelKelasPerTahunField, namaRuangKelasPerTahunField;
 
     ObservableList<Kelas> namaKelasList = FXCollections.observableArrayList();
     ObservableList<TahunAjaran> tahunAjaranList = FXCollections.observableArrayList();
+    ObservableList<KelasPerTahun> listKelasPerTahun = FXCollections.observableArrayList() ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        namaKelasPerTahunCb.setPromptText(" ");
+        tahunAjaranKelasPerTahunCb.setPromptText(" ");
+        namaKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Kelas>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Kelas> observableValue, Kelas kelas, Kelas t1) {
+
+            }
+
+            public void changedInKelasPerTahun(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(tahunAjaranKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+        tahunAjaranKelasPerTahunCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TahunAjaran>() {
+            @Override
+            public void changed(ObservableValue<? extends TahunAjaran> observable, TahunAjaran oldValue, TahunAjaran newValue) {
+                if (newValue != null) {
+                    System.out.println("Selection changed to: " + newValue.toString());
+
+                    if(namaKelasPerTahunCb.getValue() != null){
+                        try {
+                            namaPararelKelasPerTahunField.setText(KelasPerTahunDao.getNextParalel(ConnectionManager.getConnection(), namaKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdKelas(), tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem().getIdTahunAjaran()));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+
         try {
             fillKelasCb();
             fillTahunAjaranCb();
@@ -75,10 +124,60 @@ public class KelasPerTahunController implements Initializable {
             throw new RuntimeException(e);
         }
         populateKelasTable();
+
+        Connection con = null;
+        try {
+            con = ConnectionManager.getConnection();
+            listKelasPerTahun = FXCollections.
+                    observableList(KelasPerTahunDao.getAll(con));
+            for (KelasPerTahun kelasPerTahun: listKelasPerTahun) {
+                System.out.println(kelasPerTahun);
+            }
+            kelasPerTahunTbl.setItems(listKelasPerTahun);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionManager.close(con);
+        }
+    }
+    public void Search() {
+
+        FilteredList<KelasPerTahun> filter = new FilteredList<>(listKelasPerTahun, e -> true);
+
+        kelasPerTahunSearchField.textProperty().addListener((Observable, oldValue, newValue) -> {
+
+            filter.setPredicate(predicateEmployeeData -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchKey = newValue.toLowerCase();
+
+                if (predicateEmployeeData.getRuangKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getKelasParalel().toLowerCase().contains(searchKey)) {
+                    System.out.println("ada di nama");
+                    return true;
+                } else if (predicateEmployeeData.getNamaKelas().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else if (predicateEmployeeData.getTahunAjaran().toLowerCase().contains(searchKey)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<KelasPerTahun> sortList = new SortedList<>(filter);
+
+        sortList.comparatorProperty().bind(kelasPerTahunTbl.comparatorProperty());
+        kelasPerTahunTbl.setItems(sortList);
     }
 
     public void addKelasPerTahun(){
         if(!isInputValid()){
+            alertWarning("Harap isi semua kolom.");
             return;
         }
         KelasPerTahun kelasPerTahun = new KelasPerTahun();
@@ -86,11 +185,11 @@ public class KelasPerTahunController implements Initializable {
         Kelas selectedKelas = (Kelas) namaKelasPerTahunCb.getSelectionModel().getSelectedItem();
         //selected tahun ajaran
         TahunAjaran selectedTahunAjaran = (TahunAjaran) tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
-        kelasPerTahun.setID_KELAS(selectedKelas.getID_KELAS());
+        kelasPerTahun.setIdKelas(selectedKelas.getIdKelas());
         kelasPerTahun.setNamaKelas(selectedKelas.getNamaKelas());
         kelasPerTahun.setKelasParalel(namaPararelKelasPerTahunField.getText());
         kelasPerTahun.setRuangKelas(namaRuangKelasPerTahunField.getText());
-        kelasPerTahun.setID_TAHUN_AJARAN(selectedTahunAjaran.getID_TAHUN_AJARAN());
+        kelasPerTahun.setIdTahunAjaran(selectedTahunAjaran.getIdTahunAjaran());
         kelasPerTahun.setTahunAjaran(selectedTahunAjaran.getTahunAjaran());
 
 
@@ -101,7 +200,7 @@ public class KelasPerTahunController implements Initializable {
             KelasPerTahunDao.save(con, kelasPerTahun);
 
             //get id
-            kelasPerTahun.setID_KELAS_PER_TAHUN(KelasPerTahunDao.getIdByProperties(con, kelasPerTahun));
+            kelasPerTahun.setIdKelasPerTahun(KelasPerTahunDao.getIdByProperties(con, kelasPerTahun));
 
             kelasPerTahunTbl.getItems().add(kelasPerTahun);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -109,11 +208,21 @@ public class KelasPerTahunController implements Initializable {
             alert.show();
 //            skinCareDao.resetSequence(con);
         } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the exception
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText("Tidak berhasil menyimpan data!");
+                alert.setContentText("Terdapat data kelas per tahun yang sama.");
+                alert.showAndWait();
+            });
         }
     }
 
     public void delete(){
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
 
@@ -134,11 +243,15 @@ public class KelasPerTahunController implements Initializable {
             }
         } else {
             // No row is selected
-            System.out.println("No row selected.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 //
     public void edit() {
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         // Get the selected item (i.e., the row that was clicked)
         KelasPerTahun selectedKelasPerTahun  = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
 
@@ -151,11 +264,11 @@ public class KelasPerTahunController implements Initializable {
             // Establish database connection
             try (Connection con = ConnectionManager.getConnection()) {
                 // Update the selected item with the edited data
-                selectedKelasPerTahun.setID_KELAS(selectedKelas.getID_KELAS());
+                selectedKelasPerTahun.setIdKelas(selectedKelas.getIdKelas());
                 selectedKelasPerTahun.setNamaKelas(selectedKelas.getNamaKelas());
                 selectedKelasPerTahun.setRuangKelas(namaRuangKelasPerTahunField.getText());
                 selectedKelasPerTahun.setKelasParalel(namaPararelKelasPerTahunField.getText());
-                selectedKelasPerTahun.setID_TAHUN_AJARAN(selectedTahunAjaran.getID_TAHUN_AJARAN());
+                selectedKelasPerTahun.setIdTahunAjaran(selectedTahunAjaran.getIdTahunAjaran());
                 selectedKelasPerTahun.setTahunAjaran(selectedTahunAjaran.getTahunAjaran());
 
 
@@ -179,7 +292,7 @@ public class KelasPerTahunController implements Initializable {
             }
         } else {
             // No row is selected
-            System.out.println("No row selected.");
+            alertWarning("Tidak ada data yang dipilih. Silahkan pilih baris tertentu terlebih dahulu!");
         }
     }
 
@@ -246,11 +359,16 @@ public class KelasPerTahunController implements Initializable {
             ArrayList<KelasPerTahun> listHistoryMengajar = KelasPerTahunDao.getAll(ConnectionManager.getConnection());
 
             // Set cell value factory for each TableColumn
-            idKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getID_KELAS_PER_TAHUN())));
+            idKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIdKelasPerTahun())));
+            idKelasPerTahun.setMinWidth(115);
             namaKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNamaKelas()));
+            namaKelasPerTahun.setMinWidth(165);
             namaPararelKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKelasParalel()));
+            namaPararelKelasPerTahun.setMinWidth(155);
             tahunAjaranKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTahunAjaran()));
+            tahunAjaranKelasPerTahun.setMinWidth(185);
             namaRuangKelasPerTahun.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRuangKelas()));
+            namaRuangKelasPerTahun.setMinWidth(190);
 
             // Add columns to the TableView
             kelasPerTahunTbl.getColumns().clear(); // Clear existing columns
@@ -269,12 +387,12 @@ public class KelasPerTahunController implements Initializable {
                     namaPararelKelasPerTahunField.setText(selectedKelasPerTahun.getKelasParalel());
                     namaRuangKelasPerTahunField.setText(selectedKelasPerTahun.getRuangKelas());
                     Kelas newKelas = namaKelasPerTahunCb.getItems().stream()
-                            .filter(kelas -> kelas.getID_KELAS() == selectedKelasPerTahun.getID_KELAS())
+                            .filter(kelas -> kelas.getIdKelas() == selectedKelasPerTahun.getIdKelas())
                             .findFirst()
                             .orElse(null);
                     namaKelasPerTahunCb.getSelectionModel().select(newKelas);
                     TahunAjaran newTahunAjaran = tahunAjaranKelasPerTahunCb.getItems().stream()
-                            .filter(tahunAjaran -> tahunAjaran.getID_TAHUN_AJARAN() == selectedKelasPerTahun.getID_TAHUN_AJARAN())
+                            .filter(tahunAjaran -> tahunAjaran.getIdTahunAjaran() == selectedKelasPerTahun.getIdTahunAjaran())
                             .findFirst()
                             .orElse(null);
                     tahunAjaranKelasPerTahunCb.getSelectionModel().select(newTahunAjaran);
@@ -293,25 +411,28 @@ public class KelasPerTahunController implements Initializable {
     }
 
     public boolean isInputValid(){
-        if(!namaRuangKelasPerTahunField.getText().equals("") && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null){
-            return true;
-        }
+//        if(!namaRuangKelasPerTahunField.getText().trim().isEmpty() &&
+//                !namaPararelKelasPerTahunField.getText().trim().isEmpty() && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null){
+//            return true;
+//        }
+        return !namaRuangKelasPerTahunField.getText().trim().isEmpty() &&
+                !namaPararelKelasPerTahunField.getText().trim().isEmpty() && namaKelasPerTahunCb.getValue() != null && tahunAjaranKelasPerTahunCb.getValue() != null;
 
-        if(namaKelasPerTahunCb.getValue() == null){
-            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
-        }else if(namaRuangKelasPerTahunField.getText().equals("")){
-            alertWarning("Ruang Kelas masih kosong! Mohon isi.");
-        }else if(tahunAjaranKelasPerTahunCb.getValue() == null){
-            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
-        }
-
-        return false;
+//        if(namaKelasPerTahunCb.getValue() == null){
+//            alertWarning("Silahkan pilih Kelas terlebih dahulu.");
+//        }else if(namaRuangKelasPerTahunField.getText().trim().isEmpty()){
+//            alertWarning("Ruang Kelas masih kosong! Mohon isi.");
+//        }else if(tahunAjaranKelasPerTahunCb.getValue() == null){
+//            alertWarning("Silahkan pilih Tahun Ajaran terlebih dahulu.");
+//        }else if(namaPararelKelasPerTahunField.getText().trim().isEmpty()) {
+//            alertWarning("Kelas Paralel masih kosong! Mohon isi.");
+//        }
     }
 
     //function kalo misalnya ada textfield yang kosong, atau kelas yang mau didelete/diedit blm dipilih
     private void alertWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -320,6 +441,10 @@ public class KelasPerTahunController implements Initializable {
     // --------------------------------------------------
     @FXML
     public void export() {
+        if (!isInputValid()) {
+            alertWarning("Harap isi semua kolom.");
+            return;
+        }
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Microsoft Excel Spreadsheet (*.xlsx)", "*.xlsx");
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter("Portable Document Format files (*.pdf)", "*.pdf");
@@ -340,8 +465,11 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToPdf(File file) {
-        //TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
-        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
         System.out.println(file.getAbsolutePath());
         PdfDocument pdfDoc = null;
         try {
@@ -360,7 +488,7 @@ public class KelasPerTahunController implements Initializable {
             headerTable.addCell(logoCell);
 
             // Menambahkan judul di sebelah logo
-            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedKelas.getTahunAjaran())
+            Paragraph title = new Paragraph("Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran())
                     .setTextAlignment(TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(20);
@@ -387,7 +515,7 @@ public class KelasPerTahunController implements Initializable {
             }
 
             // Data Table
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(ConnectionManager.getConnection(), selectedTahun);
             Set<String> keySet = data.keySet();
             for (String key : keySet) {
                 Object[] row = data.get(key);
@@ -421,7 +549,12 @@ public class KelasPerTahunController implements Initializable {
     }
 
     private void exportToExcel(File file) {
-        KelasPerTahun selectedKelas = kelasPerTahunTbl.getSelectionModel().getSelectedItem();
+        TahunAjaran selectedTahun = tahunAjaranKelasPerTahunCb.getSelectionModel().getSelectedItem();
+        if (selectedTahun == null) {
+            alertWarning("Pilih Tahun Ajaran terlebih dahulu!");
+            return;
+        }
+        // Data Table
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("Laporan Data Kelas Per Tahun");
 
@@ -437,7 +570,7 @@ public class KelasPerTahunController implements Initializable {
             XSSFRow titleRow = spreadsheet.createRow(rowid++);
             titleRow.setHeightInPoints(30); // Set tinggi baris untuk judul
             XSSFCell titleCell = titleRow.createCell(0);
-            String judul = "Laporan Kelas dan Jumlah Murid Pada " + selectedKelas.getTahunAjaran();
+            String judul = "Laporan Kelas dan Jumlah Murid Pada " + selectedTahun.getTahunAjaran();
             titleCell.setCellValue(judul);
             CellRangeAddress mergedRegion = new CellRangeAddress(0, 0, 0, 2); // merge kolom untuk judul
             spreadsheet.addMergedRegion(mergedRegion);
@@ -496,7 +629,7 @@ public class KelasPerTahunController implements Initializable {
             dataStyle.setBorderRight(BorderStyle.THIN);
 
             // Export Data
-            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedKelas);
+            Map<String, Object[]> data = KelasPerTahunDao.getAllArrayObject(con, selectedTahun);
             Set<String> keyid = data.keySet();
 
             for (String key : keyid) {

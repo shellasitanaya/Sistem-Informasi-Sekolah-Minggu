@@ -30,10 +30,10 @@ public class HistoriMengajarDao {
 
         String query = "SELECT \n" +
                 "thm.id,\n" +
-                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru),\n" +
-                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
-                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
+                "(SELECT nama FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nip FROM tbl_guru g WHERE g.id = thm.id_guru AND g.status_aktif = 1),\n" +
+                "(SELECT nama_kelas FROM tbl_kelas k WHERE k.status_aktif = 1 AND k.id = (SELECT id_kelas FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)) || ' ' || COALESCE((SELECT kelas_paralel FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id), '') AS kelas,--kelas\n" +
+                "(SELECT tahun_ajaran FROM tbl_tahun_ajaran ta WHERE ta.status_aktif = 1 AND ta.id = (SELECT id_tahun_ajaran FROM tbl_kelas_per_tahun k WHERE thm.id_kelas_per_tahun = k.id)),--tahun ajaran\n" +
                 "--foreign keys\n" +
                 "id_guru,\n" +
                 "id_kelas_per_tahun\n" +
@@ -46,13 +46,13 @@ public class HistoriMengajarDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 HistoriMengajar historiMengajar = new HistoriMengajar();
-                historiMengajar.setID_HISTORI_MENGAJAR(rs.getInt("id"));
+                historiMengajar.setIdHistoriMengajar(rs.getInt("id"));
                 historiMengajar.setNamaGuru(rs.getString("nama"));
                 historiMengajar.setNip(rs.getString("nip"));
                 historiMengajar.setKelas(rs.getString("kelas"));
                 historiMengajar.setTahunAjaran(rs.getString("tahun_ajaran"));
-                historiMengajar.setID_GURU(rs.getInt("id_guru"));
-                historiMengajar.setID_KELAS_PER_TAHUN(rs.getInt("id_kelas_per_tahun"));
+                historiMengajar.setIdGuru(rs.getInt("id_guru"));
+                historiMengajar.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
                 listhistoriMengajar.add(historiMengajar);
             }
         } catch (SQLException e) {
@@ -85,7 +85,7 @@ public class HistoriMengajarDao {
                 "LEFT JOIN tbl_kelas_per_tahun kpt ON thm.id_kelas_per_tahun = kpt.id\n" +
                 "LEFT JOIN tbl_kelas k ON kpt.id_kelas = k.id\n" +
                 "LEFT JOIN tbl_tahun_ajaran ta ON kpt.id_tahun_ajaran = ta.id\n" +
-                "WHERE thm.status_aktif = 1 AND kpt.id=?\n" +
+                "WHERE thm.status_aktif = 1 AND kpt.id=? AND g.status_aktif = 1 AND kpt.status_aktif = 1 AND k.status_aktif = 1 AND ta.status_aktif = 1\n" +
                 "ORDER BY thm.id";
         ArrayList<HistoriMengajar> listhistoriMengajar = new ArrayList<>();
         try {
@@ -94,14 +94,14 @@ public class HistoriMengajarDao {
             rs = ps.executeQuery();
             while (rs.next()) {
                 HistoriMengajar historiMengajar = new HistoriMengajar();
-                historiMengajar.setID_HISTORI_MENGAJAR(rs.getInt("id"));
+                historiMengajar.setIdHistoriMengajar(rs.getInt("id"));
                 historiMengajar.setNamaGuru(rs.getString("nama"));
                 historiMengajar.setNip(rs.getString("nip"));
                 historiMengajar.setKelas(rs.getString("kelas"));
-                historiMengajar.setID_TAHUN_AJARAN(rs.getInt("id_tahun_ajaran"));
+                historiMengajar.setIdTahunAjaran(rs.getInt("id_tahun_ajaran"));
                 historiMengajar.setTahunAjaran(rs.getString("tahun_ajaran"));
-                historiMengajar.setID_GURU(rs.getInt("id_guru"));
-                historiMengajar.setID_KELAS_PER_TAHUN(rs.getInt("id_kelas_per_tahun"));
+                historiMengajar.setIdGuru(rs.getInt("id_guru"));
+                historiMengajar.setIdKelasPerTahun(rs.getInt("id_kelas_per_tahun"));
                 listhistoriMengajar.add(historiMengajar);
             }
         } catch (SQLException e) {
@@ -117,18 +117,18 @@ public class HistoriMengajarDao {
         ResultSet rs = null;
         String query = "SELECT a.* FROM tbl_guru a\n" +
                 "                JOIN tbl_histori_mengajar hm on a.id = hm.id_guru\n" +
-                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1";
+                "                WHERE hm.id_kelas_per_tahun = ? AND a.status_aktif = 1 AND hm.status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
-                guru.setID_GURU(rs.getInt("id"));
+                guru.setIdGuru(rs.getInt("id"));
                 guru.setNamaGuru(rs.getString("nama"));
-                guru.setNIP(rs.getString("nip"));
+                guru.setNip(rs.getString("nip"));
                 listGuru.add(guru);
             }
         } catch (SQLException e) {
@@ -142,16 +142,20 @@ public class HistoriMengajarDao {
     public static ArrayList<Guru> getAllGuruTidakKelas(Connection con) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "SELECT * FROM tbl_guru WHERE status_aktif = 1";
+        String query = "SELECT * FROM tbl_guru\n" +
+        "WHERE id NOT IN (SELECT g.id FROM tbl_guru g\n" +
+                "\t\t\t\tJOIN tbl_histori_mengajar hm on g.id = hm.id_guru\n" +
+                "\t\t\t\tWHERE hm.id_kelas_per_tahun = ?) AND status_aktif = 1";
         ArrayList<Guru> listGuru = new ArrayList<>();
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, selectedClass.getIdKelasPerTahun());
             rs = ps.executeQuery();
             while (rs.next()) {
                 Guru guru = new Guru();
-                guru.setID_GURU(rs.getInt("id"));
+                guru.setIdGuru(rs.getInt("id"));
                 guru.setNamaGuru(rs.getString("nama"));
-                guru.setNIP(rs.getString("nip"));
+                guru.setNip(rs.getString("nip"));
                 listGuru.add(guru);
             }
         } catch (SQLException e) {
@@ -167,8 +171,8 @@ public class HistoriMengajarDao {
         String query = "INSERT INTO tbl_histori_mengajar (id_guru, id_kelas_per_tahun) VALUES (?, ?)";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedTeacher.getID_GURU());
-            ps.setInt(2, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedTeacher.getIdGuru());
+            ps.setInt(2, selectedClass.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -183,8 +187,8 @@ public class HistoriMengajarDao {
                 "WHERE id_guru = ? AND id_kelas_per_tahun = ?";
         try {
             ps = con.prepareStatement(query);
-            ps.setInt(1, selectedTeacher.getID_GURU());
-            ps.setInt(2, selectedClass.getID_KELAS_PER_TAHUN());
+            ps.setInt(1, selectedTeacher.getIdGuru());
+            ps.setInt(2, selectedClass.getIdKelasPerTahun());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -199,8 +203,8 @@ public class HistoriMengajarDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, historiMengajar.getID_KELAS_PER_TAHUN() ); // kelas
-            statement.setInt(2, historiMengajar.getID_GURU()); // guru
+            statement.setInt(1, historiMengajar.getIdKelasPerTahun() ); // kelas
+            statement.setInt(2, historiMengajar.getIdGuru()); // guru
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error saving historiMengajar: " + e.getMessage());
@@ -217,9 +221,9 @@ public class HistoriMengajarDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, historiMengajar.getID_KELAS_PER_TAHUN());
-            statement.setInt(2, historiMengajar.getID_GURU());
-            statement.setInt(3, historiMengajar.getID_HISTORI_MENGAJAR());
+            statement.setInt(1, historiMengajar.getIdKelasPerTahun());
+            statement.setInt(2, historiMengajar.getIdGuru());
+            statement.setInt(3, historiMengajar.getIdHistoriMengajar());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error editing historiMengajar: " + e.getMessage());
@@ -235,7 +239,7 @@ public class HistoriMengajarDao {
 
         try {
             statement = con.prepareStatement(query);
-            statement.setInt(1, historiMengajar.getID_HISTORI_MENGAJAR());
+            statement.setInt(1, historiMengajar.getIdHistoriMengajar());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting historiMengajar: " + e.getMessage());

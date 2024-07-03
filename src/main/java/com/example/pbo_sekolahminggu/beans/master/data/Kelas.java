@@ -1,8 +1,8 @@
 package com.example.pbo_sekolahminggu.beans.master.data;
 
 public class Kelas {
-    private int ID_KELAS;
-    private String NamaKelas;
+    private int idKelas;
+    private String namaKelas;
 
     // constructor
     public Kelas(){
@@ -10,19 +10,19 @@ public class Kelas {
     }
 
     // getter setter
-    public int getID_KELAS() {
-        return ID_KELAS;
+    public int getIdKelas() {
+        return idKelas;
     }
 
-    public void setID_KELAS(int ID_KELAS) {
-        this.ID_KELAS = ID_KELAS;
+    public void setIdKelas(int idKelas) {
+        this.idKelas = idKelas;
     }
 
     public String getNamaKelas() {
-        return NamaKelas;
+        return namaKelas;
     }
 
     public void setNamaKelas(String namaKelas) {
-        NamaKelas = namaKelas;
+        this.namaKelas = namaKelas;
     }
 }
