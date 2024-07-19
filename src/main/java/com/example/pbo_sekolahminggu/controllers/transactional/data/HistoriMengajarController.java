@@ -118,7 +118,7 @@ public class HistoriMengajarController implements Initializable {
             ConnectionManager.close(con);
         }
     }
-    public void Search() {
+    public void search() {
 
         FilteredList<HistoriMengajar> filter = new FilteredList<>(listHistoriMengajar, e -> true);
 
@@ -131,7 +131,7 @@ public class HistoriMengajarController implements Initializable {
                 }
 
                 String searchKey = newValue.toLowerCase();
-
+                System.out.println(predicateEmployeeData.getNamaGuru());
                 if (predicateEmployeeData.getNamaGuru().toLowerCase().contains(searchKey)) {
                     return true;
                 } else if (predicateEmployeeData.getNip().toLowerCase().contains(searchKey)) {

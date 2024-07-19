@@ -48,6 +48,7 @@ public class HistoriMengajarDao {
                 HistoriMengajar historiMengajar = new HistoriMengajar();
                 historiMengajar.setIdHistoriMengajar(rs.getInt("id"));
                 historiMengajar.setNamaGuru(rs.getString("nama"));
+                System.out.println(historiMengajar.getNamaGuru());
                 historiMengajar.setNip(rs.getString("nip"));
                 historiMengajar.setKelas(rs.getString("kelas"));
                 historiMengajar.setTahunAjaran(rs.getString("tahun_ajaran"));
